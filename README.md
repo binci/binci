@@ -47,7 +47,7 @@ The above example would execute the `test` task inside a container running the
 
 Additionally the following flags are available:
 
-`-h`: Display the help (accepts no other flags or tasks)
-`-v`: Display the version of Laminar (accepts no other flags or tasks)
-`-c path/to/config`: Specify the path to config (relative to cwd)
-`-f container:tag`: Specify a different container and version to run (override `from`)
+* `-h`: Display the help (accepts no other flags or tasks)
+* `-v`: Display the version of Laminar (accepts no other flags or tasks)
+* `-c path/to/config`: Specify the path to config (relative to cwd)
+* `-f container:tag`: Specify a different container and version to run (override `from`)
