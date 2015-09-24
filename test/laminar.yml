@@ -7,6 +7,7 @@ expose:
   - 8080:8080
 tasks:
   env: env
+  clean: rm -rf node_modules
   install: npm install
   test: npm run test
   lint: npm run lint
