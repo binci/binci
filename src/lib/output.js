@@ -12,6 +12,6 @@ export default {
     console.log(clc.green.bold('#> ') + clc.bold(renderVars(m)));
   },
   error: (m) => {
-    console.log(clc.red.bold('!> ') + clc.bold(m));
+    console.log(clc.red.bold('!> ') + clc.bold(renderVars(m)));
   }
 }
