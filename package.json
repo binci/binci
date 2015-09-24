@@ -1,0 +1,22 @@
+{
+  "name": "laminar",
+  "version": "0.0.1",
+  "description": "Node utility for running containerized tasks",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "babel": "^5.8.23"
+  },
+  "preferGlobal": true,
+  "dependencies": {
+    "bluebird": "^2.10.1",
+    "cli-color": "^1.0.0",
+    "js-yaml": "^3.4.2",
+    "minimist": "^1.2.0",
+    "shelljs": "^0.5.3"
+  }
+}

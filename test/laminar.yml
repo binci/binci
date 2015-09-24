@@ -1,0 +1,13 @@
+from: node:0.10
+services:
+  - mongodb:mongo
+env:
+  - LOCAL_HOME=${HOME}
+expose:
+  - 8080:8080
+tasks:
+  env: env
+  install: npm install
+  test: npm run test
+  lint: npm run lint
+  build: npm run build
