@@ -16,13 +16,11 @@ let envs = [];
 if (config.env) {
   config.env.map((e) => {
     // Matches any ${VAR} format vars
-    const matcher = (i, match) => {
-      return (process.env.hasOwnProperty(match)) ? process.env[match] : null;
-    }
+    const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
     // Check for matches
-    e = e.toString().replace(/\$\{([^}]+)\}/g, matcher);
+    const env = e.toString().replace(/\$\{([^}]+)\}/g, matcher);
     // Concat
-    envs = envs.concat([ '-e', e ]);
+    envs = envs.concat([ '-e', env ]);
   });
 }
 
@@ -35,6 +33,58 @@ if (config.expose) {
     ports = ports.concat([ '-p', e ]);
   });
 }
+
+/**
+ * Builds and executes command to run container with task
+ */
+const runTask = () => {
+  // Spawn arguments
+  let args = [
+    'run',
+    '-t',
+    '--rm'
+  ];
+
+  // Volume config
+  const volume = [
+    '-v',
+    `${config.volume}:${config.volume}`
+  ];
+
+  // Workdir config
+  const workdir = [
+    '-w',
+    config.volume
+  ];
+
+  // From (image) config
+  const from = [ config.from ];
+
+  // Split command into (space delimited) parts
+  const cmd = config.run.split(' ');
+
+  // Build full args array
+  args = links.length ? args.concat(links) : args;
+  args = envs.length ? args.concat(envs) : args;
+  args = ports.length ? args.concat(ports) : args;
+  args = args.concat(volume);
+  args = args.concat(workdir);
+  args = args.concat(from);
+  args = args.concat(cmd);
+
+  // Start run
+  output.success(`Running container {{${config.from}}}, task {{${config.run}}}`);
+  proc('docker', args)
+    .then(() => {
+      const closed = (new Date().getTime() - start) / 1000;
+      output.success(`Completed in {{${closed}}} seconds`);
+      process.exit(0);
+    })
+    .catch((code) => {
+      output.error(`Error running {{${config.run}}}, exited with code {{${code}}}`);
+      process.exit(code);
+    });
+};
 
 /**
  * Check for (and start) service containers
@@ -58,56 +108,3 @@ if (config.services) {
   // No services; start
   runTask();
 }
-
-/**
- * Builds and executes command to run container with task
- */
-const runTask = () => {
-  // Spawn arguments
-  let args = [
-    'run',
-    '-t',
-    '--rm'
-  ];
-  
-  // Volume config
-  const volume = [
-    '-v',
-    `${config.volume}:${config.volume}`
-  ];
-  
-  // Workdir config
-  const workdir = [
-    '-w',
-    config.volume
-  ]
-  
-  // From (image) config
-  const from = [ config.from ]
-  
-  // Split command into (space delimited) parts
-  const cmd = config.run.split(' ');
-  
-  // Build full args array
-  args = (links.length) ? args.concat(links) : args;
-  args = (envs.length) ? args.concat(envs) : args;
-  args = (ports.length) ? args.concat(ports) : args;
-  args = args.concat(volume);
-  args = args.concat(workdir);
-  args = args.concat(from);
-  args = args.concat(cmd);
-
-  // Start run
-  output.success(`Running container {{${config.from}}}, task {{${config.run}}}`);
-  proc('docker', args)
-    .then(() => {
-      const closed = ((new Date().getTime()) - start) / 1000;
-      output.success(`Completed in {{${closed}}} seconds`);
-      process.exit(0);
-    })
-    .catch((code) => {
-      output.error(`Error running {{${config.run}}}, exited with code {{${code}}}`);
-      process.exit(code);
-    });
-}
-

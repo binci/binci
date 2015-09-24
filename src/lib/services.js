@@ -10,9 +10,9 @@ const serviceObj = (svc) => {
   const s = svc.split(':');
   return {
     name: s[0],
-    image: (s.length > 1) ? s[1] : s[0]
+    image: s.length > 1 ? s[1] : s[0]
   };
-}
+};
 
 /**
  * Checks if service is running, if not starts it
@@ -20,7 +20,7 @@ const serviceObj = (svc) => {
 const checkSvc = (svc) => {
   return new Promise((resolve, reject) => {
     // Check if service is running
-    exec(`docker ps -f name=${svc.name} -q`, (err, stdout, stderr) => {
+    exec(`docker ps -f name=${svc.name} -q`, (err, stdout) => {
       if (err) {
         // Error on check
         reject(err);
@@ -35,7 +35,7 @@ const checkSvc = (svc) => {
       }
     });
   });
-}
+};
 
 /**
  * Iterates over services array and starts non-running service containers
@@ -66,11 +66,10 @@ const runServices = (services) => {
           output.error(`Failed to start {{${svc.name}}}`);
           reject();
         });
-    }
-    
+    };
     // Kick off recursion over services
     startSvc(services[i]);
   });
-}
+};
 
 export default runServices;
