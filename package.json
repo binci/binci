@@ -4,7 +4,8 @@
   "description": "Node utility for running containerized tasks",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ./src"
+    "test": "mocha --compilers js:babel/register ./test/src --recursive",
+    "lint": "eslint ./src ./test/src"
   },
   "author": "",
   "license": "MIT",
@@ -13,6 +14,8 @@
     "babel-eslint": "^4.1.3",
     "chai": "^3.3.0",
     "eslint": "^1.5.1",
+    "mocha": "^2.3.3",
+    "mocha-sinon": "^1.1.4",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
   },
