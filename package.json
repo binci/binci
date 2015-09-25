@@ -11,7 +11,10 @@
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.3",
-    "eslint": "^1.5.1"
+    "chai": "^3.3.0",
+    "eslint": "^1.5.1",
+    "sinon": "^1.17.0",
+    "sinon-chai": "^2.8.0"
   },
   "preferGlobal": true,
   "dependencies": {
