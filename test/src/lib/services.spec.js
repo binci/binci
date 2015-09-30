@@ -21,7 +21,9 @@ describe('services', () => {
   describe('startSvc', () => {
     after((done) => {
       exec('docker stop mongotest && docker rm mongotest', (err) => {
-        if (!err) {
+        if (err) {
+          done(err);
+        } else {
           done();
         }
       });
@@ -44,6 +46,22 @@ describe('services', () => {
         .catch(() => {
           done();
         });
+    });
+  });
+  describe('run', () => {
+    after((done) => {
+      exec('docker stop mongotest && docker rm mongotest', (err) => {
+        if (err) {
+          done(err);
+        } else {
+          done();
+        }
+      });
+    });
+    it('starts services passed in through an array', (done) => {
+      services.run(['mongotest:mongo'])
+        .then(done)
+        .catch(done);
     });
   });
 });

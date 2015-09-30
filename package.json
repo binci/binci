@@ -4,7 +4,7 @@
   "description": "Node utility for running containerized tasks",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register ./test/src --recursive",
+    "test": "mocha --timeout 8000 --compilers js:babel/register ./test/src --recursive",
     "lint": "eslint ./src ./test/src"
   },
   "author": "",
