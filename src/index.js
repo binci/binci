@@ -92,7 +92,7 @@ const runTask = () => {
 if (config.services) {
   output.success(`Starting services: {{${config.services.join(', ')}}}`);
   // Services; run service module
-  services(config.services)
+  services.run(config.services)
     .then(() => {
       // Create links array for insert into run
       config.services.map((l) => {
