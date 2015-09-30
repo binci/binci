@@ -3,6 +3,9 @@ import services from './lib/services';
 import proc from './lib/process';
 import output from './lib/output';
 
+// Create run-time manifest from config
+const manifest = config.get();
+
 // Process timer
 const start = new Date().getTime();
 
@@ -13,8 +16,8 @@ let links = [];
  * Process environment variables
  */
 let envs = [];
-if (config.env) {
-  config.env.map((e) => {
+if (manifest.env) {
+  manifest.env.map((e) => {
     // Matches any ${VAR} format vars
     const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
     // Check for matches
@@ -28,8 +31,8 @@ if (config.env) {
  * Process any ports to expose
  */
 let ports = [];
-if (config.expose) {
-  config.expose.map((e) => {
+if (manifest.expose) {
+  manifest.expose.map((e) => {
     ports = ports.concat([ '-p', e ]);
   });
 }
@@ -48,20 +51,20 @@ const runTask = () => {
   // Volume config
   const volume = [
     '-v',
-    `${config.volume}:${config.volume}`
+    `${manifest.volume}:${manifest.volume}`
   ];
 
   // Workdir config
   const workdir = [
     '-w',
-    config.volume
+    manifest.volume
   ];
 
   // From (image) config
   const from = [ config.from ];
 
   // Split command into (space delimited) parts
-  const cmd = config.run.split(' ');
+  const cmd = manifest.run.split(' ');
 
   // Build full args array
   args = links.length ? args.concat(links) : args;
@@ -73,7 +76,7 @@ const runTask = () => {
   args = args.concat(cmd);
 
   // Start run
-  output.success(`Running container {{${config.from}}}, task {{${config.run}}}`);
+  output.success(`Running container {{${manifest.from}}}, task {{${manifest.run}}}`);
   proc('docker', args)
     .then(() => {
       const closed = (new Date().getTime() - start) / 1000;
@@ -81,7 +84,7 @@ const runTask = () => {
       process.exit(0);
     })
     .catch((code) => {
-      output.error(`Error running {{${config.run}}}, exited with code {{${code}}}`);
+      output.error(`Error running {{${manifest.run}}}, exited with code {{${code}}}`);
       process.exit(code);
     });
 };
@@ -89,13 +92,13 @@ const runTask = () => {
 /**
  * Check for (and start) service containers
  */
-if (config.services) {
-  output.success(`Starting services: {{${config.services.join(', ')}}}`);
+if (manifest.services) {
+  output.success(`Starting services: {{${manifest.services.join(', ')}}}`);
   // Services; run service module
-  services.run(config.services)
+  services.run(manifest.services)
     .then(() => {
       // Create links array for insert into run
-      config.services.map((l) => {
+      manifest.services.map((l) => {
         links = links.concat([ '--link', l ]);
       });
       runTask();
