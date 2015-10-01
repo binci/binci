@@ -17,7 +17,7 @@ const config = {
   /**
    * Get arguments
    */
-  args: process.argv[0] === 'node' ? min(process.argv.slice(1)) : process.argv.slice(2),
+  args: process.argv[0] === 'node' ? min(process.argv.slice(1)) : min(process.argv.slice(2)),
   /**
    * Help message template
    */
@@ -38,22 +38,24 @@ const config = {
     // Show version
     if (args.v) { output.log(pkg.version); process.exit(0); }
     // Load yaml config
-    config.configPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/laminar.yml`;
+    config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/laminar.yml`;
+    // Override from
+    config.from = args.f ? args.f : false;
+    // Set task
+    config.task = args._ ? args._[1] : false;
   },
   /**
    * Loads manifest and sets basic props
    */
   loadManifest: () => {
     try {
-      config.manifest = yaml.safeLoad(fs.readFileSync(config.configPath), 'utf8');
+      config.manifest = yaml.safeLoad(fs.readFileSync(config.manifestPath), 'utf8');
     } catch (e) {
       output.error('Could not load config!');
       process.exit(1);
     }
     // Set volume
     config.manifest.volume = config.cwd;
-    // Set task
-    config.manifest.task = config.args._[1] ? config.args._[1] : false;
   },
   /**
    * Runs the config process
@@ -62,17 +64,17 @@ const config = {
     config.checkArgs(config.args);
     config.loadManifest();
     // Ensure task specified
-    if (config.manifest.task) {
+    if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      config.manifest.run = config.manifest.tasks[config.manifest.task];
+      config.manifest.run = config.manifest.tasks[config.task];
     } else {
       // Missing task, halt
       output.error('Please specify a task to run.');
       process.exit(1);
     }
     // Check for container override
-    if (config.args.f) {
-      config.manifest.from = config.args.f;
+    if (config.from) {
+      config.manifest.from = config.from;
     }
     // Return the compiled config manifest
     return config.manifest;
