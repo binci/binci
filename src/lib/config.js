@@ -38,7 +38,7 @@ const config = {
     // Show version
     if (args.v) { output.log(pkg.version); process.exit(0); }
     // Load yaml config
-    config.configPath = args.c ? `${config.cwd()}/${args.c}` : `${config.pwd}/laminar.yml`;
+    config.configPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/laminar.yml`;
   },
   /**
    * Loads manifest and sets basic props
@@ -51,9 +51,9 @@ const config = {
       process.exit(1);
     }
     // Set volume
-    config.manifest.volume = config.cwd();
+    config.manifest.volume = config.cwd;
     // Set task
-    config.manifest.task = config.args()._[1] ? config.args()._[1] : false;
+    config.manifest.task = config.args._[1] ? config.args._[1] : false;
   },
   /**
    * Runs the config process
@@ -64,7 +64,7 @@ const config = {
     // Ensure task specified
     if (config.manifest.task) {
       // Set run
-      config.manifest.run = config.manifest.task;
+      config.manifest.run = config.manifest.tasks[config.manifest.task];
     } else {
       // Missing task, halt
       output.error('Please specify a task to run.');

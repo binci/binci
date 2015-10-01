@@ -61,7 +61,7 @@ const runTask = () => {
   ];
 
   // From (image) config
-  const from = [ config.from ];
+  const from = [ manifest.from ];
 
   // Split command into (space delimited) parts
   const cmd = manifest.run.split(' ');
