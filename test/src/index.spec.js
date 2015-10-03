@@ -1,6 +1,5 @@
 /* global sinon, expect, request, describe, it, before, after */
 import './../setup';
-process.env.LAM_TEST = true;
 import laminar from './../../src/index';
 import yaml from 'js-yaml';
 import fs from 'fs';

@@ -25,7 +25,7 @@ const output = {
    * @param {String} m Output message
    */
   log: (m) => {
-    process.stdout.write(`${m}\n`);
+    if (!process.env.LAM_TEST) process.stdout.write(`${m}\n`);
   }
 };
 

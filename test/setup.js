@@ -10,11 +10,4 @@ chai.use(schai);
 import output from './../src/lib/output';
 global.logSpy = sinon.spy(output, 'log');
 
-/*let logFile = fs.createWriteStream('./test.log', {
-    encoding: 'utf8',
-    flags   : 'a'
-});
-global.process.stdout.pipe(logFile);
-
-process.stdout.write = () => null;
-*/
+process.env.LAM_TEST = true;
