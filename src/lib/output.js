@@ -1,3 +1,4 @@
+import fs from 'fs';
 import clc from 'cli-color';
 
 const output = {
@@ -25,8 +26,7 @@ const output = {
    * @param {String} m Output message
    */
   log: (m) => {
-    /* eslint no-console: 0 */
-    console.log(m);
+    process.stdout.write(`${m}\n`);
   }
 };
 

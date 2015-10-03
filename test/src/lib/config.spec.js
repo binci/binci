@@ -1,4 +1,4 @@
-/* global sinon, expect, log, describe, it, before, after */
+/* global sinon, exitSpy, logSpy, expect, log, describe, it, before, after */
 import './../../setup';
 import config from './../../../src/lib/config';
 import output from './../../../src/lib/output';
@@ -8,7 +8,6 @@ describe('config', () => {
     // Override process.exit with return of code
     process.exit = (code) => code;
     global.exitSpy = sinon.spy(process, 'exit');
-    global.outputSpy = sinon.spy(output, 'log');
   });
   describe('cwd', () => {
     it('contains an absolute path representing the current directory', () => {
@@ -23,13 +22,13 @@ describe('config', () => {
   describe('checkArgs', () => {
     it('outputs help message if -h flag is passed', () => {
       config.checkArgs({ h: true });
-      expect(global.exitSpy).to.be.calledWith(0);
-      expect(global.outputSpy).to.be.called;
+      expect(exitSpy).to.be.calledWith(0);
+      expect(logSpy).to.be.called;
     });
     it('outputs version if -v flag is passed', () => {
       config.checkArgs({ v: true });
       expect(global.exitSpy).to.be.calledWith(0);
-      expect(global.outputSpy).to.be.called;
+      expect(global.logSpy).to.be.called;
     });
     it('defaults to relative laminar.yml file if manifest config not set', () => {
       expect(config.manifestPath).to.equal(`${config.cwd}/laminar.yml`);

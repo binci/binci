@@ -1,4 +1,4 @@
-import process from './process';
+import proc from './process';
 import { exec } from 'child_process';
 import Promise from 'bluebird';
 import output from './output';
@@ -31,7 +31,7 @@ const services = {
         } else if (!stdout.length) {
           // Not running; start
           output.success(`Starting service {{${svc.name}}}`);
-          process('docker', [ 'run', '-d', '--name', svc.name, svc.image])
+          proc('docker', [ 'run', '-d', '--name', svc.name, svc.image])
             .then(resolve).catch(reject);
         } else {
           // Running; resolve

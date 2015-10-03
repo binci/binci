@@ -1,10 +1,7 @@
-/* global sinon, expect, request, describe, it, before, after */
+/* global sinon, expect, logSpy, request, describe, it, before, after */
 import 'mocha-sinon';
 import './../../setup';
 import output from './../../../src/lib/output';
-
-// Spy for console.log
-const logSpy = sinon.spy(console, 'log');
 
 describe('output', () => {
   describe('renderVars', () => {
