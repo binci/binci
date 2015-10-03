@@ -1,7 +1,6 @@
 /* global sinon, exitSpy, logSpy, expect, log, describe, it, before, after */
 import './../../setup';
 import config from './../../../src/lib/config';
-import output from './../../../src/lib/output';
 
 describe('config', () => {
   before(() => {

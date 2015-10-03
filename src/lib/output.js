@@ -1,4 +1,3 @@
-import fs from 'fs';
 import clc from 'cli-color';
 
 const output = {

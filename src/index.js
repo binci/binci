@@ -8,13 +8,13 @@ import output from './lib/output';
 const start = new Date().getTime();
 
 const laminar = {
-  
+
   // Service links placeholder
   links: [],
-  
+
   // Create run-time manifest from config
   manifest: null,
-  
+
   /**
    * Process environment variables
    * @param {Array} env Array of environment variables
@@ -32,7 +32,7 @@ const laminar = {
     });
     return envs;
   },
-  
+
   /**
    * Process any ports to expose
    * @param {Array} expose Array of ports to expose
@@ -43,14 +43,14 @@ const laminar = {
     expose.map((p) => { ports = ports.concat([ '-p', p ]); });
     return ports;
   },
-  
+
   /**
    * Builds command arguments for executing task
    * @returns {String} The command to execute the task
    */
   buildArgs: () => {
-    const env = (laminar.manifest.env) ? laminar.parseEnvVars(laminar.manifest.env) : [];
-    const ports = (laminar.manifest.expose) ? laminar.parseExpose(laminar.manifest.expose) : [];
+    const env = laminar.manifest.env ? laminar.parseEnvVars(laminar.manifest.env) : [];
+    const ports = laminar.manifest.expose ? laminar.parseExpose(laminar.manifest.expose) : [];
     // Spawn arguments
     let args = [ 'run', '-t', '--rm' ];
     // Volume config
@@ -71,7 +71,7 @@ const laminar = {
     args = args.concat(cmd);
     return args;
   },
-  
+
   /**
    * Check for and starts services
    * @param {Array} svc Array of services from manifest
@@ -96,7 +96,7 @@ const laminar = {
       }
     });
   },
-  
+
   /**
    * Executes the task with arguments
    * @param {Array} args Array of arguments
@@ -106,7 +106,7 @@ const laminar = {
     output.success(`Running container {{${laminar.manifest.from}}}, task {{${laminar.manifest.run}}}`);
     return proc('docker', args);
   },
-  
+
   /**
    * Runs the execution chain to carry out task
    */
@@ -125,11 +125,7 @@ const laminar = {
         process.exit(code);
       });
   }
-  
+
 };
 
 export default laminar;
-
-if (!process.env.LAM_TEST) {
-  //laminar.run();
-}
