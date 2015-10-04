@@ -89,6 +89,7 @@ const laminar = {
     laminar.startServices(laminar.manifest.services)
       .then(laminar.buildArgs)
       .then(laminar.execTask)
+      .then(services.stopServices)
       .then(() => {
         const closed = (new Date().getTime() - start) / 1000;
         output.success(`Completed in {{${closed}}} seconds`);

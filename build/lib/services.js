@@ -25,10 +25,10 @@ var _parsers = require('./parsers');
 var _parsers2 = _interopRequireDefault(_parsers);
 
 var services = {
-  /**
-   * Placeholder for links
-   */
+  // Placeholder for links
   links: [],
+  // Services which should not be persisted
+  noPersist: [],
   /**
    * Parses the service object and ensures all required props set
    * @param {Object} svc The service object from the manifest
@@ -39,8 +39,10 @@ var services = {
     var name = svc[image].name || image;
     var env = svc[image].env || false;
     var expose = svc[image].expose || false;
-    var persist = svc[image].persist || true;
-    return { image: image, name: name, env: env, expose: expose, persist: persist };
+    // Persist?
+    if (svc[image].hasOwnProperty('persist') && svc[image].persist === false) services.noPersist.push(name);
+    // Return svc object
+    return { image: image, name: name, env: env, expose: expose };
   },
   /**
    * Breaks up service entry into object containing args
@@ -82,6 +84,31 @@ var services = {
           resolve();
         }
       });
+    });
+  },
+  /**
+   * Checks for non-persists services and (get this...) STOPS THEM.
+   * @returns {Object} promise
+   */
+  stopServices: function stopServices() {
+    return new _bluebird2['default'](function (resolve) {
+      if (services.noPersist.length === 0) {
+        // No services to stop
+        resolve();
+      } else {
+        _output2['default'].success('Stoping service' + (services.noPersist.length > 1 ? 's' : '') + ': {{' + services.noPersist.join(', ') + '}}');
+        var cmd = '';
+        services.noPersist.forEach(function (name, i) {
+          cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name + ' && docker rm ' + name;
+        });
+        (0, _child_process.exec)(cmd, function (err) {
+          if (err) {
+            _output2['default'].warn('Could not stop all services');
+          }
+          // Always resolve
+          resolve();
+        });
+      }
     });
   },
   /**

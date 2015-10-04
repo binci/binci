@@ -10,8 +10,7 @@ describe('services', () => {
         name: 'testSvc',
         image: 'testImage',
         env: false,
-        expose: false,
-        persist: true
+        expose: false
       });
     });
   });

@@ -17,6 +17,13 @@ describe('output', () => {
     });
   });
 
+  describe('warn', () => {
+    it('outputs a warn message', () => {
+      output.warn('test-warn');
+      expect(logSpy).to.be.called;
+    });
+  });
+
   describe('error', () => {
     it('outputs an error message', () => {
       output.error('test-error');

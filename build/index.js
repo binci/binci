@@ -115,7 +115,7 @@ var laminar = {
    */
   run: function run() {
     laminar.manifest = _libConfig2['default'].get();
-    laminar.startServices(laminar.manifest.services).then(laminar.buildArgs).then(laminar.execTask).then(function () {
+    laminar.startServices(laminar.manifest.services).then(laminar.buildArgs).then(laminar.execTask).then(_libServices2['default'].stopServices).then(function () {
       var closed = (new Date().getTime() - start) / 1000;
       _libOutput2['default'].success('Completed in {{' + closed + '}} seconds');
       process.exit(0);

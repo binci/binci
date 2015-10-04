@@ -7,11 +7,18 @@ const output = {
    */
   renderVars: (m) => m.toString().replace(/\{\{([^}]+)\}\}/g, (i, match) => clc.cyan(match)),
   /**
-   * Outputs success message
+   * Output success message
    * @param {String} m Output message
    */
   success: (m) => {
     output.log(clc.green.bold('#> ') + clc.bold(output.renderVars(m)));
+  },
+  /**
+   * Output warning message
+   * @param {String} m Output message
+   */
+  warn: (m) => {
+    output.log(clc.yellow.bold('!> ') + clc.bold(output.renderVars(m)));
   },
   /**
    * Output error message

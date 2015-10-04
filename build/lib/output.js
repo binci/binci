@@ -21,11 +21,18 @@ var output = {
     });
   },
   /**
-   * Outputs success message
+   * Output success message
    * @param {String} m Output message
    */
   success: function success(m) {
     output.log(_cliColor2['default'].green.bold('#> ') + _cliColor2['default'].bold(output.renderVars(m)));
+  },
+  /**
+   * Output warning message
+   * @param {String} m Output message
+   */
+  warn: function warn(m) {
+    output.log(_cliColor2['default'].yellow.bold('!> ') + _cliColor2['default'].bold(output.renderVars(m)));
   },
   /**
    * Output error message

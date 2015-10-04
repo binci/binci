@@ -5,10 +5,10 @@ import output from './output';
 import parsers from './parsers';
 
 const services = {
-  /**
-   * Placeholder for links
-   */
+  // Placeholder for links
   links: [],
+  // Services which should not be persisted
+  noPersist: [],
   /**
    * Parses the service object and ensures all required props set
    * @param {Object} svc The service object from the manifest
@@ -19,8 +19,10 @@ const services = {
     const name = svc[image].name || image;
     const env = svc[image].env || false;
     const expose = svc[image].expose || false;
-    const persist = svc[image].persist || true;
-    return { image, name, env, expose, persist };
+    // Persist?
+    if (svc[image].hasOwnProperty('persist') && svc[image].persist === false) services.noPersist.push(name);
+    // Return svc object
+    return { image, name, env, expose };
   },
   /**
    * Breaks up service entry into object containing args
@@ -64,6 +66,31 @@ const services = {
           resolve();
         }
       });
+    });
+  },
+  /**
+   * Checks for non-persists services and (get this...) STOPS THEM.
+   * @returns {Object} promise
+   */
+  stopServices: () => {
+    return new Promise((resolve) => {
+      if (services.noPersist.length === 0) {
+        // No services to stop
+        resolve();
+      } else {
+        output.success(`Stoping service${ services.noPersist.length > 1 ? 's' : '' }: {{${services.noPersist.join(', ')}}}`);
+        let cmd = '';
+        services.noPersist.forEach((name, i) => {
+          cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rm ${name}`;
+        });
+        exec(cmd, (err) => {
+          if (err) {
+            output.warn('Could not stop all services');
+          }
+          // Always resolve
+          resolve();
+        });
+      }
     });
   },
   /**
