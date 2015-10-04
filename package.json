@@ -3,10 +3,15 @@
   "version": "0.0.1",
   "description": "Node utility for running containerized tasks",
   "main": "index.js",
+  "bin": {
+    "laminar": "index.js"
+  },
+  "preferGlobal": true,
   "scripts": {
     "test": "mocha --timeout 5000 --compilers js:babel/register ./test/src --recursive",
     "lint": "eslint ./src ./test/src",
-    "build": "babel ./src --out-dir ./build"
+    "build": "babel ./src --out-dir ./build",
+    "local-install": "npm run build && npm install -g ."
   },
   "author": "",
   "license": "MIT",
@@ -20,7 +25,6 @@
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
   },
-  "preferGlobal": true,
   "dependencies": {
     "bluebird": "^2.10.1",
     "cli-color": "^1.0.0",

@@ -92,7 +92,8 @@ var config = {
       config.manifest.run = config.manifest.tasks[config.task];
     } else {
       // Missing task, halt
-      _output2['default'].error('Please specify a task to run.');
+      _output2['default'].error('Please specify a task to run');
+      _output2['default'].log(config.helpMsg);
       process.exit(1);
     }
     // Check for container override
