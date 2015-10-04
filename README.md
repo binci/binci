@@ -1,53 +1,91 @@
 # Laminar
 
-Utility for running containerized local dev tasks (and then some...).
+Laminar is a utility that allows you to easily containerize your development
+workflow using Docker. Simply put; it's like having a cleanroom for all of your
+development processes which contains services (like databases) without needing
+to setup and maintain these environments manually.
+
+## Installation
+
+```
+git clone git@github.com:TechnologyAdvice/Laminar.git && cd laminar && npm run local-install
+```
 
 ## Usage
 
-Laminar operates as (preferably) as a global module. It should be run in a 
-directory which contains a `laminar.yml` config file. The `laminar.yml` file 
-sets the configuration and tasks which Laminar will run in Docker.
+Laminar operates as a command on your system (via global install). It reads the
+configuration for your project from a `laminar.yml` file which contains all the
+instructions and tasks you need.
 
-### Example YAML:
+### Configuration
+
+To configure a project to use Laminar, simply add a `laminar.yml` to the root of
+your project. An example of this file looks like:
 
 ```yaml
 from: node:0.10
 services:
-  - mongodb:mongo
+  - mongo:3.0:
+      name: mongodb
+      env:
+        - DB_ROOT_PASSWORD=foo
+      expose:
+        - 27017:27017
+      persist: false
 env:
   - LOCAL_HOME=${HOME}
 expose:
   - 8080:8080
 tasks:
   env: env
+  clean: rm -rf node_modules
   install: npm install
   test: npm run test
   lint: npm run lint
   build: npm run build
 ```
 
-The above specifies the following:
-
-* `from`: The container will run the `node:0.10` container image
-* `services`: The container will link the `mongo` container image with name `mongodb`
-* `env`: The `LOCAL_HOME` environment variable will map to (local) `$HOME`'s value
-* `expose`: Port `8080` will be exposed
-* `tasks`: Specifying the (key) name of any listed tasks will execute that inside the container
-
-### Using the CLI
-
-In it's simplest form, Laminar can be called with just a task name:
+Once the above is configured the tasks can be called simply by their names, for example:
 
 ```
 laminar test
 ```
 
-The above example would execute the `test` task inside a container running the 
-`laminar.yml` config settings.
+The above will spin up the `node:0.10` container, link to `mongo:3.0`, expose the environment variables needed, and run `npm run test`.
 
-Additionally the following flags are available:
+To further explain the configuration:
 
-* `-h`: Display the help (accepts no other flags or tasks)
-* `-v`: Display the version of Laminar (accepts no other flags or tasks)
-* `-c path/to/config`: Specify the path to config (relative to cwd)
-* `-f container:tag`: Specify a different container and version to run (override `from`)
+**`from`**
+
+Specifies the image in which to run the project. In the example the `from` will
+pull from [Docker Hub's](https://hub.docker.com) `node:0.10` image. This can also be overridden at runtime. If you wanted to try testing your project with Node v.0.12 you could run with the `-f` flag:
+
+```
+laminar test -f node:0.12
+```
+
+**`services`**
+
+This section specifies any containers (services) that will be linked in at runtime.
+
+The "key" is the image, in the above example the service running will be version
+3.0 of Mongo. The other paramaters specified are:
+
+* `name`: Set an arbitrary name for the service
+* `env`: Array of environment variables to pass to the service
+* `expose`: Expose any ports. This is useful if you would like to persist the service and access it directly after running tasks.
+* `persist`: Defaults to `true`; will keep the service running. A service (such as a database) not persisted will not retain data between runs.
+
+**`env`**
+
+Sets any environment variables needed in the container. In the above example the `LOCAL_HOME` will be set using your host machines `HOME` environment variable.
+
+Variables specified with `${NAME}` will pull from the host machine, or strings can be set by not encapsulating between `${` and `}`.
+
+**`expose`**
+
+Sets ports to expose to host machine. This is useful for long-running tasks. For example if you're testing a service and have a task that runs the service this will allow you to access the ports needed to make requests against the service.
+
+**`tasks`**
+
+This is the list of tasks which can be executed with the `laminar` command.
