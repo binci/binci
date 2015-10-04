@@ -26,16 +26,27 @@ var services = {
    */
   links: [],
   /**
-   * Breaks up service entry into object containing args
-   * @param {String} svc The service/link entry
+   * Parses the service object and ensures all required props set
+   * @param {Object} svc The service object from the manifest
    * @returns {Object}
    */
-  getObj: function getObj(svc) {
-    console.log('svc', svc);
+  getSvcObj: function getSvcObj(svc) {
     var image = Object.keys(svc)[0];
     var name = svc[image].name || image;
-    services.links.push('' + name);
-    return { image: image, name: name };
+    var env = svc[image].env || false;
+    var persist = svc[image].persist || true;
+    return { image: image, name: name, env: env, persist: persist };
+  },
+  /**
+   * Breaks up service entry into object containing args
+   * @param {Object} svc The service/link entry
+   * @returns {Object}
+   */
+  getArgs: function getArgs(svc) {
+    var args = [];
+    args = args.concat(['--name', svc.name]);
+    args = args.concat([svc.image]);
+    return args;
   },
   /**
    * Checks if service is running, if not starts it
@@ -52,7 +63,11 @@ var services = {
         } else if (!stdout.length) {
           // Not running; start
           _output2['default'].success('Starting service {{' + svc.name + '}}');
-          (0, _process2['default'])('docker', ['run', '-d', '--name', svc.name, svc.image]).then(resolve)['catch'](reject);
+          // Build arguments
+          var args = ['run', '-d'];
+          args = args.concat(services.getArgs(svc));
+          // Start service
+          (0, _process2['default'])('docker', args).then(resolve)['catch'](reject);
         } else {
           // Running; resolve
           resolve();
@@ -71,8 +86,9 @@ var services = {
       var i = 0;
       // Service check/start
       var startSvc = function startSvc(service) {
-        // Parse service object
-        var svc = services.getObj(service);
+        var svc = services.getSvcObj(service);
+        // Push to links
+        services.links.push(svc.name);
         // Check service
         services.startSvc(svc).then(function () {
           _output2['default'].success('Service {{' + svc.name + '}} running');

@@ -9,16 +9,27 @@ const services = {
    */
   links: [],
   /**
-   * Breaks up service entry into object containing args
-   * @param {String} svc The service/link entry
+   * Parses the service object and ensures all required props set
+   * @param {Object} svc The service object from the manifest
    * @returns {Object}
    */
-  getObj: (svc) => {
-    console.log('svc', svc);
+  getSvcObj: (svc) => {
     const image = Object.keys(svc)[0];
     const name = svc[image].name || image;
-    services.links.push(`${name}`);
-    return { image, name }
+    const env = svc[image].env || false;
+    const persist = svc[image].persist || true;
+    return { image, name, env, persist };
+  },
+  /**
+   * Breaks up service entry into object containing args
+   * @param {Object} svc The service/link entry
+   * @returns {Object}
+   */
+  getArgs: (svc) => {
+    let args = [];
+    args = args.concat([ '--name', svc.name ])
+    args = args.concat([ svc.image ]);
+    return args;
   },
   /**
    * Checks if service is running, if not starts it
@@ -35,7 +46,11 @@ const services = {
         } else if (!stdout.length) {
           // Not running; start
           output.success(`Starting service {{${svc.name}}}`);
-          proc('docker', [ 'run', '-d', '--name', svc.name, svc.image])
+          // Build arguments
+          let args = [ 'run', '-d' ];
+          args = args.concat(services.getArgs(svc));
+          // Start service
+          proc('docker', args)
             .then(resolve)
             .catch(reject);
         } else {
@@ -56,8 +71,9 @@ const services = {
       let i = 0;
       // Service check/start
       const startSvc = (service) => {
-        // Parse service object
-        const svc = services.getObj(service);
+        const svc = services.getSvcObj(service);
+        // Push to links
+        services.links.push(svc.name);
         // Check service
         services.startSvc(svc)
           .then(() => {
