@@ -109,9 +109,9 @@ var laminar = {
         resolve();
       } else {
         _libOutput2['default'].success('Starting services: {{' + svc.join(', ') + '}}');
-        _libServices2['default'].run(svc).then(function () {
+        _libServices2['default'].run(svc).then(function (links) {
           // Create links array for insert into run
-          svc.map(function (l) {
+          links.map(function (l) {
             laminar.links = laminar.links.concat(['--link', l]);
           });
           resolve();

@@ -5,16 +5,20 @@ import output from './output';
 
 const services = {
   /**
-   * Breaks up service entry into name and image
+   * Placeholder for links
+   */
+  links: [],
+  /**
+   * Breaks up service entry into object containing args
    * @param {String} svc The service/link entry
    * @returns {Object}
    */
   getObj: (svc) => {
-    const s = svc.split(':');
-    return {
-      name: s[0],
-      image: s.length > 1 ? s[1] : s[0]
-    };
+    console.log('svc', svc);
+    const image = Object.keys(svc)[0];
+    const name = svc[image].name || image;
+    services.links.push(`${name}`);
+    return { image, name }
   },
   /**
    * Checks if service is running, if not starts it
@@ -32,7 +36,8 @@ const services = {
           // Not running; start
           output.success(`Starting service {{${svc.name}}}`);
           proc('docker', [ 'run', '-d', '--name', svc.name, svc.image])
-            .then(resolve).catch(reject);
+            .then(resolve)
+            .catch(reject);
         } else {
           // Running; resolve
           resolve();
@@ -64,12 +69,12 @@ const services = {
               startSvc(serviceArray[i]);
             } else {
               // Done.
-              resolve();
+              resolve(services.links);
             }
           })
-          .catch(() => {
+          .catch((code) => {
             output.error(`Failed to start {{${svc.name}}}`);
-            reject();
+            reject(code);
           });
       };
       // Kick off recursion over services

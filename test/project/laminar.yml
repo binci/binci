@@ -1,6 +1,10 @@
 from: node:0.10
 services:
-  - mongodb:mongo
+  - mongo:3.0:
+      name: mongodb
+      env:
+        - DB_ROOT_PASSWORD=testing123
+      persist: false
 env:
   - LOCAL_HOME=${HOME}
 expose:

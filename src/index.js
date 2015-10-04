@@ -84,9 +84,9 @@ const laminar = {
       } else {
         output.success(`Starting services: {{${svc.join(', ')}}}`);
         services.run(svc)
-          .then(() => {
+          .then((links) => {
             // Create links array for insert into run
-            svc.map((l) => { laminar.links = laminar.links.concat([ '--link', l ]); });
+            links.map((l) => { laminar.links = laminar.links.concat([ '--link', l ]); });
             resolve();
           })
           .catch((e) => {
