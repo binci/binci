@@ -5,18 +5,6 @@ import yaml from 'js-yaml';
 import fs from 'fs';
 
 describe('laminar', () => {
-  describe('parseEnvVars', () => {
-    it('processes an array of env vars and returns arguments', () => {
-      const result = laminar.parseEnvVars([ 'FOO=bar', 'LAM_TEST=${LAM_TEST}' ]);
-      expect(result).to.deep.equal([ '-e', 'FOO=bar', '-e', 'LAM_TEST=true' ]);
-    });
-  });
-  describe('parseExpose', () => {
-    it('processes an array of ports and returns arguments', () => {
-      const result = laminar.parseExpose([ '8080:8080' ]);
-      expect(result).to.deep.equal([ '-p', '8080:8080' ]);
-    });
-  });
   describe('buildArgs', () => {
     // Set test properties
     laminar.manifest = yaml.safeLoad(fs.readFileSync('./test/project/laminar.yml', 'utf8'));

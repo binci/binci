@@ -3,6 +3,7 @@ import config from './lib/config';
 import services from './lib/services';
 import proc from './lib/process';
 import output from './lib/output';
+import parsers from './lib/parsers';
 
 // Process timer
 const start = new Date().getTime();
@@ -16,41 +17,12 @@ const laminar = {
   manifest: null,
 
   /**
-   * Process environment variables
-   * @param {Array} env Array of environment variables
-   * @returns {Array} env var flags and args
-   */
-  parseEnvVars: (env) => {
-    let envs = [];
-    env.map((e) => {
-      // Matches any ${VAR} format vars
-      const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
-      // Replace matches on ${VAR}
-      const envVar = e.toString().replace(/\$\{([^}]+)\}/g, matcher);
-      // Concat
-      envs = envs.concat([ '-e', envVar ]);
-    });
-    return envs;
-  },
-
-  /**
-   * Process any ports to expose
-   * @param {Array} expose Array of ports to expose
-   * @returns {Array} port expose flags and args
-   */
-  parseExpose: (expose) => {
-    let ports = [];
-    expose.map((p) => { ports = ports.concat([ '-p', p ]); });
-    return ports;
-  },
-
-  /**
    * Builds command arguments for executing task
    * @returns {String} The command to execute the task
    */
   buildArgs: () => {
-    const env = laminar.manifest.env ? laminar.parseEnvVars(laminar.manifest.env) : [];
-    const ports = laminar.manifest.expose ? laminar.parseExpose(laminar.manifest.expose) : [];
+    const env = laminar.manifest.env ? parsers.parseEnvVars(laminar.manifest.env) : [];
+    const ports = laminar.manifest.expose ? parsers.parseExpose(laminar.manifest.expose) : [];
     // Spawn arguments
     let args = [ 'run', '-t', '--rm' ];
     // Volume config
