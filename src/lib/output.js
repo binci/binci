@@ -21,6 +21,18 @@ const output = {
     output.log(clc.red.bold('!> ') + clc.bold(output.renderVars(m)));
   },
   /**
+   * Inserts break before commands are run
+   */
+  insertBreak: () => {
+    output.log(clc.white('---'));
+  },
+  /**
+   * Determine stdio fro process
+   */
+  setStdio: () => {
+    return !process.env.LAM_TEST ? [ 'pipe', process.stdout, process.stdout ] : [ null, null, null ];
+  },
+  /**
    * Standard log output, no formatting
    * @param {String} m Output message
    */

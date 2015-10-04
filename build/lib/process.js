@@ -12,13 +12,12 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
+var _output = require('./output');
+
+var _output2 = _interopRequireDefault(_output);
+
 // Test output supression
-var stdio = undefined;
-if (!process.env.LAM_TEST) {
-  stdio = ['pipe', process.stdout, process.stdout];
-} else {
-  stdio = [null, null, null];
-}
+var stdio = _output2['default'].setStdio();
 
 /**
  * Spawns a process and returns a promise for handling results
@@ -27,6 +26,7 @@ if (!process.env.LAM_TEST) {
  */
 
 exports['default'] = function (proc, args) {
+  _output2['default'].insertBreak();
   return new _bluebird2['default'](function (resolve, reject) {
     var p = (0, _child_process.spawn)(proc, args, {
       env: process.env,
@@ -35,6 +35,7 @@ exports['default'] = function (proc, args) {
     });
     // Handle close
     p.on('close', function (code) {
+      _output2['default'].insertBreak();
       if (code === 0) {
         resolve();
       } else {

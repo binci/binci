@@ -72,11 +72,8 @@ var config = {
    */
   loadManifest: function loadManifest() {
     try {
-      console.log('config', config.manifestPath);
-      console.log(_fs2['default'].readFileSync(config.manifestPath), 'utf8');
       config.manifest = _jsYaml2['default'].safeLoad(_fs2['default'].readFileSync(config.manifestPath, 'utf8'));
     } catch (e) {
-      console.log(e);
       _output2['default'].error('Could not load config!');
       process.exit(1);
     }

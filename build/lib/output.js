@@ -35,6 +35,18 @@ var output = {
     output.log(_cliColor2['default'].red.bold('!> ') + _cliColor2['default'].bold(output.renderVars(m)));
   },
   /**
+   * Inserts break before commands are run
+   */
+  insertBreak: function insertBreak() {
+    output.log(_cliColor2['default'].white('---'));
+  },
+  /**
+   * Determine stdio fro process
+   */
+  setStdio: function setStdio() {
+    return !process.env.LAM_TEST ? ['pipe', process.stdout, process.stdout] : [null, null, null];
+  },
+  /**
    * Standard log output, no formatting
    * @param {String} m Output message
    */
