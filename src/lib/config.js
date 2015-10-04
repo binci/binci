@@ -49,7 +49,7 @@ const config = {
    */
   loadManifest: () => {
     try {
-      config.manifest = yaml.safeLoad(fs.readFileSync(config.manifestPath), 'utf8');
+      config.manifest = yaml.safeLoad(fs.readFileSync(config.manifestPath, 'utf8'));
     } catch (e) {
       output.error('Could not load config!');
       process.exit(1);

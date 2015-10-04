@@ -19,7 +19,7 @@ describe('laminar', () => {
   });
   describe('buildArgs', () => {
     // Set test properties
-    laminar.manifest = yaml.safeLoad(fs.readFileSync('./test/project/laminar.yml'), 'utf8');
+    laminar.manifest = yaml.safeLoad(fs.readFileSync('./test/project/laminar.yml', 'utf8'));
     laminar.manifest.run = 'test';
     laminar.manifest.volume = '/test';
     laminar.links = [ '--link', 'someService:someService' ];

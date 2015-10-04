@@ -49,12 +49,10 @@ describe('services', () => {
     });
   });
   describe('run', () => {
-    after((done) => {
+    after(() => {
       exec('docker stop mongotest && docker rm mongotest', (err) => {
         if (err) {
-          done(err);
-        } else {
-          done();
+          throw new Error(err);
         }
       });
     });
