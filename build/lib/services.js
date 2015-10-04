@@ -20,6 +20,10 @@ var _output = require('./output');
 
 var _output2 = _interopRequireDefault(_output);
 
+var _parsers = require('./parsers');
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 var services = {
   /**
    * Placeholder for links
@@ -34,8 +38,9 @@ var services = {
     var image = Object.keys(svc)[0];
     var name = svc[image].name || image;
     var env = svc[image].env || false;
+    var expose = svc[image].expose || false;
     var persist = svc[image].persist || true;
-    return { image: image, name: name, env: env, persist: persist };
+    return { image: image, name: name, env: env, expose: expose, persist: persist };
   },
   /**
    * Breaks up service entry into object containing args
@@ -43,7 +48,11 @@ var services = {
    * @returns {Array}
    */
   getArgs: function getArgs(svc) {
+    var env = svc.env ? _parsers2['default'].parseEnvVars(svc.env) : [];
+    var ports = svc.expose ? _parsers2['default'].parseExpose(svc.expose) : [];
     var args = [];
+    args = env.length ? args.concat(env) : args;
+    args = ports.length ? args.concat(ports) : args;
     args = args.concat(['--name', svc.name]);
     args = args.concat([svc.image]);
     return args;

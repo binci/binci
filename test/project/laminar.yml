@@ -3,7 +3,9 @@ services:
   - mongo:3.0:
       name: mongodb
       env:
-        - DB_ROOT_PASSWORD=testing123
+        - DB_ROOT_PASSWORD=foo
+      expose:
+        - 27017:27017
       exec: |
         echo "hello world"
       persist: false

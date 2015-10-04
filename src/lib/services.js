@@ -2,6 +2,7 @@ import proc from './process';
 import { exec } from 'child_process';
 import Promise from 'bluebird';
 import output from './output';
+import parsers from './parsers';
 
 const services = {
   /**
@@ -17,8 +18,9 @@ const services = {
     const image = Object.keys(svc)[0];
     const name = svc[image].name || image;
     const env = svc[image].env || false;
+    const expose = svc[image].expose || false;
     const persist = svc[image].persist || true;
-    return { image, name, env, persist };
+    return { image, name, env, expose, persist };
   },
   /**
    * Breaks up service entry into object containing args
@@ -26,7 +28,11 @@ const services = {
    * @returns {Array}
    */
   getArgs: (svc) => {
+    const env = svc.env ? parsers.parseEnvVars(svc.env) : [];
+    const ports = svc.expose ? parsers.parseExpose(svc.expose) : [];
     let args = [];
+    args = env.length ? args.concat(env) : args;
+    args = ports.length ? args.concat(ports) : args;
     args = args.concat([ '--name', svc.name ]);
     args = args.concat([ svc.image ]);
     return args;
