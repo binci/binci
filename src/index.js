@@ -54,7 +54,9 @@ const laminar = {
       if (!svc) {
         resolve();
       } else {
-        output.success(`Starting services: {{${svc.join(', ')}}}`);
+        let svcNames = [];
+        svc.forEach((s) => { svcNames.push(Object.keys(s)[0]); });
+        output.success(`Starting service${ svcNames.length > 1 ? 's' : '' }: {{${svcNames.join(', ')}}}`);
         services.run(svc)
           .then((links) => {
             // Create links array for insert into run

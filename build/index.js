@@ -79,17 +79,23 @@ var laminar = {
       if (!svc) {
         resolve();
       } else {
-        _libOutput2['default'].success('Starting services: {{' + svc.join(', ') + '}}');
-        _libServices2['default'].run(svc).then(function (links) {
-          // Create links array for insert into run
-          links.map(function (l) {
-            laminar.links = laminar.links.concat(['--link', l]);
+        (function () {
+          var svcNames = [];
+          svc.forEach(function (s) {
+            svcNames.push(Object.keys(s)[0]);
           });
-          resolve();
-        })['catch'](function (e) {
-          _libOutput2['default'].error(e);
-          reject(1);
-        });
+          _libOutput2['default'].success('Starting service' + (svcNames.length > 1 ? 's' : '') + ': {{' + svcNames.join(', ') + '}}');
+          _libServices2['default'].run(svc).then(function (links) {
+            // Create links array for insert into run
+            links.map(function (l) {
+              laminar.links = laminar.links.concat(['--link', l]);
+            });
+            resolve();
+          })['catch'](function (e) {
+            _libOutput2['default'].error(e);
+            reject(1);
+          });
+        })();
       }
     });
   },

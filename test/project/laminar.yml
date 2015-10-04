@@ -4,6 +4,8 @@ services:
       name: mongodb
       env:
         - DB_ROOT_PASSWORD=testing123
+      exec: |
+        echo "hello world"
       persist: false
 env:
   - LOCAL_HOME=${HOME}
