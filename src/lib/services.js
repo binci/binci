@@ -23,11 +23,11 @@ const services = {
   /**
    * Breaks up service entry into object containing args
    * @param {Object} svc The service/link entry
-   * @returns {Object}
+   * @returns {Array}
    */
   getArgs: (svc) => {
     let args = [];
-    args = args.concat([ '--name', svc.name ])
+    args = args.concat([ '--name', svc.name ]);
     args = args.concat([ svc.image ]);
     return args;
   },

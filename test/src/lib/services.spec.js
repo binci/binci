@@ -4,18 +4,23 @@ import services from './../../../src/lib/services';
 import { exec } from 'child_process';
 
 describe('services', () => {
-  describe('getObj', () => {
-    it('returns an object with name and image properties when both are supplied', () => {
-      expect(services.getObj('svcName:svcImage')).to.deep.equal({
-        name: 'svcName',
-        image: 'svcImage'
+  describe('getSvcObj', () => {
+    it('returns an object with properties of service', () => {
+      expect(services.getSvcObj({ testImage: { name: 'testSvc' } })).to.deep.equal({
+        name: 'testSvc',
+        image: 'testImage',
+        env: false,
+        persist: true
       });
     });
-    it('returns an object with name and image properties when only image is supplied', () => {
-      expect(services.getObj('svcImage')).to.deep.equal({
-        name: 'svcImage',
-        image: 'svcImage'
-      });
+  });
+  describe('getArgs', () => {
+    it('returns array of arguments required to run service', () => {
+      expect(services.getArgs({ name: 'testSvc', image: 'testImage' })).to.deep.equal([
+        '--name',
+        'testSvc',
+        'testImage'
+      ]);
     });
   });
   describe('startSvc', () => {
@@ -46,20 +51,6 @@ describe('services', () => {
         .catch(() => {
           done();
         });
-    });
-  });
-  describe('run', () => {
-    after(() => {
-      exec('docker stop mongotest && docker rm mongotest', (err) => {
-        if (err) {
-          throw new Error(err);
-        }
-      });
-    });
-    it('starts services passed in through an array', (done) => {
-      services.run(['mongotest:mongo'])
-        .then(done)
-        .catch(done);
     });
   });
 });

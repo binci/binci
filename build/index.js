@@ -26,6 +26,10 @@ var _libOutput = require('./lib/output');
 
 var _libOutput2 = _interopRequireDefault(_libOutput);
 
+var _libParsers = require('./lib/parsers');
+
+var _libParsers2 = _interopRequireDefault(_libParsers);
+
 // Process timer
 var start = new Date().getTime();
 
@@ -38,45 +42,12 @@ var laminar = {
   manifest: null,
 
   /**
-   * Process environment variables
-   * @param {Array} env Array of environment variables
-   * @returns {Array} env var flags and args
-   */
-  parseEnvVars: function parseEnvVars(env) {
-    var envs = [];
-    env.map(function (e) {
-      // Matches any ${VAR} format vars
-      var matcher = function matcher(i, match) {
-        return process.env.hasOwnProperty(match) ? process.env[match] : null;
-      };
-      // Replace matches on ${VAR}
-      var envVar = e.toString().replace(/\$\{([^}]+)\}/g, matcher);
-      // Concat
-      envs = envs.concat(['-e', envVar]);
-    });
-    return envs;
-  },
-
-  /**
-   * Process any ports to expose
-   * @param {Array} expose Array of ports to expose
-   * @returns {Array} port expose flags and args
-   */
-  parseExpose: function parseExpose(expose) {
-    var ports = [];
-    expose.map(function (p) {
-      ports = ports.concat(['-p', p]);
-    });
-    return ports;
-  },
-
-  /**
    * Builds command arguments for executing task
    * @returns {String} The command to execute the task
    */
   buildArgs: function buildArgs() {
-    var env = laminar.manifest.env ? laminar.parseEnvVars(laminar.manifest.env) : [];
-    var ports = laminar.manifest.expose ? laminar.parseExpose(laminar.manifest.expose) : [];
+    var env = laminar.manifest.env ? _libParsers2['default'].parseEnvVars(laminar.manifest.env) : [];
+    var ports = laminar.manifest.expose ? _libParsers2['default'].parseExpose(laminar.manifest.expose) : [];
     // Spawn arguments
     var args = ['run', '-t', '--rm'];
     // Volume config

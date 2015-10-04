@@ -40,7 +40,7 @@ var services = {
   /**
    * Breaks up service entry into object containing args
    * @param {Object} svc The service/link entry
-   * @returns {Object}
+   * @returns {Array}
    */
   getArgs: function getArgs(svc) {
     var args = [];
