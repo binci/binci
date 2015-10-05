@@ -37,6 +37,8 @@ const config = {
     if (args.h) { output.log(config.helpMsg); process.exit(0); }
     // Show version
     if (args.v) { output.log(pkg.version); process.exit(0); }
+    // Set exec
+    config.exec = args.e ? args.e : false;
     // Load yaml config
     config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/laminar.yml`;
     // Override from
@@ -67,6 +69,9 @@ const config = {
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
       config.manifest.run = config.manifest.tasks[config.task].replace(/(\r\n|\n|\r)/gm, ';');
+    } else if (config.exec) {
+      // Execute arbitrary command
+      config.manifest.run = config.exec;
     } else {
       // Missing task, halt
       output.error('Please specify a task to run');

@@ -60,6 +60,8 @@ var config = {
     if (args.v) {
       _output2['default'].log(_packageJson2['default'].version);process.exit(0);
     }
+    // Set exec
+    config.exec = args.e ? args.e : false;
     // Load yaml config
     config.manifestPath = args.c ? config.cwd + '/' + args.c : config.cwd + '/laminar.yml';
     // Override from
@@ -90,6 +92,9 @@ var config = {
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
       config.manifest.run = config.manifest.tasks[config.task].replace(/(\r\n|\n|\r)/gm, ';');
+    } else if (config.exec) {
+      // Execute arbitrary command
+      config.manifest.run = config.exec;
     } else {
       // Missing task, halt
       _output2['default'].error('Please specify a task to run');
