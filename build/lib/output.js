@@ -18,7 +18,7 @@ var output = {
   renderVars: function renderVars(m) {
     return m.toString().replace(/\{\{([^}]+)\}\}/g, function (i, match) {
       return _cliColor2['default'].cyan(match);
-    });
+    }).replace('set -e;', '');
   },
   /**
    * Output success message

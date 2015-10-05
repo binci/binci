@@ -5,7 +5,9 @@ const output = {
    * Colorizes {{...}} delimited vars
    * @param {String} m Raw message
    */
-  renderVars: (m) => m.toString().replace(/\{\{([^}]+)\}\}/g, (i, match) => clc.cyan(match)),
+  renderVars: (m) => m.toString()
+    .replace(/\{\{([^}]+)\}\}/g, (i, match) => clc.cyan(match))
+    .replace('set -e;', ''),
   /**
    * Output success message
    * @param {String} m Output message

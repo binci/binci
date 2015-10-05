@@ -68,7 +68,7 @@ const config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      config.manifest.run = config.manifest.tasks[config.task].replace(/(\r\n|\n|\r)/gm, ';');
+      config.manifest.run = 'set -e;' + config.manifest.tasks[config.task].replace(/(\r\n|\n|\r)/gm, ';');
     } else if (config.exec) {
       // Execute arbitrary command
       config.manifest.run = config.exec;
