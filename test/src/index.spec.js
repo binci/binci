@@ -28,6 +28,8 @@ describe('laminar', () => {
         '-w',
         '/test',
         'node:0.10',
+        'bash',
+        '-c',
         'test'
       ]);
     });

@@ -12,7 +12,10 @@ env:
 expose:
   - 8080:8080
 tasks:
-  env: env
+  env: |
+    export FOO=$MONGODB_ENV_MONGO_VERSION
+    env
+    echo hello
   clean: rm -rf node_modules
   install: npm install
   test: npm run test

@@ -32,7 +32,7 @@ const laminar = {
     // From (image) config
     const from = [ laminar.manifest.from ];
     // Split command into (space delimited) parts
-    const cmd = laminar.manifest.run.split(' ');
+    const cmd = [ 'bash', '-c', laminar.manifest.run ];
     // Build full args array
     args = laminar.links.length ? args.concat(laminar.links) : args;
     args = env.length ? args.concat(env) : args;

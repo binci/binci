@@ -89,7 +89,7 @@ var config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      config.manifest.run = config.manifest.tasks[config.task];
+      config.manifest.run = config.manifest.tasks[config.task].replace(/(\r\n|\n|\r)/gm, ';');
     } else {
       // Missing task, halt
       _output2['default'].error('Please specify a task to run');

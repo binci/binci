@@ -57,7 +57,7 @@ var laminar = {
     // From (image) config
     var from = [laminar.manifest.from];
     // Split command into (space delimited) parts
-    var cmd = laminar.manifest.run.split(' ');
+    var cmd = ['bash', '-c', laminar.manifest.run];
     // Build full args array
     args = laminar.links.length ? args.concat(laminar.links) : args;
     args = env.length ? args.concat(env) : args;
