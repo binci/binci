@@ -17,6 +17,8 @@ Laminar operates as a command on your system (via global install). It reads the
 configuration for your project from a `laminar.yml` file which contains all the
 instructions and tasks you need.
 
+From there, Laminar is a CLI tool. Both `laminar` and `lam` are registered for the bin so either command will work when running tasks.
+
 ### Configuration
 
 To configure a project to use Laminar, simply add a `laminar.yml` to the root of
@@ -50,7 +52,7 @@ tasks:
 Once the above is configured the tasks can be called simply by their names, for example:
 
 ```
-laminar test
+lam test
 ```
 
 The above will spin up the `node:0.10` container, link to `mongo:3.0`, expose the environment variables needed, and run `npm run test`.
@@ -63,7 +65,7 @@ Specifies the image in which to run the project. In the example the `from` will
 pull from [Docker Hub's](https://hub.docker.com) `node:0.10` image. This can also be overridden at runtime. If you wanted to try testing your project with Node v.0.12 you could run with the `-f` flag:
 
 ```
-laminar test -f node:0.12
+lam test -f node:0.12
 ```
 
 #### `services`
@@ -109,7 +111,7 @@ Laminar supports multi-line tasks as well, for example:
 Laminar uses the `-e` flag to allow for execution of tasks not in the `laminar.yml` file:
 
 ```
-laminar -e "echo hello world"
+lam -e "echo hello world"
 ```
 
 ## Interactive Mode
@@ -117,9 +119,13 @@ laminar -e "echo hello world"
 For debugging or running custom commands inside the container the `-i` (interactive) flag is available:
 
 ```
-laminar -i -e "/bin/bash"
+lam -i -e "/bin/bash"
 ```
 
 The above will run the container with `STDIN` support at bash shell for working inside the container. **Executing the `exit` command will stop the service.**
 
 The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `laminar.yml`
+
+## License
+
+This software is currently under proprietary licensure to TechnologyAdvice.
