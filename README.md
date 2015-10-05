@@ -89,3 +89,11 @@ Sets ports to expose to host machine. This is useful for long-running tasks. For
 **`tasks`**
 
 This is the list of tasks which can be executed with the `laminar` command.
+
+## Custom Execution Tasks
+
+Laminar uses the `-e` flag to allow for execution of tasks not in the `laminar.yml` file. For example:
+
+```
+laminar -e "echo hello world"
+```
