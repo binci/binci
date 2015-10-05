@@ -8,7 +8,7 @@ import parsers from './lib/parsers';
 // Process timer
 const start = new Date().getTime();
 
-const laminar = {
+const core = {
 
   // Service links placeholder
   links: [],
@@ -21,20 +21,20 @@ const laminar = {
    * @returns {String} The command to execute the task
    */
   buildArgs: () => {
-    const env = laminar.manifest.env ? parsers.parseEnvVars(laminar.manifest.env) : [];
-    const ports = laminar.manifest.expose ? parsers.parseExpose(laminar.manifest.expose) : [];
-    const volumes = laminar.manifest.volumes ? parsers.parseVolumes(laminar.manifest.volumes) : [];
+    const env = core.manifest.env ? parsers.parseEnvVars(core.manifest.env) : [];
+    const ports = core.manifest.expose ? parsers.parseExpose(core.manifest.expose) : [];
+    const volumes = core.manifest.volumes ? parsers.parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
-    const mode = laminar.manifest.interactive ? '-it' : '-t';
+    const mode = core.manifest.interactive ? '-it' : '-t';
     let args = [ 'run', mode, '--rm' ];
     // Workdir config
-    const workdir = [ '-v', `${laminar.manifest.workdir}:${laminar.manifest.workdir}`, '-w', laminar.manifest.workdir ];
+    const workdir = [ '-v', `${core.manifest.workdir}:${core.manifest.workdir}`, '-w', core.manifest.workdir ];
     // From (image) config
-    const from = [ laminar.manifest.from ];
+    const from = [ core.manifest.from ];
     // Split command into (space delimited) parts
-    const cmd = [ 'bash', '-c', laminar.manifest.run ];
+    const cmd = [ 'bash', '-c', core.manifest.run ];
     // Build full args array
-    args = laminar.links.length ? args.concat(laminar.links) : args;
+    args = core.links.length ? args.concat(core.links) : args;
     args = env.length ? args.concat(env) : args;
     args = ports.length ? args.concat(ports) : args;
     args = volumes.length ? args.concat(volumes) : args;
@@ -60,7 +60,7 @@ const laminar = {
         services.run(svc)
           .then((links) => {
             // Create links array for insert into run
-            links.map((l) => { laminar.links = laminar.links.concat([ '--link', l ]); });
+            links.map((l) => { core.links = core.links.concat([ '--link', l ]); });
             resolve();
           })
           .catch((e) => {
@@ -77,7 +77,7 @@ const laminar = {
    * @returns {Object} promise
    */
   execTask: (args) => {
-    output.success(`Running container {{${laminar.manifest.from}}}, task {{${laminar.manifest.run}}}`);
+    output.success(`Running container {{${core.manifest.from}}}, task {{${core.manifest.run}}}`);
     return proc('docker', args);
   },
 
@@ -85,10 +85,10 @@ const laminar = {
    * Runs the execution chain to carry out task
    */
   run: () => {
-    laminar.manifest = config.get();
-    laminar.startServices(laminar.manifest.services)
-      .then(laminar.buildArgs)
-      .then(laminar.execTask)
+    core.manifest = config.get();
+    core.startServices(core.manifest.services)
+      .then(core.buildArgs)
+      .then(core.execTask)
       .then(services.stopServices)
       .then(() => {
         const closed = (new Date().getTime() - start) / 1000;
@@ -96,11 +96,11 @@ const laminar = {
         process.exit(0);
       })
       .catch((code) => {
-        output.error(`Error running {{${laminar.manifest.run}}}, exited with code {{${code}}}`);
+        output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
         process.exit(code);
       });
   }
 
 };
 
-export default laminar;
+export default core;

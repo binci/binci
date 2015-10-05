@@ -33,7 +33,7 @@ var _libParsers2 = _interopRequireDefault(_libParsers);
 // Process timer
 var start = new Date().getTime();
 
-var laminar = {
+var core = {
 
   // Service links placeholder
   links: [],
@@ -46,20 +46,20 @@ var laminar = {
    * @returns {String} The command to execute the task
    */
   buildArgs: function buildArgs() {
-    var env = laminar.manifest.env ? _libParsers2['default'].parseEnvVars(laminar.manifest.env) : [];
-    var ports = laminar.manifest.expose ? _libParsers2['default'].parseExpose(laminar.manifest.expose) : [];
-    var volumes = laminar.manifest.volumes ? _libParsers2['default'].parseVolumes(laminar.manifest.volumes) : [];
+    var env = core.manifest.env ? _libParsers2['default'].parseEnvVars(core.manifest.env) : [];
+    var ports = core.manifest.expose ? _libParsers2['default'].parseExpose(core.manifest.expose) : [];
+    var volumes = core.manifest.volumes ? _libParsers2['default'].parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
-    var mode = laminar.manifest.interactive ? '-it' : '-t';
+    var mode = core.manifest.interactive ? '-it' : '-t';
     var args = ['run', mode, '--rm'];
     // Workdir config
-    var workdir = ['-v', laminar.manifest.workdir + ':' + laminar.manifest.workdir, '-w', laminar.manifest.workdir];
+    var workdir = ['-v', core.manifest.workdir + ':' + core.manifest.workdir, '-w', core.manifest.workdir];
     // From (image) config
-    var from = [laminar.manifest.from];
+    var from = [core.manifest.from];
     // Split command into (space delimited) parts
-    var cmd = ['bash', '-c', laminar.manifest.run];
+    var cmd = ['bash', '-c', core.manifest.run];
     // Build full args array
-    args = laminar.links.length ? args.concat(laminar.links) : args;
+    args = core.links.length ? args.concat(core.links) : args;
     args = env.length ? args.concat(env) : args;
     args = ports.length ? args.concat(ports) : args;
     args = volumes.length ? args.concat(volumes) : args;
@@ -88,7 +88,7 @@ var laminar = {
           _libServices2['default'].run(svc).then(function (links) {
             // Create links array for insert into run
             links.map(function (l) {
-              laminar.links = laminar.links.concat(['--link', l]);
+              core.links = core.links.concat(['--link', l]);
             });
             resolve();
           })['catch'](function (e) {
@@ -106,7 +106,7 @@ var laminar = {
    * @returns {Object} promise
    */
   execTask: function execTask(args) {
-    _libOutput2['default'].success('Running container {{' + laminar.manifest.from + '}}, task {{' + laminar.manifest.run + '}}');
+    _libOutput2['default'].success('Running container {{' + core.manifest.from + '}}, task {{' + core.manifest.run + '}}');
     return (0, _libProcess2['default'])('docker', args);
   },
 
@@ -114,18 +114,18 @@ var laminar = {
    * Runs the execution chain to carry out task
    */
   run: function run() {
-    laminar.manifest = _libConfig2['default'].get();
-    laminar.startServices(laminar.manifest.services).then(laminar.buildArgs).then(laminar.execTask).then(_libServices2['default'].stopServices).then(function () {
+    core.manifest = _libConfig2['default'].get();
+    core.startServices(core.manifest.services).then(core.buildArgs).then(core.execTask).then(_libServices2['default'].stopServices).then(function () {
       var closed = (new Date().getTime() - start) / 1000;
       _libOutput2['default'].success('Completed in {{' + closed + '}} seconds');
       process.exit(0);
     })['catch'](function (code) {
-      _libOutput2['default'].error('Error running {{' + laminar.manifest.run + '}}, exited with code {{' + code + '}}');
+      _libOutput2['default'].error('Error running {{' + core.manifest.run + '}}, exited with code {{' + code + '}}');
       process.exit(code);
     });
   }
 
 };
 
-exports['default'] = laminar;
+exports['default'] = core;
 module.exports = exports['default'];
