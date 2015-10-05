@@ -46,7 +46,7 @@ var config = {
   /**
    * Help message template
    */
-  helpMsg: '\n    ' + _packageJson2['default'].name + ' v.' + _packageJson2['default'].version + '\n\n    Usage: ' + _packageJson2['default'].name + ' task [options]\n\n      -h   Show this help message\n      -v   Show current version\n      -f   Set FROM (Docker image)\n      -c   Set config to load (YAML)\n',
+  helpMsg: '\n    ' + _packageJson2['default'].name + ' v.' + _packageJson2['default'].version + '\n\n    Usage: ' + _packageJson2['default'].name + ' task [options]\n\n      -h   Show this help message\n      -v   Show current version\n      -i   Run container with STDIN support\n      -e   Run custom command(s): -e "some command"\n      -f   Set FROM (Docker image): -f "container:tag"\n      -c   Set config to load (YAML): -c "/path/to/config.yml"\n',
   /**
    * Checks arguments for specific (immediate action) flags and config
    * @param {Object} args The arguments passed in
@@ -60,6 +60,8 @@ var config = {
     if (args.v) {
       _output2['default'].log(_packageJson2['default'].version);process.exit(0);
     }
+    // Get interactive flag
+    config.interactive = args.i ? true : false;
     // Set exec
     config.exec = args.e ? args.e : false;
     // Load yaml config
@@ -102,9 +104,9 @@ var config = {
       process.exit(1);
     }
     // Check for container override
-    if (config.from) {
-      config.manifest.from = config.from;
-    }
+    if (config.from) config.manifest.from = config.from;
+    // Check interactive mode
+    if (config.interactive) config.manifest.interactive = true;
     // Return the compiled config manifest
     return config.manifest;
   }

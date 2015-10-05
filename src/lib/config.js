@@ -26,8 +26,10 @@ const config = {
     Usage: ${pkg.name} task [options]\n
       -h   Show this help message
       -v   Show current version
-      -f   Set FROM (Docker image)
-      -c   Set config to load (YAML)\n`,
+      -i   Run container with STDIN support
+      -e   Run custom command(s): -e "some command"
+      -f   Set FROM (Docker image): -f "container:tag"
+      -c   Set config to load (YAML): -c "/path/to/config.yml"\n`,
   /**
    * Checks arguments for specific (immediate action) flags and config
    * @param {Object} args The arguments passed in
@@ -37,6 +39,8 @@ const config = {
     if (args.h) { output.log(config.helpMsg); process.exit(0); }
     // Show version
     if (args.v) { output.log(pkg.version); process.exit(0); }
+    // Get interactive flag
+    config.interactive = args.i ? true : false;
     // Set exec
     config.exec = args.e ? args.e : false;
     // Load yaml config
@@ -79,9 +83,9 @@ const config = {
       process.exit(1);
     }
     // Check for container override
-    if (config.from) {
-      config.manifest.from = config.from;
-    }
+    if (config.from) config.manifest.from = config.from;
+    // Check interactive mode
+    if (config.interactive) config.manifest.interactive = true;
     // Return the compiled config manifest
     return config.manifest;
   }

@@ -24,7 +24,8 @@ const laminar = {
     const env = laminar.manifest.env ? parsers.parseEnvVars(laminar.manifest.env) : [];
     const ports = laminar.manifest.expose ? parsers.parseExpose(laminar.manifest.expose) : [];
     // Spawn arguments
-    let args = [ 'run', '-t', '--rm' ];
+    const mode = laminar.manifest.interactive ? '-it' : '-t';
+    let args = [ 'run', mode, '--rm' ];
     // Volume config
     const volume = [ '-v', `${laminar.manifest.volume}:${laminar.manifest.volume}` ];
     // Workdir config

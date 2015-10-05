@@ -39,7 +39,7 @@ const output = {
    * Determine stdio fro process
    */
   setStdio: () => {
-    return !process.env.LAM_TEST ? [ 'pipe', process.stdout, process.stdout ] : [ null, null, null ];
+    return !process.env.LAM_TEST ? [ 'inherit', process.stdout, process.stdout ] : [ null, null, null ];
   },
   /**
    * Standard log output, no formatting

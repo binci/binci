@@ -92,8 +92,20 @@ This is the list of tasks which can be executed with the `laminar` command.
 
 ## Custom Execution Tasks
 
-Laminar uses the `-e` flag to allow for execution of tasks not in the `laminar.yml` file. For example:
+Laminar uses the `-e` flag to allow for execution of tasks not in the `laminar.yml` file:
 
 ```
 laminar -e "echo hello world"
 ```
+
+## Interactive Mode
+
+For debugging or running custom commands inside the container the `-i` (interactive) flag is available:
+
+```
+laminar -i -e "/bin/bash"
+```
+
+The above will run the container with `STDIN` support at bash shell for working inside the container. **Executing the `exit` command will stop the service.**
+
+The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `laminar.yml`
