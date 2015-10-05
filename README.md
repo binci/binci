@@ -57,7 +57,7 @@ The above will spin up the `node:0.10` container, link to `mongo:3.0`, expose th
 
 To further explain the configuration:
 
-**`from`**
+#### `from`
 
 Specifies the image in which to run the project. In the example the `from` will
 pull from [Docker Hub's](https://hub.docker.com) `node:0.10` image. This can also be overridden at runtime. If you wanted to try testing your project with Node v.0.12 you could run with the `-f` flag:
@@ -66,7 +66,7 @@ pull from [Docker Hub's](https://hub.docker.com) `node:0.10` image. This can als
 laminar test -f node:0.12
 ```
 
-**`services`**
+#### `services`
 
 This section specifies any containers (services) that will be linked in at runtime.
 
@@ -78,21 +78,21 @@ The "key" is the image, in the above example the service running will be version
 * `expose`: Expose any ports. This is useful if you would like to persist the service and access it directly after running tasks.
 * `persist`: Defaults to `true`; will keep the service running. A service (such as a database) not persisted will not retain data between runs.
 
-**`env`**
+#### `env`
 
 Sets any environment variables needed in the container. In the above example the `LOCAL_HOME` will be set using your host machines `HOME` environment variable.
 
 Variables specified with `${NAME}` will pull from the host machine, or strings can be set by not encapsulating between `${` and `}`.
 
-**`expose`**
+#### `expose`
 
 Sets ports to expose to host machine. This is useful for long-running tasks. For example if you're testing a service and have a task that runs the service this will allow you to access the ports needed to make requests against the service.
 
-**`volumes`**
+#### `volumes`
 
 Maps local directories to paths on the container. This supports the use of environment variables (as shown in the example).
 
-**`tasks`**
+#### `tasks`
 
 This is the list of tasks which can be executed with the `laminar` command.
 
