@@ -1,19 +1,23 @@
 const parsers = {
   /**
+   * Parses host environment variables
+   * @param {String} str The string to parse
+   * @returns {String}
+   */
+  parseHostEnvVars: (str) => {
+    // Matches any ${VAR} format vars
+    const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
+    // Replace matches on ${VAR}
+    return str.toString().replace(/\$\{([^}]+)\}/g, matcher);
+  },
+  /**
    * Process environment variables
    * @param {Array} env Array of environment variables
    * @returns {Array} env var flags and args
    */
   parseEnvVars: (env) => {
     let envs = [];
-    env.map((e) => {
-      // Matches any ${VAR} format vars
-      const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
-      // Replace matches on ${VAR}
-      const envVar = e.toString().replace(/\$\{([^}]+)\}/g, matcher);
-      // Concat
-      envs = envs.concat([ '-e', envVar ]);
-    });
+    env.map((e) => { envs = envs.concat([ '-e', parsers.parseHostEnvVars(e) ]); });
     return envs;
   },
 
@@ -26,6 +30,17 @@ const parsers = {
     let ports = [];
     expose.map((p) => { ports = ports.concat([ '-p', p ]); });
     return ports;
+  },
+
+  /**
+   * Process any volumes to map
+   * @param {Array} volumes Array of volumes to map
+   * @returns {Array} volume map flags and args
+   */
+  parseVolumes: (volumes) => {
+    let vols = [];
+    volumes.map((v) => { vols = vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); });
+    return vols;
   }
 };
 

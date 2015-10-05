@@ -11,6 +11,8 @@ env:
   - LOCAL_HOME=${HOME}
 expose:
   - 8080:8080
+volumes:
+  - ${HOME}/.ssh:/root/.ssh
 tasks:
   env: |
     export FOO=$MONGODB_ENV_MONGO_VERSION

@@ -9,7 +9,7 @@ describe('laminar', () => {
     // Set test properties
     laminar.manifest = yaml.safeLoad(fs.readFileSync('./test/project/laminar.yml', 'utf8'));
     laminar.manifest.run = 'test';
-    laminar.manifest.volume = '/test';
+    laminar.manifest.workdir = '/test';
     laminar.links = [ '--link', 'someService:someService' ];
     it('builds arguments from manifest file', () => {
       const result = laminar.buildArgs();
@@ -23,6 +23,8 @@ describe('laminar', () => {
         'LOCAL_HOME=/home/fluidbyte',
         '-p',
         '8080:8080',
+        '-v',
+        `${process.env.HOME}/.ssh:/root/.ssh`,
         '-v',
         '/test:/test',
         '-w',

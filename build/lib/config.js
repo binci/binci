@@ -81,8 +81,6 @@ var config = {
       _output2['default'].error('Could not load config!');
       process.exit(1);
     }
-    // Set volume
-    config.manifest.volume = config.cwd;
   },
   /**
    * Runs the config process
@@ -103,6 +101,8 @@ var config = {
       _output2['default'].log(config.helpMsg);
       process.exit(1);
     }
+    // Set workdir
+    config.manifest.workdir = config.cwd;
     // Check for container override
     if (config.from) config.manifest.from = config.from;
     // Check interactive mode

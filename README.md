@@ -36,6 +36,8 @@ env:
   - LOCAL_HOME=${HOME}
 expose:
   - 8080:8080
+volumes:
+  - ${HOME}/.ssh:/root/.ssh
 tasks:
   env: env
   clean: rm -rf node_modules
@@ -85,6 +87,10 @@ Variables specified with `${NAME}` will pull from the host machine, or strings c
 **`expose`**
 
 Sets ports to expose to host machine. This is useful for long-running tasks. For example if you're testing a service and have a task that runs the service this will allow you to access the ports needed to make requests against the service.
+
+**`volumes`**
+
+Maps local directories to paths on the container. This supports the use of environment variables (as shown in the example).
 
 **`tasks`**
 

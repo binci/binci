@@ -48,13 +48,12 @@ var laminar = {
   buildArgs: function buildArgs() {
     var env = laminar.manifest.env ? _libParsers2['default'].parseEnvVars(laminar.manifest.env) : [];
     var ports = laminar.manifest.expose ? _libParsers2['default'].parseExpose(laminar.manifest.expose) : [];
+    var volumes = laminar.manifest.volumes ? _libParsers2['default'].parseVolumes(laminar.manifest.volumes) : [];
     // Spawn arguments
     var mode = laminar.manifest.interactive ? '-it' : '-t';
     var args = ['run', mode, '--rm'];
-    // Volume config
-    var volume = ['-v', laminar.manifest.volume + ':' + laminar.manifest.volume];
     // Workdir config
-    var workdir = ['-w', laminar.manifest.volume];
+    var workdir = ['-v', laminar.manifest.workdir + ':' + laminar.manifest.workdir, '-w', laminar.manifest.workdir];
     // From (image) config
     var from = [laminar.manifest.from];
     // Split command into (space delimited) parts
@@ -63,7 +62,7 @@ var laminar = {
     args = laminar.links.length ? args.concat(laminar.links) : args;
     args = env.length ? args.concat(env) : args;
     args = ports.length ? args.concat(ports) : args;
-    args = args.concat(volume);
+    args = volumes.length ? args.concat(volumes) : args;
     args = args.concat(workdir);
     args = args.concat(from);
     args = args.concat(cmd);

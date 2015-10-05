@@ -5,6 +5,19 @@ Object.defineProperty(exports, '__esModule', {
 });
 var parsers = {
   /**
+   * Parses host environment variables
+   * @param {String} str The string to parse
+   * @returns {String}
+   */
+  parseHostEnvVars: function parseHostEnvVars(str) {
+    // Matches any ${VAR} format vars
+    var matcher = function matcher(i, match) {
+      return process.env.hasOwnProperty(match) ? process.env[match] : null;
+    };
+    // Replace matches on ${VAR}
+    return str.toString().replace(/\$\{([^}]+)\}/g, matcher);
+  },
+  /**
    * Process environment variables
    * @param {Array} env Array of environment variables
    * @returns {Array} env var flags and args
@@ -12,14 +25,7 @@ var parsers = {
   parseEnvVars: function parseEnvVars(env) {
     var envs = [];
     env.map(function (e) {
-      // Matches any ${VAR} format vars
-      var matcher = function matcher(i, match) {
-        return process.env.hasOwnProperty(match) ? process.env[match] : null;
-      };
-      // Replace matches on ${VAR}
-      var envVar = e.toString().replace(/\$\{([^}]+)\}/g, matcher);
-      // Concat
-      envs = envs.concat(['-e', envVar]);
+      envs = envs.concat(['-e', parsers.parseHostEnvVars(e)]);
     });
     return envs;
   },
@@ -35,6 +41,19 @@ var parsers = {
       ports = ports.concat(['-p', p]);
     });
     return ports;
+  },
+
+  /**
+   * Process any volumes to map
+   * @param {Array} volumes Array of volumes to map
+   * @returns {Array} volume map flags and args
+   */
+  parseVolumes: function parseVolumes(volumes) {
+    var vols = [];
+    volumes.map(function (v) {
+      vols = vols.concat(['-v', parsers.parseHostEnvVars(v)]);
+    });
+    return vols;
   }
 };
 
