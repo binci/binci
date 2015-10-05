@@ -96,6 +96,14 @@ Maps local directories to paths on the container. This supports the use of envir
 
 This is the list of tasks which can be executed with the `laminar` command.
 
+Laminar supports multi-line tasks as well, for example:
+
+```yaml
+  echo: |
+    echo foo
+    echo bar
+```
+
 ## Custom Execution Tasks
 
 Laminar uses the `-e` flag to allow for execution of tasks not in the `laminar.yml` file:
