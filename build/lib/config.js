@@ -52,7 +52,6 @@ var config = {
    * @param {Object} args The arguments passed in
    */
   checkArgs: function checkArgs(args) {
-    console.log(args);
     // Show help
     if (args.h) {
       _output2['default'].log(config.helpMsg);process.exit(0);
