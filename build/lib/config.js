@@ -92,7 +92,9 @@ var config = {
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
       var parseTask = function parseTask(task) {
-        return task.replace(/(\r\n|\n|\r)/gm, ';');
+        var tmp = task.replace(/(\r\n|\n|\r)/gm, ';');
+        if (tmp.slice(-1) !== ';') tmp += ';';
+        return tmp;
       };
       var beforeTask = config.manifest['before-task'] ? parseTask(config.manifest['before-task']) : '';
       var afterTask = config.manifest['after-task'] ? parseTask(config.manifest['after-task']) : '';

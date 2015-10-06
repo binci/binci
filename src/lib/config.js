@@ -70,7 +70,11 @@ const config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      const parseTask = (task) => task.replace(/(\r\n|\n|\r)/gm, ';');
+      const parseTask = (task) => {
+        let tmp = task.replace(/(\r\n|\n|\r)/gm, ';');
+        if (tmp.slice(-1) !== ';') tmp += ';';
+        return tmp;
+      };
       const beforeTask = config.manifest['before-task'] ? parseTask(config.manifest['before-task']) : '';
       const afterTask = config.manifest['after-task'] ? parseTask(config.manifest['after-task']) : '';
       config.manifest.run = 'set -e;' + beforeTask + parseTask(config.manifest.tasks[config.task]) + afterTask;

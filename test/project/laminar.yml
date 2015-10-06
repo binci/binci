@@ -13,8 +13,7 @@ expose:
   - 8080:8080
 volumes:
   - ${HOME}/.ssh:/root/.ssh
-before-task: |
-  echo starting.
+before-task: echo starting.
 after-task: |
   echo completed.
 tasks:
