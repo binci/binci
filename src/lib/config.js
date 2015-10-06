@@ -48,7 +48,7 @@ const config = {
     // Override from
     config.from = args.f ? args.f : false;
     // Set task
-    config.task = args._ ? args._[1] : false;
+    config.task = args._ ? args._.pop() : false;
   },
   /**
    * Loads manifest and sets basic props

@@ -52,6 +52,7 @@ var config = {
    * @param {Object} args The arguments passed in
    */
   checkArgs: function checkArgs(args) {
+    console.log(args);
     // Show help
     if (args.h) {
       _output2['default'].log(config.helpMsg);process.exit(0);
@@ -69,7 +70,7 @@ var config = {
     // Override from
     config.from = args.f ? args.f : false;
     // Set task
-    config.task = args._ ? args._[1] : false;
+    config.task = args._ ? args._.pop() : false;
   },
   /**
    * Loads manifest and sets basic props
