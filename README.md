@@ -107,7 +107,7 @@ Injects a script to run **before** every task.
 
 Injects a script to run **after** every task.
 
-### `quiet`
+#### `quiet`
 
 If set to `true` will supress Laminar output and only show process results.
 
