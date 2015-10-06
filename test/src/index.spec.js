@@ -15,7 +15,7 @@ describe('core', () => {
       const result = core.buildArgs();
       expect(result).to.deep.equal([
         'run',
-        '-t',
+        '-it',
         '--rm',
         '--link',
         'someService:someService',

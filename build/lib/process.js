@@ -36,7 +36,7 @@ exports['default'] = function (proc, args) {
     // Handle close
     p.on('close', function (code) {
       _output2['default'].insertBreak();
-      if (code === 0) {
+      if (code === 0 || code === 130) {
         resolve();
       } else {
         reject(code);

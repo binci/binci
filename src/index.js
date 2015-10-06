@@ -25,7 +25,7 @@ const core = {
     const ports = core.manifest.expose ? parsers.parseExpose(core.manifest.expose) : [];
     const volumes = core.manifest.volumes ? parsers.parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
-    const mode = core.manifest.interactive ? '-it' : '-t';
+    let mode = core.manifest.interactive || process.stdout.isTTY  ? '-it' : '-t';
     let args = [ 'run', mode, '--rm' ];
     // Workdir config
     const workdir = [ '-v', `${core.manifest.workdir}:${core.manifest.workdir}`, '-w', core.manifest.workdir ];

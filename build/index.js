@@ -50,7 +50,7 @@ var core = {
     var ports = core.manifest.expose ? _libParsers2['default'].parseExpose(core.manifest.expose) : [];
     var volumes = core.manifest.volumes ? _libParsers2['default'].parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
-    var mode = core.manifest.interactive ? '-it' : '-t';
+    var mode = core.manifest.interactive || process.stdout.isTTY ? '-it' : '-t';
     var args = ['run', mode, '--rm'];
     // Workdir config
     var workdir = ['-v', core.manifest.workdir + ':' + core.manifest.workdir, '-w', core.manifest.workdir];
