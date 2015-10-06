@@ -55,7 +55,11 @@ const core = {
         resolve();
       } else {
         let svcNames = [];
-        svc.forEach((s) => { svcNames.push(Object.keys(s)[0]); });
+        svc.forEach((s) => {
+          let image = Object.keys(s)[0];
+          let name = s[image].name || image;
+          svcNames.push(name);
+        });
         output.success(`Starting service${ svcNames.length > 1 ? 's' : '' }: {{${svcNames.join(', ')}}}`);
         services.run(svc)
           .then((links) => {

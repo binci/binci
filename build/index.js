@@ -82,7 +82,9 @@ var core = {
         (function () {
           var svcNames = [];
           svc.forEach(function (s) {
-            svcNames.push(Object.keys(s)[0]);
+            var image = Object.keys(s)[0];
+            var name = s[image].name || image;
+            svcNames.push(name);
           });
           _libOutput2['default'].success('Starting service' + (svcNames.length > 1 ? 's' : '') + ': {{' + svcNames.join(', ') + '}}');
           _libServices2['default'].run(svc).then(function (links) {
