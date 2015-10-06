@@ -1,6 +1,8 @@
 import clc from 'cli-color';
 
 const output = {
+  // Holds quiet boolean
+  quiet: false,
   /**
    * Colorizes {{...}} delimited vars
    * @param {String} m Raw message
@@ -13,27 +15,27 @@ const output = {
    * @param {String} m Output message
    */
   success: (m) => {
-    output.log(clc.green.bold('#> ') + clc.bold(output.renderVars(m)));
+    if (!output.quiet) output.log(clc.green.bold('#> ') + clc.bold(output.renderVars(m)));
   },
   /**
    * Output warning message
    * @param {String} m Output message
    */
   warn: (m) => {
-    output.log(clc.yellow.bold('!> ') + clc.bold(output.renderVars(m)));
+    if (!output.quiet)output.log(clc.yellow.bold('!> ') + clc.bold(output.renderVars(m)));
   },
   /**
    * Output error message
    * @param {String} m Output message
    */
   error: (m) => {
-    output.log(clc.red.bold('!> ') + clc.bold(output.renderVars(m)));
+    if (!output.quiet) output.log(clc.red.bold('!> ') + clc.bold(output.renderVars(m)));
   },
   /**
    * Inserts break before commands are run
    */
   insertBreak: () => {
-    output.log(clc.white('---'));
+    if (!output.quiet) output.log(clc.white('---'));
   },
   /**
    * Determine stdio fro process

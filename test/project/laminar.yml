@@ -1,4 +1,5 @@
 from: node:0.10
+quiet: false
 services:
   - mongo:3.0:
       name: mongodb

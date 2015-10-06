@@ -29,7 +29,8 @@ const config = {
       -i   Run container with STDIN support
       -e   Run custom command(s): -e "some command"
       -f   Set FROM (Docker image): -f "container:tag"
-      -c   Set config to load (YAML): -c "/path/to/config.yml"\n`,
+      -c   Set config to load (YAML): -c "/path/to/config.yml
+      -q   Supresses verbose output"\n`,
   /**
    * Checks arguments for specific (immediate action) flags and config
    * @param {Object} args The arguments passed in
@@ -39,6 +40,8 @@ const config = {
     if (args.h) { output.log(config.helpMsg); process.exit(0); }
     // Show version
     if (args.v) { output.log(pkg.version); process.exit(0); }
+    // Set quiet flag
+    if (args.q) { output.quiet = true; }
     // Get interactive flag
     config.interactive = args.i ? true : false;
     // Set exec
@@ -67,6 +70,8 @@ const config = {
   get: () => {
     config.checkArgs(config.args);
     config.loadManifest();
+    // Check if set to quiet
+    if (config.manifest.quiet) output.quiet = true;
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run

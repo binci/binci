@@ -40,6 +40,7 @@ expose:
   - 8080:8080
 volumes:
   - ${HOME}/.ssh:/root/.ssh
+quiet: false
 before-task: |
   echo starting.
 after-task: |
@@ -105,6 +106,12 @@ Injects a script to run **before** every task.
 #### `after-task`
 
 Injects a script to run **after** every task.
+
+### `quiet`
+
+If set to `true` will supress Laminar output and only show process results.
+
+This can also be set with the `-q` flag during execution.
 
 #### `tasks`
 

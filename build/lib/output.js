@@ -11,6 +11,8 @@ var _cliColor = require('cli-color');
 var _cliColor2 = _interopRequireDefault(_cliColor);
 
 var output = {
+  // Holds quiet boolean
+  quiet: false,
   /**
    * Colorizes {{...}} delimited vars
    * @param {String} m Raw message
@@ -25,27 +27,27 @@ var output = {
    * @param {String} m Output message
    */
   success: function success(m) {
-    output.log(_cliColor2['default'].green.bold('#> ') + _cliColor2['default'].bold(output.renderVars(m)));
+    if (!output.quiet) output.log(_cliColor2['default'].green.bold('#> ') + _cliColor2['default'].bold(output.renderVars(m)));
   },
   /**
    * Output warning message
    * @param {String} m Output message
    */
   warn: function warn(m) {
-    output.log(_cliColor2['default'].yellow.bold('!> ') + _cliColor2['default'].bold(output.renderVars(m)));
+    if (!output.quiet) output.log(_cliColor2['default'].yellow.bold('!> ') + _cliColor2['default'].bold(output.renderVars(m)));
   },
   /**
    * Output error message
    * @param {String} m Output message
    */
   error: function error(m) {
-    output.log(_cliColor2['default'].red.bold('!> ') + _cliColor2['default'].bold(output.renderVars(m)));
+    if (!output.quiet) output.log(_cliColor2['default'].red.bold('!> ') + _cliColor2['default'].bold(output.renderVars(m)));
   },
   /**
    * Inserts break before commands are run
    */
   insertBreak: function insertBreak() {
-    output.log(_cliColor2['default'].white('---'));
+    if (!output.quiet) output.log(_cliColor2['default'].white('---'));
   },
   /**
    * Determine stdio fro process
