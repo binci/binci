@@ -91,7 +91,12 @@ var config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      config.manifest.run = 'set -e;' + config.manifest.tasks[config.task].replace(/(\r\n|\n|\r)/gm, ';');
+      var parseTask = function parseTask(task) {
+        return task.replace(/(\r\n|\n|\r)/gm, ';');
+      };
+      var beforeTask = config.manifest['before-task'] ? parseTask(config.manifest['before-task']) : '';
+      var afterTask = config.manifest['after-task'] ? parseTask(config.manifest['after-task']) : '';
+      config.manifest.run = 'set -e;' + beforeTask + parseTask(config.manifest.tasks[config.task]) + afterTask;
     } else if (config.exec) {
       // Execute arbitrary command
       config.manifest.run = config.exec;
