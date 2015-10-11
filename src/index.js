@@ -56,9 +56,8 @@ const core = {
       } else {
         let svcNames = [];
         svc.forEach((s) => {
-          let image = Object.keys(s)[0];
-          let name = s[image].name || image;
-          svcNames.push(name);
+          parsers.parseSvcObj(s);
+          svcNames.push(s.name);
         });
         output.success(`Starting service${ svcNames.length > 1 ? 's' : '' }: {{${svcNames.join(', ')}}}`);
         services.run(svc)

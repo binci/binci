@@ -28,4 +28,20 @@ describe('parsers', () => {
       expect(result).to.deep.equal([ '-v', '/testHost:/testGuest' ]);
     });
   });
+  describe('parseSvcObj', () => {
+    it('returns an object with properties of service', () => {
+      expect(parsers.parseSvcObj({ testImage: { name: 'testSvc' } })).to.deep.equal({
+        name: 'testSvc',
+        image: 'testImage',
+        env: false,
+        expose: false,
+        persist: true
+      });
+    });
+  });
+  describe('parseTask', () => {
+    it('returns semicolon split executable task command', () => {
+      expect(parsers.parseTask('a\nb\nc')).to.equal('a;b;c;');
+    });
+  });
 });

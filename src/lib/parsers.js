@@ -41,6 +41,30 @@ const parsers = {
     let vols = [];
     volumes.map((v) => { vols = vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); });
     return vols;
+  },
+  /**
+   * Parses the service object and ensures all required props set
+   * @param {Object} svc The service object from the manifest
+   * @returns {Object}
+   */
+  parseSvcObj: (svc) => {
+    const image = Object.keys(svc)[0];
+    const name = svc[image].name || image;
+    const env = svc[image].env || false;
+    const expose = svc[image].expose || false;
+    const persist = svc.hasOwnProperty('persist') && svc.persist === false ? false : true;
+    // Return svc object
+    return { image, name, env, expose, persist };
+  },
+  /**
+   * Strips line breaks and splits with semicolons
+   * @param {String} task The task to parse
+   * @returns {String}
+   */
+  parseTask: (task) => {
+    let tmp = task.replace(/(\r\n|\n|\r)/gm, ';');
+    if (tmp.slice(-1) !== ';') tmp += ';';
+    return tmp;
   }
 };
 

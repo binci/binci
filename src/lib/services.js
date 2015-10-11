@@ -10,21 +10,6 @@ const services = {
   // Services which should not be persisted
   noPersist: [],
   /**
-   * Parses the service object and ensures all required props set
-   * @param {Object} svc The service object from the manifest
-   * @returns {Object}
-   */
-  getSvcObj: (svc) => {
-    const image = Object.keys(svc)[0];
-    const name = svc[image].name || image;
-    const env = svc[image].env || false;
-    const expose = svc[image].expose || false;
-    // Persist?
-    if (svc[image].hasOwnProperty('persist') && svc[image].persist === false) services.noPersist.push(name);
-    // Return svc object
-    return { image, name, env, expose };
-  },
-  /**
    * Breaks up service entry into object containing args
    * @param {Object} svc The service/link entry
    * @returns {Array}
@@ -104,7 +89,9 @@ const services = {
       let i = 0;
       // Service check/start
       const startSvc = (service) => {
-        const svc = services.getSvcObj(service);
+        const svc = parsers.parseSvcObj(service);
+        // Don't persist?
+        if (!svc.persist) services.noPersist.push(svc.name);
         // Push to links
         services.links.push(svc.name);
         // Check service

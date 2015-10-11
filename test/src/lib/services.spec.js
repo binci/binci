@@ -4,16 +4,6 @@ import services from './../../../src/lib/services';
 import { exec } from 'child_process';
 
 describe('services', () => {
-  describe('getSvcObj', () => {
-    it('returns an object with properties of service', () => {
-      expect(services.getSvcObj({ testImage: { name: 'testSvc' } })).to.deep.equal({
-        name: 'testSvc',
-        image: 'testImage',
-        env: false,
-        expose: false
-      });
-    });
-  });
   describe('getArgs', () => {
     it('returns array of arguments required to run service', () => {
       expect(services.getArgs({ name: 'testSvc', image: 'testImage' })).to.deep.equal([
