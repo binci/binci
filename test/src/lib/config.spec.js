@@ -47,6 +47,7 @@ describe('config', () => {
   });
   describe('loadManifest', () => {
     it('exits with error when the manifest cannot be found', () => {
+      config.manifestPath = 'does/not/live/here';
       config.loadManifest();
       expect(global.exitSpy).to.be.calledWith(1);
     });

@@ -15,12 +15,13 @@ describe('core', () => {
       const result = core.buildArgs();
       expect(result).to.deep.equal([
         'run',
+        '--privileged',
         '-it',
         '--rm',
         '--link',
         'someService:someService',
         '-e',
-        'LOCAL_HOME=/home/fluidbyte',
+        `LOCAL_HOME=${process.env.HOME}`,
         '-p',
         '8080:8080',
         '-v',

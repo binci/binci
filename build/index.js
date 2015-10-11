@@ -51,7 +51,7 @@ var core = {
     var volumes = core.manifest.volumes ? _libParsers2['default'].parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
     var mode = core.manifest.interactive || process.stdout.isTTY ? '-it' : '-t';
-    var args = ['run', mode, '--rm'];
+    var args = ['run', '--privileged', mode, '--rm'];
     // Workdir config
     var workdir = ['-v', core.manifest.workdir + ':' + core.manifest.workdir, '-w', core.manifest.workdir];
     // From (image) config
@@ -82,9 +82,8 @@ var core = {
         (function () {
           var svcNames = [];
           svc.forEach(function (s) {
-            var image = Object.keys(s)[0];
-            var name = s[image].name || image;
-            svcNames.push(name);
+            _libParsers2['default'].parseSvcObj(s);
+            svcNames.push(s.name);
           });
           _libOutput2['default'].success('Starting service' + (svcNames.length > 1 ? 's' : '') + ': {{' + svcNames.join(', ') + '}}');
           _libServices2['default'].run(svc).then(function (links) {

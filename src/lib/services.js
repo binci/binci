@@ -40,7 +40,7 @@ const services = {
           // Not running; start
           output.success(`Starting service {{${svc.name}}}`);
           // Build arguments
-          let args = [ 'run', '-d' ];
+          let args = [ 'run', '-d', '--privileged' ];
           args = args.concat(services.getArgs(svc));
           // Start service
           proc('docker', args)

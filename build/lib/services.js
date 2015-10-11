@@ -30,21 +30,6 @@ var services = {
   // Services which should not be persisted
   noPersist: [],
   /**
-   * Parses the service object and ensures all required props set
-   * @param {Object} svc The service object from the manifest
-   * @returns {Object}
-   */
-  getSvcObj: function getSvcObj(svc) {
-    var image = Object.keys(svc)[0];
-    var name = svc[image].name || image;
-    var env = svc[image].env || false;
-    var expose = svc[image].expose || false;
-    // Persist?
-    if (svc[image].hasOwnProperty('persist') && svc[image].persist === false) services.noPersist.push(name);
-    // Return svc object
-    return { image: image, name: name, env: env, expose: expose };
-  },
-  /**
    * Breaks up service entry into object containing args
    * @param {Object} svc The service/link entry
    * @returns {Array}
@@ -75,7 +60,7 @@ var services = {
           // Not running; start
           _output2['default'].success('Starting service {{' + svc.name + '}}');
           // Build arguments
-          var args = ['run', '-d'];
+          var args = ['run', '-d', '--privileged'];
           args = args.concat(services.getArgs(svc));
           // Start service
           (0, _process2['default'])('docker', args).then(resolve)['catch'](reject);
@@ -122,7 +107,9 @@ var services = {
       var i = 0;
       // Service check/start
       var startSvc = function startSvc(service) {
-        var svc = services.getSvcObj(service);
+        var svc = _parsers2['default'].parseSvcObj(service);
+        // Don't persist?
+        if (!svc.persist) services.noPersist.push(svc.name);
         // Push to links
         services.links.push(svc.name);
         // Check service

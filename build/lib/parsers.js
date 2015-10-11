@@ -54,6 +54,30 @@ var parsers = {
       vols = vols.concat(['-v', parsers.parseHostEnvVars(v)]);
     });
     return vols;
+  },
+  /**
+   * Parses the service object and ensures all required props set
+   * @param {Object} svc The service object from the manifest
+   * @returns {Object}
+   */
+  parseSvcObj: function parseSvcObj(svc) {
+    var image = Object.keys(svc)[0];
+    var name = svc[image].name || image;
+    var env = svc[image].env || false;
+    var expose = svc[image].expose || false;
+    var persist = svc.hasOwnProperty('persist') && svc.persist === false ? false : true;
+    // Return svc object
+    return { image: image, name: name, env: env, expose: expose, persist: persist };
+  },
+  /**
+   * Strips line breaks and splits with semicolons
+   * @param {String} task The task to parse
+   * @returns {String}
+   */
+  parseTask: function parseTask(task) {
+    var tmp = task.replace(/(\r\n|\n|\r)/gm, ';');
+    if (tmp.slice(-1) !== ';') tmp += ';';
+    return tmp;
   }
 };
 

@@ -26,6 +26,10 @@ var _output = require('./output');
 
 var _output2 = _interopRequireDefault(_output);
 
+var _parsers = require('./parsers');
+
+var _parsers2 = _interopRequireDefault(_parsers);
+
 var _packageJson = require('./../../package.json');
 
 var _packageJson2 = _interopRequireDefault(_packageJson);
@@ -97,14 +101,9 @@ var config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      var parseTask = function parseTask(task) {
-        var tmp = task.replace(/(\r\n|\n|\r)/gm, ';');
-        if (tmp.slice(-1) !== ';') tmp += ';';
-        return tmp;
-      };
-      var beforeTask = config.manifest['before-task'] ? parseTask(config.manifest['before-task']) : '';
-      var afterTask = config.manifest['after-task'] ? parseTask(config.manifest['after-task']) : '';
-      config.manifest.run = 'set -e;' + beforeTask + parseTask(config.manifest.tasks[config.task]) + afterTask;
+      var beforeTask = config.manifest['before-task'] ? _parsers2['default'].parseTask(config.manifest['before-task']) : '';
+      var afterTask = config.manifest['after-task'] ? _parsers2['default'].parseTask(config.manifest['after-task']) : '';
+      config.manifest.run = 'set -e;' + beforeTask + _parsers2['default'].parseTask(config.manifest.tasks[config.task]) + afterTask;
     } else if (config.exec) {
       // Execute arbitrary command
       config.manifest.run = config.exec;
