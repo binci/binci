@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 import shelljs from 'shelljs';
 import min from 'minimist';
 import yaml from 'js-yaml';

@@ -149,4 +149,8 @@ The interactive command can be used with the `-e` flag as in the example above o
 
 ## License
 
-This software is currently under proprietary licensure to TechnologyAdvice.
+DevLab is licensed under the MIT license. Please see `LICENSE.txt` for full details.
+
+## Credits
+
+DevLab was designed and created at [TechnologyAdvice](http://www.technologyadvice.com).

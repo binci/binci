@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 const parsers = {
   /**
    * Parses host environment variables

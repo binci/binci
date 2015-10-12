@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 import proc from './process';
 import { exec } from 'child_process';
 import Promise from 'bluebird';

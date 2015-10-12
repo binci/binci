@@ -2,6 +2,15 @@
   "name": "devlab",
   "version": "1.0.0",
   "description": "Node utility for running containerized tasks",
+  "keywords": [
+    "docker",
+    "container",
+    "test",
+    "testing",
+    "dev",
+    "workflow",
+    "task"
+  ],
   "main": "index.js",
   "bin": {
     "lab": "index.js",
@@ -10,12 +19,19 @@
   "preferGlobal": true,
   "scripts": {
     "test": "mocha --timeout 5000 --compilers js:babel/register ./test/src --recursive",
-    "system-test": "bats ./test/system.bats",
     "lint": "eslint ./src ./test/src",
     "build": "babel ./src --out-dir ./build",
     "local-install": "npm run build && npm install -g ."
   },
-  "author": "",
+  "homepage": "https://github.com/TechnologyAdvice/DevLab",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TechnologyAdvice/DevLab"
+  },
+  "bugs": {
+    "url": "https://github.com/TechnologyAdvice/DevLab/issues"
+  },
+  "author": "TechnologyAdvice",
   "license": "MIT",
   "devDependencies": {
     "babel": "^5.8.23",

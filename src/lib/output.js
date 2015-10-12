@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 import clc from 'cli-color';
 
 const output = {

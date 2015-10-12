@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 import { spawn } from 'child_process';
 import Promise from 'bluebird';
 import output from './output';

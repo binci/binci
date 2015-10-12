@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 import Promise from 'bluebird';
 import config from './lib/config';
 import services from './lib/services';
