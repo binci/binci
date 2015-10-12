@@ -1,6 +1,5 @@
 /* global sinon, exitSpy, logSpy, expect, log, describe, it, before, after */
 import './../../setup';
-import output from './../../../src/lib/output';
 import config from './../../../src/lib/config';
 
 describe('config', () => {
@@ -30,8 +29,8 @@ describe('config', () => {
       expect(global.exitSpy).to.be.calledWith(0);
       expect(global.logSpy).to.be.called;
     });
-    it('defaults to relative laminar.yml file if manifest config not set', () => {
-      expect(config.manifestPath).to.equal(`${config.cwd}/laminar.yml`);
+    it('defaults to relative devlab.yml file if manifest config not set', () => {
+      expect(config.manifestPath).to.equal(`${config.cwd}/devlab.yml`);
     });
     it('overrides config/manifest if -c is passed with a new config', () => {
       config.checkArgs({ c: 'foo' });
@@ -54,14 +53,14 @@ describe('config', () => {
     });
     it('loads the manifest object when found', () => {
       // Use test project manifest
-      config.manifestPath = `${config.cwd}/test/project/laminar.yml`;
+      config.manifestPath = `${config.cwd}/test/project/devlab.yml`;
       config.loadManifest();
       expect(config.manifest).to.be.an.object;
     });
   });
   describe('get', () => {
     it('exits if no task is specified', () => {
-      config.args.c = '/test/project/laminar.yml';
+      config.args.c = '/test/project/devlab.yml';
       config.get();
       expect(global.exitSpy).to.be.calledWith(1);
     });

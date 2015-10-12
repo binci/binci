@@ -48,7 +48,7 @@ const config = {
     // Set exec
     config.exec = args.e ? args.e : false;
     // Load yaml config
-    config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/laminar.yml`;
+    config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/devlab.yml`;
     // Override from
     config.from = args.f ? args.f : false;
     // Set task

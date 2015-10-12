@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-var laminar = require('./build/index');
-laminar.run();
+var devlab = require('./build/index');
+devlab.run();

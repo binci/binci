@@ -1,6 +1,6 @@
-# Laminar
+# DevLab
 
-Laminar is a utility that allows you to easily containerize your development
+DevLab is a utility that allows you to easily containerize your development
 workflow using Docker. Simply put; it's like having a cleanroom for all of your
 development processes which contains services (like databases) without needing
 to setup and maintain these environments manually.
@@ -8,20 +8,20 @@ to setup and maintain these environments manually.
 ## Installation
 
 ```
-git clone git@github.com:TechnologyAdvice/Laminar.git && cd laminar && npm run local-install
+git clone git@github.com:TechnologyAdvice/DevLab.git && cd DevLab && npm run local-install
 ```
 
 ## Usage
 
-Laminar operates as a command on your system (via global install). It reads the
-configuration for your project from a `laminar.yml` file which contains all the
+DevLab operates as a command on your system (via global install). It reads the
+configuration for your project from a `devlab.yml` file which contains all the
 instructions and tasks you need.
 
-From there, Laminar is a CLI tool. Both `laminar` and `lam` are registered for the bin so either command will work when running tasks.
+From there, DevLab is a CLI tool. Both `devlab` and `lab` are registered for the bin so either command will work when running tasks.
 
 ### Configuration
 
-To configure a project to use Laminar, simply add a `laminar.yml` to the root of
+To configure a project to use DevLab, simply add a `devlab.yml` to the root of
 your project. An example of this file looks like:
 
 ```yaml
@@ -57,7 +57,7 @@ tasks:
 Once the above is configured the tasks can be called simply by their names, for example:
 
 ```
-lam test
+lab test
 ```
 
 The above will spin up the `node:0.10` container, link to `mongo:3.0`, expose the environment variables needed, and run `npm run test`.
@@ -70,7 +70,7 @@ Specifies the image in which to run the project. In the example the `from` will
 pull from [Docker Hub's](https://hub.docker.com) `node:0.10` image. This can also be overridden at runtime. If you wanted to try testing your project with Node v.0.12 you could run with the `-f` flag:
 
 ```
-lam test -f node:0.12
+lab test -f node:0.12
 ```
 
 #### `services`
@@ -109,15 +109,15 @@ Injects a script to run **after** every task.
 
 #### `quiet`
 
-If set to `true` will supress Laminar output and only show process results.
+If set to `true` will supress DevLab output and only show process results.
 
 This can also be set with the `-q` flag during execution.
 
 #### `tasks`
 
-This is the list of tasks which can be executed with the `laminar` command.
+This is the list of tasks which can be executed with the `devlab` command.
 
-Laminar supports multi-line tasks as well, for example:
+DevLab supports multi-line tasks as well, for example:
 
 ```yaml
   echo: |
@@ -127,23 +127,25 @@ Laminar supports multi-line tasks as well, for example:
 
 ## Custom Execution Tasks
 
-Laminar uses the `-e` flag to allow for execution of tasks not in the `laminar.yml` file:
+DevLab uses the `-e` flag to allow for execution of tasks not in the `devlab.yml` file:
 
 ```
-lam -e "echo hello world"
+lab -e "echo hello world"
 ```
 
 ## Interactive Mode
 
+By default, DevLab attempts to use Docker's `-it` flag when running, however, some configurations may require manually instructing interactive (`STDIN`) support.
+
 For debugging or running custom commands inside the container the `-i` (interactive) flag is available:
 
 ```
-lam -i -e "/bin/bash"
+lab -i -e "/bin/bash"
 ```
 
 The above will run the container with `STDIN` support at bash shell for working inside the container. **Executing the `exit` command will stop the service.**
 
-The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `laminar.yml`
+The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `devlab.yml`
 
 ## License
 

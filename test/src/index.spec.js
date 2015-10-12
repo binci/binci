@@ -7,7 +7,7 @@ import fs from 'fs';
 describe('core', () => {
   describe('buildArgs', () => {
     // Set test properties
-    core.manifest = yaml.safeLoad(fs.readFileSync('./test/project/laminar.yml', 'utf8'));
+    core.manifest = yaml.safeLoad(fs.readFileSync('./test/project/devlab.yml', 'utf8'));
     core.manifest.run = 'test';
     core.manifest.workdir = '/test';
     core.links = [ '--link', 'someService:someService' ];
