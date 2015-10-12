@@ -32,7 +32,7 @@ const core = {
     // From (image) config
     const from = [ core.manifest.from ];
     // Split command into (space delimited) parts
-    const cmd = [ 'bash', '-c', core.manifest.run ];
+    const cmd = [ 'sh', '-c', core.manifest.run ];
     // Build full args array
     args = core.links.length ? args.concat(core.links) : args;
     args = env.length ? args.concat(env) : args;
@@ -56,8 +56,8 @@ const core = {
       } else {
         let svcNames = [];
         svc.forEach((s) => {
-          parsers.parseSvcObj(s);
-          svcNames.push(s.name);
+          let tmp = parsers.parseSvcObj(s);
+          svcNames.push(tmp.name);
         });
         output.success(`Starting service${ svcNames.length > 1 ? 's' : '' }: {{${svcNames.join(', ')}}}`);
         services.run(svc)

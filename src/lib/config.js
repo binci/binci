@@ -72,6 +72,7 @@ const config = {
     config.checkArgs(config.args);
     config.loadManifest();
     // Check if set to quiet
+    /* istanbul ignore next */
     if (config.manifest.quiet) output.quiet = true;
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {

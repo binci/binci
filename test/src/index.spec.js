@@ -31,7 +31,7 @@ describe('core', () => {
         '-w',
         '/test',
         'node:0.10',
-        'bash',
+        'sh',
         '-c',
         'test'
       ]);

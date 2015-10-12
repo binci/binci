@@ -57,7 +57,7 @@ var core = {
     // From (image) config
     var from = [core.manifest.from];
     // Split command into (space delimited) parts
-    var cmd = ['bash', '-c', core.manifest.run];
+    var cmd = ['sh', '-c', core.manifest.run];
     // Build full args array
     args = core.links.length ? args.concat(core.links) : args;
     args = env.length ? args.concat(env) : args;
@@ -82,8 +82,8 @@ var core = {
         (function () {
           var svcNames = [];
           svc.forEach(function (s) {
-            _libParsers2['default'].parseSvcObj(s);
-            svcNames.push(s.name);
+            var tmp = _libParsers2['default'].parseSvcObj(s);
+            svcNames.push(tmp.name);
           });
           _libOutput2['default'].success('Starting service' + (svcNames.length > 1 ? 's' : '') + ': {{' + svcNames.join(', ') + '}}');
           _libServices2['default'].run(svc).then(function (links) {
