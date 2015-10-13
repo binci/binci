@@ -7,7 +7,7 @@ services:
         - DB_ROOT_PASSWORD=foo
       expose:
         - 27017:27017
-      persist: true
+      persist: false
 env:
   - LOCAL_HOME=${HOME}
 expose:

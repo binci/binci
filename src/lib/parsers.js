@@ -55,7 +55,7 @@ const parsers = {
     const name = svc[image].name || image;
     const env = svc[image].env || false;
     const expose = svc[image].expose || false;
-    const persist = svc.hasOwnProperty('persist') && svc.persist === false ? false : true;
+    const persist = svc[image].persist === false ? false : true;
     // Return svc object
     return { image, name, env, expose, persist };
   },

@@ -68,7 +68,7 @@ var parsers = {
     var name = svc[image].name || image;
     var env = svc[image].env || false;
     var expose = svc[image].expose || false;
-    var persist = svc.hasOwnProperty('persist') && svc.persist === false ? false : true;
+    var persist = svc[image].persist === false ? false : true;
     // Return svc object
     return { image: image, name: name, env: env, expose: expose, persist: persist };
   },
