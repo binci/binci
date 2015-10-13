@@ -11,6 +11,8 @@ to setup and maintain these environments manually.
 npm install devlab -g
 ```
 
+*Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
+
 ## Usage
 
 DevLab operates as a command on your system (via global install). It reads the

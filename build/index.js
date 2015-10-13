@@ -88,7 +88,6 @@ var core = {
             var tmp = _libParsers2['default'].parseSvcObj(s);
             svcNames.push(tmp.name);
           });
-          _libOutput2['default'].success('Starting service' + (svcNames.length > 1 ? 's' : '') + ': {{' + svcNames.join(', ') + '}}');
           _libServices2['default'].run(svc).then(function (links) {
             // Create links array for insert into run
             links.map(function (l) {
@@ -125,6 +124,7 @@ var core = {
       process.exit(0);
     })['catch'](function (code) {
       _libOutput2['default'].error('Error running {{' + core.manifest.run + '}}, exited with code {{' + code + '}}');
+      _libServices2['default'].stopServices();
       process.exit(code);
     });
   }

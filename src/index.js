@@ -62,7 +62,6 @@ const core = {
           let tmp = parsers.parseSvcObj(s);
           svcNames.push(tmp.name);
         });
-        output.success(`Starting service${ svcNames.length > 1 ? 's' : '' }: {{${svcNames.join(', ')}}}`);
         services.run(svc)
           .then((links) => {
             // Create links array for insert into run
@@ -103,6 +102,7 @@ const core = {
       })
       .catch((code) => {
         output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
+        services.stopServices();
         process.exit(code);
       });
   }
