@@ -8,7 +8,7 @@ to setup and maintain these environments manually.
 ## Installation
 
 ```
-git clone git@github.com:TechnologyAdvice/DevLab.git && cd DevLab && npm run local-install
+npm install devlab -g
 ```
 
 ## Usage
