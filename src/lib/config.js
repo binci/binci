@@ -68,12 +68,18 @@ const config = {
       process.exit(1);
     }
   },
-  setupRun: () => {
-    const beforeTask = config.manifest['before-task'] ? parsers.parseTask(config.manifest['before-task']) + ';' : '';
-    const afterTask = config.manifest['after-task'] ? parsers.parseTask(config.manifest['after-task']) : '';
-    let task = parsers.parseTask(config.manifest.tasks[config.task]);
-    task = parsers.parseAliases(config.manifest, task);
-    return `set -e; ${beforeTask} ${task} ${afterTask}`.replace(/;;/g, ';');
+  /**
+   * Sets up run of preset task
+   * @param {Object} manifest The config manifest
+   * @param {String} task The task to execute
+   * @returns {String}
+   */
+  setupRun: (manifest, task) => {
+    const beforeTask = manifest['before-task'] ? parsers.parseTask(manifest['before-task']) + ';' : '';
+    const afterTask = manifest['after-task'] ? parsers.parseTask(manifest['after-task']) : '';
+    let tmp = parsers.parseTask(manifest.tasks[task]);
+    tmp = parsers.parseAliases(manifest, tmp);
+    return `set -e; ${beforeTask} ${tmp} ${afterTask}`.replace(/;;/g, ';');
   },
   /**
    * Runs the config process
@@ -87,7 +93,7 @@ const config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      config.manifest.run = config.setupRun();
+      config.manifest.run = config.setupRun(config.manifest, config.task);
     } else if (config.exec) {
       // Execute arbitrary command
       config.manifest.run = config.exec;
