@@ -142,6 +142,8 @@ You can specify multiple tasks to be run in one master task via the following:
 
 In the above example, `lab all` would run the `install`, `test` and `build` tasks.
 
+**Note:** The task names are prefixed with `.` and on a single line. Dot-prefixed variables DO NOT work in multi-line commands.
+
 ## Custom Execution Tasks
 
 DevLab uses the `-e` flag to allow for execution of tasks not in the `devlab.yml` file:
