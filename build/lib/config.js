@@ -104,7 +104,10 @@ var config = {
     var afterTask = manifest['after-task'] ? _parsers2['default'].parseTask(manifest['after-task']) : '';
     var tmp = _parsers2['default'].parseTask(manifest.tasks[task]);
     tmp = _parsers2['default'].parseAliases(manifest, tmp);
-    return ('set -e; ' + beforeTask + ' ' + tmp + ' ' + afterTask).replace(/;;/g, ';');
+    if (tmp.slice(-1) !== ';') tmp += ';';
+    return ('set -e; ' + beforeTask + ' ' + tmp + ' ' + afterTask)
+    // Some cleanup...
+    .replace(/;;/g, ';').replace(/\s\s+/g, ' ').trim();
   },
   /**
    * Runs the config process

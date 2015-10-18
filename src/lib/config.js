@@ -79,7 +79,12 @@ const config = {
     const afterTask = manifest['after-task'] ? parsers.parseTask(manifest['after-task']) : '';
     let tmp = parsers.parseTask(manifest.tasks[task]);
     tmp = parsers.parseAliases(manifest, tmp);
-    return `set -e; ${beforeTask} ${tmp} ${afterTask}`.replace(/;;/g, ';');
+    if (tmp.slice(-1) !== ';') tmp += ';';
+    return `set -e; ${beforeTask} ${tmp} ${afterTask}`
+      // Some cleanup...
+      .replace(/;;/g, ';')
+      .replace(/\s\s+/g, ' ')
+      .trim();
   },
   /**
    * Runs the config process
