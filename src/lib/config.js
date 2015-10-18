@@ -68,6 +68,13 @@ const config = {
       process.exit(1);
     }
   },
+  setupRun: () => {
+    const beforeTask = config.manifest['before-task'] ? parsers.parseTask(config.manifest['before-task']) + ';' : '';
+    const afterTask = config.manifest['after-task'] ? parsers.parseTask(config.manifest['after-task']) : '';
+    let task = parsers.parseTask(config.manifest.tasks[config.task]);
+    task = parsers.parseAliases(config.manifest, task);
+    return `set -e; ${beforeTask} ${task}; ${afterTask}`.replace(/;;/g, ';');
+  },
   /**
    * Runs the config process
    */
@@ -80,9 +87,7 @@ const config = {
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      const beforeTask = config.manifest['before-task'] ? parsers.parseTask(config.manifest['before-task']) : '';
-      const afterTask = config.manifest['after-task'] ? parsers.parseTask(config.manifest['after-task']) : '';
-      config.manifest.run = 'set -e;' + beforeTask + parsers.parseTask(config.manifest.tasks[config.task]) + afterTask;
+      config.manifest.run = config.setupRun();
     } else if (config.exec) {
       // Execute arbitrary command
       config.manifest.run = config.exec;

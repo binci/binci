@@ -41,7 +41,17 @@ describe('parsers', () => {
   });
   describe('parseTask', () => {
     it('returns semicolon split executable task command', () => {
-      expect(parsers.parseTask('a\nb\nc')).to.equal('a;b;c;');
+      expect(parsers.parseTask('a\nb\nc')).to.equal('a;b;c');
+    });
+  });
+  describe('parseAliases', () => {
+    it('parses dot-prefixed aliases and replaces with task commands', () => {
+      const mockManifest = {
+        tasks: {
+          'foo': 'bar'
+        }
+      };
+      expect(parsers.parseAliases(mockManifest, '.foo')).to.equal('bar;');
     });
   });
 });
