@@ -98,7 +98,7 @@ var config = {
     var afterTask = config.manifest['after-task'] ? _parsers2['default'].parseTask(config.manifest['after-task']) : '';
     var task = _parsers2['default'].parseTask(config.manifest.tasks[config.task]);
     task = _parsers2['default'].parseAliases(config.manifest, task);
-    return ('set -e; ' + beforeTask + ' ' + task + '; ' + afterTask).replace(/;;/g, ';');
+    return ('set -e; ' + beforeTask + ' ' + task + ' ' + afterTask).replace(/;;/g, ';');
   },
   /**
    * Runs the config process
