@@ -1,6 +1,6 @@
 {
   "name": "devlab",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Node utility for running containerized tasks",
   "keywords": [
     "docker",
