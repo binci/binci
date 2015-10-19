@@ -1,5 +1,6 @@
 /* global sinon, exitSpy, logSpy, expect, log, describe, it, before, after */
 import './../../setup';
+import testManifests from './../../fixtures/manifests';
 import config from './../../../src/lib/config';
 
 describe('config', () => {
@@ -56,6 +57,40 @@ describe('config', () => {
       config.manifestPath = `${config.cwd}/test/project/devlab.yml`;
       config.loadManifest();
       expect(config.manifest).to.be.an.object;
+    });
+  });
+  describe('setupRun', () => {
+    it('parses a simple, single task', () => {
+      expect(config.setupRun(testManifests.simple, 'foo'))
+        .to.equal('set -e; bar;');
+    });
+    it('parses a simple task with a before-task set', () => {
+      expect(config.setupRun(testManifests.simpleBefore, 'foo'))
+        .to.equal('set -e; baz; bar;');
+    });
+    it('parses a simple task with a before-task and after-task set', () => {
+      expect(config.setupRun(testManifests.simpleBeforeAfter, 'foo'))
+        .to.equal('set -e; baz; bar; quz');
+    });
+    it('parses a task with a multi-line before-task set', () => {
+      expect(config.setupRun(testManifests.multiLnBefore, 'foo'))
+        .to.equal('set -e; fizz; buzz; bar;');
+    });
+    it('parses a task with a multi-line before-task and after-task set', () => {
+      expect(config.setupRun(testManifests.multiLnBeforeAfter, 'foo'))
+        .to.equal('set -e; fizz; buzz; bar; lor; ips');
+    });
+    it('parses a simple task with a command alias', () => {
+      expect(config.setupRun(testManifests.simpleAlias, 'baz'))
+        .to.equal('set -e; bar;');
+    });
+    it('parses a complex task with multiple command aliases', () => {
+      expect(config.setupRun(testManifests.multiAlias, 'fiz'))
+        .to.equal('set -e; bar; quz; ips;');
+    });
+    it('parses a complex task with multiple command aliases and before-task and after-task', () => {
+      expect(config.setupRun(testManifests.complexMultiAlias, 'fiz'))
+        .to.equal('set -e; fizz; buzz; bar; quz; ips; lor; ips');
     });
   });
   describe('get', () => {
