@@ -7,6 +7,7 @@ import services from './lib/services';
 import proc from './lib/process';
 import output from './lib/output';
 import parsers from './lib/parsers';
+import tunnels from './lib/tunnels';
 
 // Process timer
 const start = new Date().getTime();
@@ -77,6 +78,13 @@ const core = {
   },
 
   /**
+   * If we're running docker-machine, tunnel exposed ports from localhost to the machine.
+   */
+  startTunnels: () => {
+
+  },
+
+  /**
    * Executes the task with arguments
    * @param {Array} args Array of arguments
    * @returns {Object} promise
@@ -92,8 +100,10 @@ const core = {
   run: () => {
     core.manifest = config.get();
     core.startServices(core.manifest.services)
+      .then(core.startTunnels)
       .then(core.buildArgs)
       .then(core.execTask)
+      .then(tunnels.stopTunnels)
       .then(services.stopServices)
       .then(() => {
         const closed = (new Date().getTime() - start) / 1000;
@@ -102,6 +112,7 @@ const core = {
       })
       .catch((code) => {
         output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
+        tunnels.stopTunnels();
         services.stopServices();
         process.exit(code);
       });
