@@ -65,7 +65,7 @@ const parsers = {
    * @returns {String}
    */
   parseTask: (task) => {
-    if (task.indexOf('\n') >= 0) {
+    if (task && task.indexOf('\n') >= 0) {
       let tmp = task.split('\n');
       return tmp.join('; ');
     }
