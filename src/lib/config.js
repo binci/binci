@@ -83,6 +83,7 @@ const config = {
     return `set -e; ${beforeTask} ${tmp} ${afterTask}`
       // Some cleanup...
       .replace(/;;/g, ';')
+      .replace(/; ;/g, ';')
       .replace(/\s\s+/g, ' ')
       .trim();
   },

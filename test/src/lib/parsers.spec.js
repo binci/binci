@@ -41,7 +41,7 @@ describe('parsers', () => {
   });
   describe('parseTask', () => {
     it('returns semicolon split executable task command', () => {
-      expect(parsers.parseTask('a\nb\nc')).to.equal('a;b;c');
+      expect(parsers.parseTask('a\nb\nc')).to.equal('a; b; c');
     });
   });
   describe('parseAliases', () => {

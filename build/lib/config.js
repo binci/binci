@@ -107,7 +107,7 @@ var config = {
     if (tmp.slice(-1) !== ';') tmp += ';';
     return ('set -e; ' + beforeTask + ' ' + tmp + ' ' + afterTask)
     // Some cleanup...
-    .replace(/;;/g, ';').replace(/\s\s+/g, ' ').trim();
+    .replace(/;;/g, ';').replace(/; ;/g, ';').replace(/\s\s+/g, ' ').trim();
   },
   /**
    * Runs the config process

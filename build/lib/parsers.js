@@ -80,7 +80,7 @@ var parsers = {
   parseTask: function parseTask(task) {
     if (task.indexOf('\n') >= 0) {
       var tmp = task.split('\n');
-      return tmp.join(';');
+      return tmp.join('; ');
     }
     return task;
   },
