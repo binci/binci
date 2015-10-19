@@ -79,7 +79,7 @@ const parsers = {
    */
   parseAliases: (manifest, task) => {
     const matchAliases = (i, match) => {
-      return parsers.parseTask(manifest.tasks[match]) + ';';
+      return parsers.parseTask(manifest.tasks[match]) + ';' || task + ';';
     };
     return task.toString().replace(/\.(\S+)\b/g, matchAliases);
   }
