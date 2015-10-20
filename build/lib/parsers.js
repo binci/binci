@@ -92,9 +92,12 @@ var parsers = {
    */
   parseAliases: function parseAliases(manifest, task) {
     var matchAliases = function matchAliases(i, match) {
-      return parsers.parseTask(manifest.tasks[match]) + ';' || task + ';';
+      if (manifest.tasks[match]) {
+        return manifest.tasks[match] + ';';
+      }
+      return '.' + match;
     };
-    return task.toString().replace(/\.(\S+)\b/g, matchAliases);
+    return parsers.parseTask(task.toString().replace(/\.(\S+)\b/g, matchAliases));
   }
 };
 
