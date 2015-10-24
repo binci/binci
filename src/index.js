@@ -65,7 +65,7 @@ const core = {
         services.run(svc)
           .then((links) => {
             // Create links array for insert into run
-            links.map((l) => { core.links = core.links.concat([ '--link', l ]); });
+            links.map((l) => { core.links = core.links.concat([ '--link', `${l}:${l}` ]); });
             resolve();
           })
           .catch((e) => {
