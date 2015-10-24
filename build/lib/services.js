@@ -80,8 +80,8 @@ var services = {
    */
   stopServices: function stopServices() {
     return new _bluebird2['default'](function (resolve) {
-      if (services.noPersist.length === 0) {
-        // No services to stop
+      if (services.noPersist.length === 0 || process.env.DEVLAB_NO_RM) {
+        // No services to stop or blocked by NO_RM
         resolve();
       } else {
         _output2['default'].success('Stoping service' + (services.noPersist.length > 1 ? 's' : '') + ': {{' + services.noPersist.join(', ') + '}}');

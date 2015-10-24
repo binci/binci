@@ -62,8 +62,8 @@ const services = {
    */
   stopServices: () => {
     return new Promise((resolve) => {
-      if (services.noPersist.length === 0) {
-        // No services to stop
+      if (services.noPersist.length === 0 || process.env.DEVLAB_NO_RM) {
+        // No services to stop or blocked by NO_RM
         resolve();
       } else {
         output.success(`Stoping service${ services.noPersist.length > 1 ? 's' : '' }: {{${services.noPersist.join(', ')}}}`);
