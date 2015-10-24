@@ -29,7 +29,9 @@ const core = {
     const volumes = core.manifest.volumes ? parsers.parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
     let mode = core.manifest.interactive || process.stdout.isTTY  ? '-it' : '-t';
-    let args = [ 'run', '--privileged', mode, '--rm' ];
+    let args = [ 'run', '--privileged', mode ];
+    // Check for no-rm
+    if (!process.env.DEVLAB_NO_RM) args.push('--rm');
     // Workdir config
     const workdir = [ '-v', `${core.manifest.workdir}:${core.manifest.workdir}`, '-w', core.manifest.workdir ];
     // From (image) config

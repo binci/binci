@@ -54,7 +54,9 @@ var core = {
     var volumes = core.manifest.volumes ? _libParsers2['default'].parseVolumes(core.manifest.volumes) : [];
     // Spawn arguments
     var mode = core.manifest.interactive || process.stdout.isTTY ? '-it' : '-t';
-    var args = ['run', '--privileged', mode, '--rm'];
+    var args = ['run', '--privileged', mode];
+    // Check for no-rm
+    if (!process.env.DEVLAB_NO_RM) args.push('--rm');
     // Workdir config
     var workdir = ['-v', core.manifest.workdir + ':' + core.manifest.workdir, '-w', core.manifest.workdir];
     // From (image) config

@@ -36,5 +36,30 @@ describe('core', () => {
         'test'
       ]);
     });
+    it('builds arguments from manifest file, runs with no -rm with DEVLAN_NO_RM set', () => {
+      process.env.DEVLAB_NO_RM = true;
+      const result = core.buildArgs();
+      expect(result).to.deep.equal([
+        'run',
+        '--privileged',
+        '-it',
+        '--link',
+        'someService:someService',
+        '-e',
+        `LOCAL_HOME=${process.env.HOME}`,
+        '-p',
+        '8080:8080',
+        '-v',
+        `${process.env.HOME}/.ssh:/root/.ssh`,
+        '-v',
+        '/test:/test',
+        '-w',
+        '/test',
+        'node:0.10',
+        'sh',
+        '-c',
+        'test'
+      ]);
+    });
   });
 });
