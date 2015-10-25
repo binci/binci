@@ -13,14 +13,6 @@ npm install devlab -g
 
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
 
-## Usage
-
-DevLab operates as a command on your system (via global install). It reads the
-configuration for your project from a `devlab.yml` file which contains all the
-instructions and tasks you need.
-
-From there, DevLab is a CLI tool. Both `devlab` and `lab` are registered for the bin so either command will work when running tasks.
-
 ## Quickstart / Demo
 
 For a hands-on crash course in utilizing DevLab, follow the steps below:
@@ -30,6 +22,14 @@ For a hands-on crash course in utilizing DevLab, follow the steps below:
 3. Move into demo: `cd DevLab-Demo`
 4. Use DevLab to install dependencies: `lab install`
 5. Run tests: `lab test`
+
+## Usage
+
+DevLab operates as a command on your system (via global install). It reads the
+configuration for your project from a `devlab.yml` file which contains all the
+instructions and tasks you need.
+
+From there, DevLab is a CLI tool. Both `devlab` and `lab` are registered for the bin so either command will work when running tasks.
 
 For more information please see [this blog post](http://blog.fluidbyte.net/containerize-your-local-dev-in-minutes-with-devlab/) about getting started with DevLab.
 
