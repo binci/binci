@@ -62,14 +62,20 @@ const services = {
    */
   stopServices: () => {
     return new Promise((resolve) => {
-      if (services.noPersist.length === 0 || process.env.DEVLAB_NO_RM) {
+      if (services.noPersist.length === 0) {
         // No services to stop or blocked by NO_RM
         resolve();
       } else {
         output.success(`Stoping service${ services.noPersist.length > 1 ? 's' : '' }: {{${services.noPersist.join(', ')}}}`);
         let cmd = '';
         services.noPersist.forEach((name, i) => {
-          cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rm ${name}`;
+          if (process.env.DEVLAB_NO_RM) {
+            // Stop only
+            cmd += `${i > 0 ? ' && ' : ''}docker stop ${name}`;
+          } else {
+            // Stop and remove
+            cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rm ${name}`;
+          }
         });
         exec(cmd, (err) => {
           if (err) {
