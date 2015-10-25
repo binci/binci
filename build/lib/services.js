@@ -80,14 +80,20 @@ var services = {
    */
   stopServices: function stopServices() {
     return new _bluebird2['default'](function (resolve) {
-      if (services.noPersist.length === 0 || process.env.DEVLAB_NO_RM) {
+      if (services.noPersist.length === 0) {
         // No services to stop or blocked by NO_RM
         resolve();
       } else {
         _output2['default'].success('Stoping service' + (services.noPersist.length > 1 ? 's' : '') + ': {{' + services.noPersist.join(', ') + '}}');
         var cmd = '';
         services.noPersist.forEach(function (name, i) {
-          cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name + ' && docker rm ' + name;
+          if (process.env.DEVLAB_NO_RM) {
+            // Stop only
+            cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name;
+          } else {
+            // Stop and remove
+            cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name + ' && docker rm ' + name;
+          }
         });
         (0, _child_process.exec)(cmd, function (err) {
           if (err) {
