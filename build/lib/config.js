@@ -53,7 +53,7 @@ var config = {
   /**
    * Help message template
    */
-  helpMsg: '\n    ' + _packageJson2['default'].name + ' v.' + _packageJson2['default'].version + '\n\n    Usage: ' + _packageJson2['default'].name + ' task [options]\n\n      -h   Show this help message\n      -v   Show current version\n      -i   Run container with STDIN support\n      -e   Run custom command(s): -e "some command"\n      -f   Set FROM (Docker image): -f "container:tag"\n      -c   Set config to load (YAML): -c "/path/to/config.yml\n      -q   Supresses verbose output"\n',
+  helpMsg: '\n    ' + _packageJson2['default'].name + ' v.' + _packageJson2['default'].version + '\n\n    Usage: ' + _packageJson2['default'].name + ' task [options]\n\n      -h   Show this help message\n      -v   Show current version\n      -i   Run container with STDIN support\n      -e   Run custom command(s): -e "some command"\n      -f   Set FROM (Docker image): -f "container:tag"\n      -c   Set config to load (YAML): -c "/path/to/config.yml\n      -p   Override the config exposed port: -p 8888\n      -q   Supresses verbose output"\n',
   /**
    * Checks arguments for specific (immediate action) flags and config
    * @param {Object} args The arguments passed in
@@ -75,6 +75,8 @@ var config = {
     config.interactive = args.i ? true : false;
     // Set exec
     config.exec = args.e ? args.e : false;
+    // Port override
+    config.port = args.p ? args.p : false;
     // Load yaml config
     config.manifestPath = args.c ? config.cwd + '/' + args.c : config.cwd + '/devlab.yml';
     // Override from
@@ -115,6 +117,8 @@ var config = {
   get: function get() {
     config.checkArgs(config.args);
     config.loadManifest();
+    // Check for port override
+    if (config.port) config.manifest.expose[0] = config.manifest.expose[0].replace(/^.+:/, config.port + ':');
     // Check if set to quiet
     /* istanbul ignore next */
     if (config.manifest.quiet) _output2['default'].quiet = true;

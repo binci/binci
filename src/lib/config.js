@@ -34,6 +34,7 @@ const config = {
       -e   Run custom command(s): -e "some command"
       -f   Set FROM (Docker image): -f "container:tag"
       -c   Set config to load (YAML): -c "/path/to/config.yml
+      -p   Override the config exposed port: -p 8888
       -q   Supresses verbose output"\n`,
   /**
    * Checks arguments for specific (immediate action) flags and config
@@ -50,6 +51,8 @@ const config = {
     config.interactive = args.i ? true : false;
     // Set exec
     config.exec = args.e ? args.e : false;
+    // Port override
+    config.port = args.p ? args.p : false;
     // Load yaml config
     config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/devlab.yml`;
     // Override from
@@ -93,6 +96,8 @@ const config = {
   get: () => {
     config.checkArgs(config.args);
     config.loadManifest();
+    // Check for port override
+    if (config.port) config.manifest.expose[0] = config.manifest.expose[0].replace(/^.+:/, `${config.port}:`);
     // Check if set to quiet
     /* istanbul ignore next */
     if (config.manifest.quiet) output.quiet = true;

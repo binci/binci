@@ -69,7 +69,7 @@ const services = {
         let cmd = '';
         services.noPersist.forEach((name, i) => {
           if (process.env.DEVLAB_NO_RM) {
-            let newName = name + (+new Date());
+            let newName = name + +new Date();
             cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rename ${name} ${newName}`;
           } else {
             cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rm ${name}`;
