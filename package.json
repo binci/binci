@@ -48,6 +48,7 @@
     "cli-color": "^1.0.0",
     "js-yaml": "^3.4.2",
     "minimist": "^1.2.0",
-    "shelljs": "^0.5.3"
+    "shelljs": "^0.5.3",
+    "username": "^1.0.1"
   }
 }

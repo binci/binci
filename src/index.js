@@ -2,6 +2,7 @@
  * Copyright (c) 2015 TechnologyAdvice
  */
 import Promise from 'bluebird';
+import username from 'username';
 import config from './lib/config';
 import services from './lib/services';
 import proc from './lib/process';
@@ -31,9 +32,11 @@ const core = {
     let mode = core.manifest.interactive || process.stdout.isTTY  ? '-it' : '-t';
     let args = [ 'run', '--privileged', mode ];
     // Check for no-rm
-    if (!process.env.DEVLAB_NO_RM) args.push('--rm');
+    if (!process.env.DEVLAB_NO_RM || process.env.DEVLAB_NO_RM === 'false') args.push('--rm');
     // Workdir config
     const workdir = [ '-v', `${core.manifest.workdir}:${core.manifest.workdir}`, '-w', core.manifest.workdir ];
+    // Set name
+    const name = [ '--name', `devlab_${core.manifest.workdir.split('/').pop()}_${config.manifest.username}`.toLowerCase() ];
     // From (image) config
     const from = [ core.manifest.from ];
     // Split command into (space delimited) parts
@@ -44,6 +47,7 @@ const core = {
     args = ports.length ? args.concat(ports) : args;
     args = volumes.length ? args.concat(volumes) : args;
     args = args.concat(workdir);
+    args = args.concat(name);
     args = args.concat(from);
     args = args.concat(cmd);
     return args;
@@ -89,10 +93,35 @@ const core = {
   },
 
   /**
+   * Gets manifest from config, sets core object, resolves
+   * @returns {Object} promise
+   */
+  getManifest: () => {
+    return new Promise((resolve, reject) => {
+      // Set user
+      username((err, user) => {
+        if (err) {
+          reject('Error getting username');
+        } else {
+          // Set manifest
+          core.manifest = config.get();
+          // Set username
+          core.manifest.username = user;
+          resolve(core.manifest.services);
+        }
+      });
+    });
+  },
+
+  /**
    * Runs the execution chain to carry out task
    */
   run: () => {
+    // Get manifest from config
     core.manifest = config.get();
+    // Set user
+    core.manifest.username = username.sync() || 'unknown';
+    // Start
     core.startServices(core.manifest.services)
       .then(core.buildArgs)
       .then(core.execTask)
