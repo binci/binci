@@ -1,6 +1,7 @@
 /* global sinon, expect, request, describe, it, before, after */
 import './../../setup';
 import parsers from './../../../src/lib/parsers';
+import username from 'username';
 
 describe('parsers', () => {
   describe('parseHostEnvVars', () => {
@@ -30,8 +31,10 @@ describe('parsers', () => {
   });
   describe('parseSvcObj', () => {
     it('returns an object with properties of service', () => {
+      const user = username.sync() || 'unknown';
       expect(parsers.parseSvcObj({ testImage: { name: 'testSvc' } })).to.deep.equal({
-        name: 'testSvc',
+        name: `devlab_testsvc_${user}`,
+        alias: 'testSvc',
         image: 'testImage',
         env: false,
         expose: false,

@@ -112,13 +112,16 @@ var services = {
     return new _bluebird2['default'](function (resolve, reject) {
       // Incrementor
       var i = 0;
+      var links = [];
       // Service check/start
       var startSvc = function startSvc(service) {
         var svc = _parsers2['default'].parseSvcObj(service);
         // Don't persist?
         if (!svc.persist) services.noPersist.push(svc.name);
-        // Push to links
+        // Push to service links
         services.links.push(svc.name);
+        // Push to resolve links
+        links.push(svc.name + ':' + svc.alias);
         // Check service
         services.startSvc(svc).then(function () {
           _output2['default'].success('Service {{' + svc.name + '}} running');
@@ -129,7 +132,7 @@ var services = {
             startSvc(serviceArray[i]);
           } else {
             // Done.
-            resolve(services.links);
+            resolve(links);
           }
         })['catch'](function (code) {
           _output2['default'].error('Failed to start {{' + svc.name + '}}');

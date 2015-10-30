@@ -94,13 +94,16 @@ const services = {
     return new Promise((resolve, reject) => {
       // Incrementor
       let i = 0;
+      let links = [];
       // Service check/start
       const startSvc = (service) => {
         const svc = parsers.parseSvcObj(service);
         // Don't persist?
         if (!svc.persist) services.noPersist.push(svc.name);
-        // Push to links
+        // Push to service links
         services.links.push(svc.name);
+        // Push to resolve links
+        links.push(`${svc.name}:${svc.alias}`);
         // Check service
         services.startSvc(svc)
           .then(() => {
@@ -112,7 +115,7 @@ const services = {
               startSvc(serviceArray[i]);
             } else {
               // Done.
-              resolve(services.links);
+              resolve(links);
             }
           })
           .catch((code) => {

@@ -100,7 +100,7 @@ var core = {
           _libServices2['default'].run(svc).then(function (links) {
             // Create links array for insert into run
             links.map(function (l) {
-              core.links = core.links.concat(['--link', l + ':' + l]);
+              core.links = core.links.concat(['--link', l]);
             });
             resolve();
           })['catch'](function (e) {
