@@ -13,6 +13,18 @@ npm install devlab -g
 
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
 
+## Quickstart / Demo
+
+For a hands-on crash course in utilizing DevLab, follow the steps below:
+
+1. Install Devlab: `npm install devlab -g`
+2. Clone the demo: `git@github.com:TechnologyAdvice/DevLab-Demo.git`
+3. Move into demo: `cd DevLab-Demo`
+4. Use DevLab to install dependencies: `lab install`
+5. Run tests: `lab test`
+
+For more information please see [this blog post](http://blog.fluidbyte.net/containerize-your-local-dev-in-minutes-with-devlab/) about getting started with DevLab.
+
 ## Usage
 
 DevLab operates as a command on your system (via global install). It reads the
@@ -99,6 +111,21 @@ Variables specified with `${NAME}` will pull from the host machine, or strings c
 
 Sets ports to expose to host machine. This is useful for long-running tasks. For example if you're testing a service and have a task that runs the service this will allow you to access the ports needed to make requests against the service.
 
+To quickly override a port you can use the `-p` flag, for instance, if the following is set in the config:
+
+```yaml
+expose:
+  - 8888:9999
+```
+
+The `8888` exposed to the host could be overridden to instead expose to `3333` on the host with:
+
+```
+lab {some_task} -p 3333
+```
+
+**Note: this currently only works with the first exposed port config*
+
 #### `volumes`
 
 Maps local directories to paths on the container. This supports the use of environment variables (as shown in the example).
@@ -128,6 +155,21 @@ DevLab supports multi-line tasks as well, for example:
     echo foo
     echo bar
 ```
+
+##### Running Multiple Tasks
+
+You can specify multiple tasks to be run in one master task via the following:
+
+```yaml
+  install: npm install
+  test: npm test
+  build: npm run build
+  all: .install .test .build
+```
+
+In the above example, `lab all` would run the `install`, `test` and `build` tasks.
+
+**Note:** The task names are prefixed with `.` and on a single line. Dot-prefixed variables DO NOT work in multi-line commands.
 
 ## Custom Execution Tasks
 

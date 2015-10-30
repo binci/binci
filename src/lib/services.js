@@ -63,13 +63,17 @@ const services = {
   stopServices: () => {
     return new Promise((resolve) => {
       if (services.noPersist.length === 0) {
-        // No services to stop
         resolve();
       } else {
         output.success(`Stoping service${ services.noPersist.length > 1 ? 's' : '' }: {{${services.noPersist.join(', ')}}}`);
         let cmd = '';
         services.noPersist.forEach((name, i) => {
-          cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rm ${name}`;
+          if (process.env.DEVLAB_NO_RM) {
+            let newName = name + +new Date();
+            cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rename ${name} ${newName}`;
+          } else {
+            cmd += `${i > 0 ? ' && ' : ''}docker stop ${name} && docker rm ${name}`;
+          }
         });
         exec(cmd, (err) => {
           if (err) {

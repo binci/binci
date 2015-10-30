@@ -14,9 +14,9 @@ expose:
   - 8080:8080
 volumes:
   - ${HOME}/.ssh:/root/.ssh
-before-task: echo starting.
-after-task: |
-  echo completed.
+before-task: |
+  echo starting.
+after-task: echo completed.
 tasks:
   env: |
     export FOO=$MONGODB_ENV_MONGO_VERSION
@@ -27,3 +27,4 @@ tasks:
   test: npm run test
   lint: npm run lint
   build: npm run build
+  all: .env .test .build

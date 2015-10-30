@@ -81,13 +81,17 @@ var services = {
   stopServices: function stopServices() {
     return new _bluebird2['default'](function (resolve) {
       if (services.noPersist.length === 0) {
-        // No services to stop
         resolve();
       } else {
         _output2['default'].success('Stoping service' + (services.noPersist.length > 1 ? 's' : '') + ': {{' + services.noPersist.join(', ') + '}}');
         var cmd = '';
         services.noPersist.forEach(function (name, i) {
-          cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name + ' && docker rm ' + name;
+          if (process.env.DEVLAB_NO_RM) {
+            var newName = name + +new Date();
+            cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name + ' && docker rename ' + name + ' ' + newName;
+          } else {
+            cmd += (i > 0 ? ' && ' : '') + 'docker stop ' + name + ' && docker rm ' + name;
+          }
         });
         (0, _child_process.exec)(cmd, function (err) {
           if (err) {

@@ -78,9 +78,26 @@ var parsers = {
    * @returns {String}
    */
   parseTask: function parseTask(task) {
-    var tmp = task.replace(/(\r\n|\n|\r)/gm, ';');
-    if (tmp.slice(-1) !== ';') tmp += ';';
-    return tmp;
+    if (task && task.indexOf('\n') >= 0) {
+      var tmp = task.split('\n');
+      return tmp.join('; ');
+    }
+    return task;
+  },
+  /**
+   * Parses aliases to other tasks
+   * @param {Object} manifest The config manifest
+   * @param {String} task The task
+   * @returns {String}
+   */
+  parseAliases: function parseAliases(manifest, task) {
+    var matchAliases = function matchAliases(i, match) {
+      if (manifest.tasks[match]) {
+        return manifest.tasks[match] + ';';
+      }
+      return '.' + match;
+    };
+    return parsers.parseTask(task.toString().replace(/\.(\S+)\b/g, matchAliases));
   }
 };
 

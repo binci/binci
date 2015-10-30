@@ -34,6 +34,7 @@ const config = {
       -e   Run custom command(s): -e "some command"
       -f   Set FROM (Docker image): -f "container:tag"
       -c   Set config to load (YAML): -c "/path/to/config.yml
+      -p   Override the config exposed port: -p 8888
       -q   Supresses verbose output"\n`,
   /**
    * Checks arguments for specific (immediate action) flags and config
@@ -50,6 +51,8 @@ const config = {
     config.interactive = args.i ? true : false;
     // Set exec
     config.exec = args.e ? args.e : false;
+    // Port override
+    config.port = args.p ? args.p : false;
     // Load yaml config
     config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/devlab.yml`;
     // Override from
@@ -69,20 +72,39 @@ const config = {
     }
   },
   /**
+   * Sets up run of preset task
+   * @param {Object} manifest The config manifest
+   * @param {String} task The task to execute
+   * @returns {String}
+   */
+  setupRun: (manifest, task) => {
+    const beforeTask = manifest['before-task'] ? parsers.parseTask(manifest['before-task']) + ';' : '';
+    const afterTask = manifest['after-task'] ? parsers.parseTask(manifest['after-task']) : '';
+    let tmp = parsers.parseTask(manifest.tasks[task]);
+    tmp = parsers.parseAliases(manifest, tmp);
+    if (tmp.slice(-1) !== ';') tmp += ';';
+    return `set -e; ${beforeTask} ${tmp} ${afterTask}`
+      // Some cleanup...
+      .replace(/;;/g, ';')
+      .replace(/; ;/g, ';')
+      .replace(/\s\s+/g, ' ')
+      .trim();
+  },
+  /**
    * Runs the config process
    */
   get: () => {
     config.checkArgs(config.args);
     config.loadManifest();
+    // Check for port override
+    if (config.port) config.manifest.expose[0] = config.manifest.expose[0].replace(/^.+:/, `${config.port}:`);
     // Check if set to quiet
     /* istanbul ignore next */
     if (config.manifest.quiet) output.quiet = true;
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      const beforeTask = config.manifest['before-task'] ? parsers.parseTask(config.manifest['before-task']) : '';
-      const afterTask = config.manifest['after-task'] ? parsers.parseTask(config.manifest['after-task']) : '';
-      config.manifest.run = 'set -e;' + beforeTask + parsers.parseTask(config.manifest.tasks[config.task]) + afterTask;
+      config.manifest.run = config.setupRun(config.manifest, config.task);
     } else if (config.exec) {
       // Execute arbitrary command
       config.manifest.run = config.exec;
