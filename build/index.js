@@ -13,6 +13,10 @@ var _bluebird = require('bluebird');
 
 var _bluebird2 = _interopRequireDefault(_bluebird);
 
+var _username = require('username');
+
+var _username2 = _interopRequireDefault(_username);
+
 var _libConfig = require('./lib/config');
 
 var _libConfig2 = _interopRequireDefault(_libConfig);
@@ -56,9 +60,11 @@ var core = {
     var mode = core.manifest.interactive || process.stdout.isTTY ? '-it' : '-t';
     var args = ['run', '--privileged', mode];
     // Check for no-rm
-    if (!process.env.DEVLAB_NO_RM) args.push('--rm');
+    if (!process.env.DEVLAB_NO_RM || process.env.DEVLAB_NO_RM === 'false') args.push('--rm');
     // Workdir config
     var workdir = ['-v', core.manifest.workdir + ':' + core.manifest.workdir, '-w', core.manifest.workdir];
+    // Set name
+    var name = ['--name', ('devlab_' + core.manifest.workdir.split('/').pop() + '_' + _libConfig2['default'].manifest.username).toLowerCase()];
     // From (image) config
     var from = [core.manifest.from];
     // Split command into (space delimited) parts
@@ -69,6 +75,7 @@ var core = {
     args = ports.length ? args.concat(ports) : args;
     args = volumes.length ? args.concat(volumes) : args;
     args = args.concat(workdir);
+    args = args.concat(name);
     args = args.concat(from);
     args = args.concat(cmd);
     return args;
@@ -93,7 +100,7 @@ var core = {
           _libServices2['default'].run(svc).then(function (links) {
             // Create links array for insert into run
             links.map(function (l) {
-              core.links = core.links.concat(['--link', l + ':' + l]);
+              core.links = core.links.concat(['--link', l]);
             });
             resolve();
           })['catch'](function (e) {
@@ -119,7 +126,11 @@ var core = {
    * Runs the execution chain to carry out task
    */
   run: function run() {
+    // Get manifest from config
     core.manifest = _libConfig2['default'].get();
+    // Set user
+    core.manifest.username = _username2['default'].sync() || 'unknown';
+    // Start
     core.startServices(core.manifest.services).then(core.buildArgs).then(core.execTask).then(_libServices2['default'].stopServices).then(function () {
       var closed = (new Date().getTime() - start) / 1000;
       _libOutput2['default'].success('Completed in {{' + closed + '}} seconds');

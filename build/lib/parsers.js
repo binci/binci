@@ -1,11 +1,18 @@
-/*
- * Copyright (c) 2015 TechnologyAdvice
- */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _username = require('username');
+
+var _username2 = _interopRequireDefault(_username);
+
+/*
+ * Copyright (c) 2015 TechnologyAdvice
+ */
 var parsers = {
   /**
    * Parses host environment variables
@@ -59,18 +66,28 @@ var parsers = {
     return vols;
   },
   /**
+   * Parses the service container name
+   * @param {String} name
+   * @returns {String}
+   */
+  parseSvcObjName: function parseSvcObjName(name) {
+    var user = _username2['default'].sync() || 'unknown';
+    return ('devlab_' + name + '_' + user).toLowerCase().replace(/[^A-Z0-9]/ig, '_');
+  },
+  /**
    * Parses the service object and ensures all required props set
    * @param {Object} svc The service object from the manifest
    * @returns {Object}
    */
   parseSvcObj: function parseSvcObj(svc) {
     var image = Object.keys(svc)[0];
-    var name = svc[image].name || image;
+    var name = parsers.parseSvcObjName(svc[image].name || image);
+    var alias = svc[image].name || image;
     var env = svc[image].env || false;
     var expose = svc[image].expose || false;
     var persist = svc[image].persist === false ? false : true;
     // Return svc object
-    return { image: image, name: name, env: env, expose: expose, persist: persist };
+    return { image: image, name: name, alias: alias, env: env, expose: expose, persist: persist };
   },
   /**
    * Strips line breaks and splits with semicolons
