@@ -1,3 +1,4 @@
+import config from './config';
 import username from 'username';
 /*
  * Copyright (c) 2015 TechnologyAdvice
@@ -53,7 +54,7 @@ const parsers = {
    */
   parseSvcObjName: (name) => {
     let user = username.sync() || 'unknown';
-    return `devlab_${name}_${user}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
+    return `devlab_${name}_${user}_${config.instance}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
   },
   /**
    * Parses the service object and ensures all required props set

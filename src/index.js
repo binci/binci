@@ -36,7 +36,7 @@ const core = {
     // Workdir config
     const workdir = [ '-v', `${core.manifest.workdir}:${core.manifest.workdir}`, '-w', core.manifest.workdir ];
     // Set name
-    const name = [ '--name', `devlab_${core.manifest.workdir.split('/').pop()}_${config.manifest.username}`.toLowerCase() ];
+    const name = [ '--name', `devlab_${core.manifest.workdir.split('/').pop()}_${config.manifest.username}_${config.instance}`.toLowerCase() ];
     // From (image) config
     const from = [ core.manifest.from ];
     // Split command into (space delimited) parts
