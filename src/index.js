@@ -8,6 +8,7 @@ import proc from './lib/process';
 import output from './lib/output';
 import parsers from './lib/parsers';
 import tunnels from './lib/tunnels';
+import url from 'url';
 
 // Process timer
 const start = new Date().getTime();
@@ -80,10 +81,21 @@ const core = {
   },
 
   /**
-   * If we're running docker-machine, tunnel exposed ports from localhost to the machine.
+   * SSH tunnel any host-exposed ports with a `forward` flag from localhost to the remote machine,
+   * if docker is configured to connect to a remote daemon.
+   * @returns {Promise} Resolves after forwarding is complete.
    */
   startTunnels: () => {
-
+    const ports = parsers.parseForwardedPorts(core.manifest);
+    if (!ports.length || !process.env.DOCKER_HOST) {
+      // Pass; nothing to do
+      return Promise.resolve();
+    }
+    const host = url.parse(process.env.DOCKER_HOST).hostname;
+    if (!host) {
+      return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start SSH tunnels.'));
+    }
+    return tunnels.startTunnels(host, ports);
   },
 
   /**

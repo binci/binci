@@ -6,6 +6,13 @@
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var parsers = {
   /**
    * Parses host environment variables
@@ -42,6 +49,32 @@ var parsers = {
     var ports = [];
     expose.map(function (p) {
       ports = ports.concat(['-p', p]);
+    });
+    return ports;
+  },
+
+  /**
+   * Scans the manifest for any exposed ports with `forward` set to `true` at the same level.
+   * @param {Object} manifest A parsed devlab manifest
+   * @returns {Array<string>} An array of ports exposed on the host machine, in string form.
+   */
+  parseForwardedPorts: function parseForwardedPorts(manifest) {
+    var ports = [];
+    var serviceBlocks = [manifest];
+    if (manifest.services) {
+      serviceBlocks = serviceBlocks.concat(_lodash2['default'].values(manifest.services));
+    }
+    serviceBlocks.filter(function (elem) {
+      return elem.forward && elem.expose && elem.expose.length;
+    }).map(function (elem) {
+      return elem.expose;
+    }).forEach(function (elem) {
+      elem.forEach(function (expose) {
+        var portMatch = expose.match(/^(\d+):/);
+        if (portMatch && portMatch[1]) {
+          ports.push(portMatch[1]);
+        }
+      });
     });
     return ports;
   },

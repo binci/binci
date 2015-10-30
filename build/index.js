@@ -33,6 +33,14 @@ var _libParsers = require('./lib/parsers');
 
 var _libParsers2 = _interopRequireDefault(_libParsers);
 
+var _libTunnels = require('./lib/tunnels');
+
+var _libTunnels2 = _interopRequireDefault(_libTunnels);
+
+var _url = require('url');
+
+var _url2 = _interopRequireDefault(_url);
+
 // Process timer
 var start = new Date().getTime();
 
@@ -106,6 +114,24 @@ var core = {
   },
 
   /**
+   * SSH tunnel any host-exposed ports with a `forward` flag from localhost to the remote machine,
+   * if docker is configured to connect to a remote daemon.
+   * @returns {Promise} Resolves after forwarding is complete.
+   */
+  startTunnels: function startTunnels() {
+    var ports = _libParsers2['default'].parseForwardedPorts(core.manifest);
+    if (!ports.length || !process.env.DOCKER_HOST) {
+      // Pass; nothing to do
+      return _bluebird2['default'].resolve();
+    }
+    var host = _url2['default'].parse(process.env.DOCKER_HOST).hostname;
+    if (!host) {
+      return _bluebird2['default'].reject(new Error('DOCKER_HOST is malformed. Cannot start SSH tunnels.'));
+    }
+    return _libTunnels2['default'].startTunnels(host, ports);
+  },
+
+  /**
    * Executes the task with arguments
    * @param {Array} args Array of arguments
    * @returns {Object} promise
@@ -120,12 +146,13 @@ var core = {
    */
   run: function run() {
     core.manifest = _libConfig2['default'].get();
-    core.startServices(core.manifest.services).then(core.buildArgs).then(core.execTask).then(_libServices2['default'].stopServices).then(function () {
+    core.startServices(core.manifest.services).then(core.startTunnels).then(core.buildArgs).then(core.execTask).then(_libTunnels2['default'].stopTunnels).then(_libServices2['default'].stopServices).then(function () {
       var closed = (new Date().getTime() - start) / 1000;
       _libOutput2['default'].success('Completed in {{' + closed + '}} seconds');
       process.exit(0);
     })['catch'](function (code) {
       _libOutput2['default'].error('Error running {{' + core.manifest.run + '}}, exited with code {{' + code + '}}');
+      _libTunnels2['default'].stopTunnels();
       _libServices2['default'].stopServices();
       process.exit(code);
     });
