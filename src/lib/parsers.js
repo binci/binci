@@ -1,3 +1,4 @@
+import username from 'username';
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
@@ -75,18 +76,28 @@ const parsers = {
     return vols;
   },
   /**
+   * Parses the service container name
+   * @param {String} name
+   * @returns {String}
+   */
+  parseSvcObjName: (name) => {
+    let user = username.sync() || 'unknown';
+    return `devlab_${name}_${user}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
+  },
+  /**
    * Parses the service object and ensures all required props set
    * @param {Object} svc The service object from the manifest
    * @returns {Object}
    */
   parseSvcObj: (svc) => {
     const image = Object.keys(svc)[0];
-    const name = svc[image].name || image;
+    const name = parsers.parseSvcObjName(svc[image].name || image);
+    const alias = svc[image].name || image;
     const env = svc[image].env || false;
     const expose = svc[image].expose || false;
     const persist = svc[image].persist === false ? false : true;
     // Return svc object
-    return { image, name, env, expose, persist };
+    return { image, name, alias, env, expose, persist };
   },
   /**
    * Strips line breaks and splits with semicolons

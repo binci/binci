@@ -1,6 +1,6 @@
 {
   "name": "devlab",
-  "version": "1.2.10",
+  "version": "1.4.0",
   "description": "Node utility for running containerized tasks",
   "keywords": [
     "docker",
@@ -22,6 +22,7 @@
     "lint": "eslint ./src ./test/src",
     "build": "babel ./src --out-dir ./build",
     "local-install": "npm run build && npm install -g ."
+    "prepublish": "npm test && npm run build"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
@@ -47,8 +48,8 @@
     "bluebird": "^2.10.1",
     "cli-color": "^1.0.0",
     "js-yaml": "^3.4.2",
-    "lodash": "^3.10.1",
     "minimist": "^1.2.0",
-    "shelljs": "^0.5.3"
+    "shelljs": "^0.5.3",
+    "username": "^1.0.1"
   }
 }

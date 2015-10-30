@@ -12,6 +12,7 @@ describe('core', () => {
     core.manifest.workdir = '/test';
     core.links = [ '--link', 'someService:someService' ];
     it('builds arguments from manifest file', () => {
+      process.env.DEVLAB_NO_RM = false;
       const result = core.buildArgs();
       expect(result).to.deep.equal([
         'run',
@@ -30,6 +31,8 @@ describe('core', () => {
         '/test:/test',
         '-w',
         '/test',
+        '--name',
+        'devlab_test_undefined',
         'node:0.10',
         'sh',
         '-c',
@@ -55,6 +58,8 @@ describe('core', () => {
         '/test:/test',
         '-w',
         '/test',
+        '--name',
+        'devlab_test_undefined',
         'node:0.10',
         'sh',
         '-c',
