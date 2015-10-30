@@ -22,6 +22,7 @@
     "lint": "eslint ./src ./test/src",
     "build": "babel ./src --out-dir ./build",
     "local-install": "npm run build && npm install -g ."
+    "prepublish": "npm test && npm run build"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
