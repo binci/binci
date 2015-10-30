@@ -93,27 +93,6 @@ const core = {
   },
 
   /**
-   * Gets manifest from config, sets core object, resolves
-   * @returns {Object} promise
-   */
-  getManifest: () => {
-    return new Promise((resolve, reject) => {
-      // Set user
-      username((err, user) => {
-        if (err) {
-          reject('Error getting username');
-        } else {
-          // Set manifest
-          core.manifest = config.get();
-          // Set username
-          core.manifest.username = user;
-          resolve(core.manifest.services);
-        }
-      });
-    });
-  },
-
-  /**
    * Runs the execution chain to carry out task
    */
   run: () => {

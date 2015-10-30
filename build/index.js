@@ -123,27 +123,6 @@ var core = {
   },
 
   /**
-   * Gets manifest from config, sets core object, resolves
-   * @returns {Object} promise
-   */
-  getManifest: function getManifest() {
-    return new _bluebird2['default'](function (resolve, reject) {
-      // Set user
-      (0, _username2['default'])(function (err, user) {
-        if (err) {
-          reject('Error getting username');
-        } else {
-          // Set manifest
-          core.manifest = _libConfig2['default'].get();
-          // Set username
-          core.manifest.username = user;
-          resolve(core.manifest.services);
-        }
-      });
-    });
-  },
-
-  /**
    * Runs the execution chain to carry out task
    */
   run: function run() {
