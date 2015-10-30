@@ -39,7 +39,7 @@ const parsers = {
   },
 
   /**
-   * Scans the manifest for any exposed ports with `forward` set to `true` at the same level.
+   * Scans the manifest for any exposed ports with `forward` not set to `false` at the same level.
    * @param {Object} manifest A parsed devlab manifest
    * @returns {Array<string>} An array of ports exposed on the host machine, in string form.
    */
@@ -51,7 +51,7 @@ const parsers = {
     }
     serviceBlocks
       .filter((elem) => {
-        return elem.forward && elem.expose && elem.expose.length;
+        return elem.forward !== false && elem.expose && elem.expose.length;
       })
       .map((elem) => elem.expose)
       .forEach((elem) => {
