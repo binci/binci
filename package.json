@@ -12,6 +12,10 @@
     "task"
   ],
   "main": "index.js",
+  "files": [
+    "build",
+    "index.js"
+  ],
   "bin": {
     "lab": "index.js",
     "devlab": "index.js"
