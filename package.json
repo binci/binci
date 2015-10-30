@@ -25,7 +25,7 @@
     "test": "mocha --timeout 5000 --compilers js:babel/register ./test/src --recursive",
     "lint": "eslint ./src ./test/src",
     "build": "babel ./src --out-dir ./build",
-    "local-install": "npm run build && npm install -g ."
+    "local-install": "npm run build && npm install -g .",
     "prepublish": "npm test && npm run build"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
