@@ -10,8 +10,6 @@ import { spawn } from 'child_process';
  */
 const bindIp = '127.0.0.1';
 
-let tunnelProc = null;
-
 const tunnels = {
   /**
    * Starts tunnels from a port or ports on the local machine to the same ports on
@@ -29,18 +27,18 @@ const tunnels = {
     const userStr = remoteUser ? remoteUser + '@' : '';
     args.push(userStr + host);
     ports.forEach((port) => args.push('-L', `${port}:${bindIp}:${port}`));
-    tunnelProc = spawn('ssh', args, {
+    tunnels._tunnelProc = spawn('ssh', args, {
       stdio: ['ignore', 'ignore', process.stderr]
     });
-    tunnelProc.on('close', () => tunnelProc = null);
+    tunnels._tunnelProc.on('close', () => tunnelProc = null);
   },
 
   /**
    * Stops any active tunnels. If no tunnels are active, this does nothing.
    */
   stopTunnels: () => {
-    if (tunnelProc) {
-      tunnelProc.kill();
+    if (tunnels._tunnelProc) {
+      tunnels._tunnelProc.kill();
     }
   },
 
@@ -66,7 +64,12 @@ const tunnels = {
    */
   _getRemoteUser: () => {
     return process.env.DEVLAB_FORWARD_SSH_USER || (process.env.DOCKER_MACHINE_NAME ? 'docker' : null);
-  }
+  },
+
+  /**
+   * The active tunnel process, or null if no process is active.
+   */
+  _tunnelProc: null
 };
 
 export default tunnels;
