@@ -1,6 +1,7 @@
 /* global sinon, expect, request, describe, it, before, after */
 import './../../setup';
 import parsers from './../../../src/lib/parsers';
+import testManifests from './../../fixtures/manifests';
 import username from 'username';
 
 describe('parsers', () => {
@@ -21,6 +22,12 @@ describe('parsers', () => {
     it('processes an array of ports and returns arguments', () => {
       const result = parsers.parseExpose([ '8080:8080' ]);
       expect(result).to.deep.equal([ '-p', '8080:8080' ]);
+    });
+  });
+  describe('parseForwardedPorts', () => {
+    it('collects all locally exposed ports in a manifest', () => {
+      const result = parsers.parseForwardedPorts(testManifests.multiExpose);
+      expect(result).to.eql(['8181', '8282', '7000', '3306']);
     });
   });
   describe('parseVolumes', () => {
