@@ -11,6 +11,10 @@ import pkg from './../../package.json';
 
 const config = {
   /**
+   * Generate random instance string
+   */
+  instance: +new Date(),
+  /**
    * Object to contain runtime opts
    */
   manifest: {},

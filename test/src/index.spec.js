@@ -1,6 +1,7 @@
 /* global sinon, expect, request, describe, it, before, after */
 import './../setup';
 import core from './../../src/index';
+import config from './../../src/lib/config';
 import yaml from 'js-yaml';
 import fs from 'fs';
 
@@ -32,7 +33,7 @@ describe('core', () => {
         '-w',
         '/test',
         '--name',
-        'devlab_test_undefined',
+        `devlab_test_undefined_${config.instance}`,
         'node:0.10',
         'sh',
         '-c',
@@ -59,7 +60,7 @@ describe('core', () => {
         '-w',
         '/test',
         '--name',
-        'devlab_test_undefined',
+        `devlab_test_undefined_${config.instance}`,
         'node:0.10',
         'sh',
         '-c',
