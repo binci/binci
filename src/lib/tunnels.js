@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
+import output from './output';
 import { spawn } from 'child_process';
 
 /**
@@ -18,6 +19,8 @@ const tunnels = {
    * @param {Array<string|number>} ports An array of ports numbers to forward
    */
   startTunnels: (host, ports) => {
+    const portStr = ports.join(', ');
+    const portPlural = 'port' + (ports.length === 1 ? '' : 's');
     const keyPath = tunnels._getKeyPath();
     const remoteUser = tunnels._getRemoteUser();
     const args = ['-N'];
@@ -27,10 +30,16 @@ const tunnels = {
     const userStr = remoteUser ? remoteUser + '@' : '';
     args.push(userStr + host);
     ports.forEach((port) => args.push('-L', `${port}:${bindIp}:${port}`));
+    output.success(`Forwarding local ${portPlural} {{${portStr}}} to {{${host}}}`);
     tunnels._tunnelProc = spawn('ssh', args, {
       stdio: ['ignore', 'ignore', process.stderr]
     });
-    tunnels._tunnelProc.on('close', () => tunnelProc = null);
+    tunnels._tunnelProc.on('close', () => {
+      if (tunnels._tunnelProc) {
+        output.error('Port forwarding failed unexpectedly');
+      }
+      tunnels._tunnelProc = null;
+    });
   },
 
   /**
@@ -39,6 +48,8 @@ const tunnels = {
   stopTunnels: () => {
     if (tunnels._tunnelProc) {
       tunnels._tunnelProc.kill();
+      tunnels._tunnelProc = null;
+      output.success('Halted port forwarding');
     }
   },
 
