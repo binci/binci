@@ -193,6 +193,23 @@ The above will run the container with `STDIN` support at bash shell for working 
 
 The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `devlab.yml`
 
+## Port forwarding
+
+If you're running the docker daemon remotely, as is commonly the case with docker-machine users, DevLab will attempt to forward any `expose`d ports (for your main project as well as any linked services) from your local machine to your remote docker machine. No more hunting down IP addresses to hit -- you can just hit localhost.
+
+To avoid this default behavior, add the following property to `devlab.yml` at the same level as any `expose` directive that you don't want to have forwarded:
+ 
+```
+forward: false
+```
+
+If you're using docker-machine, DevLab will figure out the appropriate SSH settings to use to establish a tunnel. Using a remote docker daemon but _not_ running docker-machine? If your default SSH key and username won't give you SSH access to the remote machine, configure those by setting the following environment variables on your local machine. Add these to a file like `~/.profile`, `~/.bashrc`, or `~/.zshrc` depending on your system:
+
+```
+export DEVLAB_FORWARD_SSH_KEY=/path/to/private/ssh/id_rsa
+export DEVLAB_FORWARD_SSH_USER=remote_username
+```
+
 ## License
 
 DevLab is licensed under the MIT license. Please see `LICENSE.txt` for full details.
