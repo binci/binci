@@ -195,15 +195,13 @@ The interactive command can be used with the `-e` flag as in the example above o
 
 ## Port forwarding
 
-If you're running the docker daemon remotely, as is commonly the case with docker-machine users, DevLab will attempt to forward any `expose`d ports (for your main project as well as any linked services) from your local machine to your remote docker machine. No more hunting down IP addresses to hit -- you can just hit localhost.
+If you're running the docker daemon remotely, as is commonly the case with docker-machine users, DevLab will attempt to forward any `expose`d ports (for your main project as well as any linked services) from your local machine to your remote docker machine, over both TCP and UDP. No more hunting down IP addresses to hit -- you can just hit localhost.
 
 To avoid this default behavior, add the following property to `devlab.yml` at the same level as any `expose` directive that you don't want to have forwarded:
  
 ```
 forward: false
 ```
-
-At the moment, only TCP connections are supported.
 
 ## License
 
