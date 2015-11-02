@@ -3,17 +3,21 @@
  */
 import output from './output';
 import net from 'net';
+import Promise from 'bluebird';
 
 const forwarders = {
   /**
    * Opens a server socket on the given port, proxying it to the same port at the given host when a connection is
    * established.
    * @param {string} host The hostname or IP address of the remote server
-   * @param {number} port The port to connect between local and remote
+   * @param {number} localPort The port on which to listen for local connections
+   * @param {number} [remotePort=localPort] The port to which traffic should be forwarded on the host. If omitted,
+   *    localPort is used.
+   * @return {Promise} Resolves when the given localPort is successfully listening.
    */
-  startForwarder: (host, port) => {
+  startForwarder: (host, localPort, remotePort = localPort) => {
     const server = net.createServer((localConn) => {
-      const remoteConn = net.connect(port, host);
+      const remoteConn = net.connect(remotePort, host);
       remoteConn.on('connect', () => {
         localConn.pipe(remoteConn);
         remoteConn.pipe(localConn);
@@ -23,18 +27,23 @@ const forwarders = {
         localConn.end();
       });
     });
-    output.success(`Forwarding {{localhost:${port}}} to {{${host}:${port}}}`);
-    server.listen(port);
+    output.success(`Forwarding {{localhost:${localPort}}} to {{${host}:${remotePort}}}`);
     forwarders._servers.push(server);
+    return new Promise((resolve, reject) => {
+      server.on('error', (err) => reject(err));
+      server.listen(localPort, resolve);
+    });
   },
 
   /**
    * Starts a forwarder for each given port on the local machine to the same ports on the remote machine.
    * @param {string} host The hostname of the machine to which the ports should be forwarded.
    * @param {Array<number>} ports An array of port numbers to forward
+   * @return {Promise} Resolves when all given ports are listening locally.
    */
   startForwarders: (host, ports) => {
-    ports.forEach((port) => forwarders.startForwarder(host, port));
+    const promises = ports.map((port) => forwarders.startForwarder(host, port));
+    return Promise.all(promises);
   },
 
   /**
