@@ -29,10 +29,10 @@ describe('parsers', () => {
     it('collects all locally exposed ports in a manifest', () => {
       const result = parsers.parseForwardedPorts(testManifests.multiExpose);
       expect(result).to.be.an.Array;
-      expect(result).to.include('8181');
-      expect(result).to.include('8282');
-      expect(result).to.include('7000');
-      expect(result).to.include('3306');
+      expect(result).to.include(8181);
+      expect(result).to.include(8282);
+      expect(result).to.include(7000);
+      expect(result).to.include(3306);
       expect(result).to.have.length(4);
     });
   });

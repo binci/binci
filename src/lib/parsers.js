@@ -59,7 +59,7 @@ const parsers = {
         elem.forEach((expose) => {
           const portMatch = expose.match(/^(\d+):/);
           if (portMatch && portMatch[1]) {
-            ports.push(portMatch[1]);
+            ports.push(parseInt(portMatch[1], 10));
           }
         });
       });

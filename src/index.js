@@ -8,7 +8,7 @@ import services from './lib/services';
 import proc from './lib/process';
 import output from './lib/output';
 import parsers from './lib/parsers';
-import tunnels from './lib/tunnels';
+import forwarders from './lib/forwarders';
 import url from 'url';
 
 // Process timer
@@ -85,11 +85,11 @@ const core = {
   },
 
   /**
-   * SSH tunnel any host-exposed ports with a `forward` flag from localhost to the remote machine,
+   * Forward any host-exposed ports that haven't explicitly disabled forwarding from localhost to the remote machine,
    * if docker is configured to connect to a remote daemon.
    * @returns {Promise} Resolves after forwarding is complete.
    */
-  startTunnels: () => {
+  startForwarders: () => {
     const ports = parsers.parseForwardedPorts(core.manifest);
     if (!ports.length || !process.env.DOCKER_HOST) {
       // Pass; nothing to do
@@ -97,9 +97,9 @@ const core = {
     }
     const host = url.parse(process.env.DOCKER_HOST).hostname;
     if (!host) {
-      return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start SSH tunnels.'));
+      return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'));
     }
-    return tunnels.startTunnels(host, ports);
+    return forwarders.startForwarders(host, ports);
   },
 
   /**
@@ -122,10 +122,10 @@ const core = {
     core.manifest.username = username.sync() || 'unknown';
     // Start
     core.startServices(core.manifest.services)
-      .then(core.startTunnels)
+      .then(core.startForwarders)
       .then(core.buildArgs)
       .then(core.execTask)
-      .then(tunnels.stopTunnels)
+      .then(forwarders.stopForwarders)
       .then(services.stopServices)
       .then(() => {
         const closed = (new Date().getTime() - start) / 1000;
@@ -134,7 +134,7 @@ const core = {
       })
       .catch((code) => {
         output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
-        tunnels.stopTunnels();
+        forwarders.stopForwarders();
         services.stopServices();
         process.exit(code);
       });
