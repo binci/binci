@@ -1,3 +1,10 @@
+1.5.1 / 2015-11-03
+==================
+
+  * 1.5.1
+  * Adding lodash dep
+  * Changelog - 1.5.0
+
 1.5.0 / 2015-11-03
 ==================
 
@@ -170,6 +177,3 @@
   * committing again cuz something funky happened
   * Adds support for before-task and after-task scripts
   * Adding 'lam' bin cmd, misc doc, up-version
-  * Add note on multi-line tasks
-  * Making naming in core file more generic
-  * Changing config doc sections to use linkable headers
