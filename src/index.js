@@ -8,6 +8,8 @@ import services from './lib/services';
 import proc from './lib/process';
 import output from './lib/output';
 import parsers from './lib/parsers';
+import forwarders from './lib/forwarders';
+import url from 'url';
 
 // Process timer
 const start = new Date().getTime();
@@ -83,6 +85,24 @@ const core = {
   },
 
   /**
+   * Forward any host-exposed ports that haven't explicitly disabled forwarding from localhost to the remote machine,
+   * if docker is configured to connect to a remote daemon.
+   * @returns {Promise} Resolves after forwarding is complete.
+   */
+  startForwarders: () => {
+    const ports = parsers.parseForwardedPorts(core.manifest);
+    if (!ports.length || !process.env.DOCKER_HOST) {
+      // Pass; nothing to do
+      return Promise.resolve();
+    }
+    const host = url.parse(process.env.DOCKER_HOST).hostname;
+    if (!host) {
+      return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'));
+    }
+    return forwarders.startForwarders(host, ports);
+  },
+
+  /**
    * Executes the task with arguments
    * @param {Array} args Array of arguments
    * @returns {Object} promise
@@ -102,8 +122,10 @@ const core = {
     core.manifest.username = username.sync() || 'unknown';
     // Start
     core.startServices(core.manifest.services)
+      .then(core.startForwarders)
       .then(core.buildArgs)
       .then(core.execTask)
+      .then(forwarders.stopForwarders)
       .then(services.stopServices)
       .then(() => {
         const closed = (new Date().getTime() - start) / 1000;
@@ -112,6 +134,7 @@ const core = {
       })
       .catch((code) => {
         output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
+        forwarders.stopForwarders();
         services.stopServices();
         process.exit(code);
       });
