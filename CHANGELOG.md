@@ -1,9 +1,37 @@
+1.5.0 / 2015-11-03
+==================
+
+  * 1.5.0
+  * Merge pull request [#11](https://github.com/TechnologyAdvice/DevLab/issues/11) from TechnologyAdvice/portforward
+    Portforward
+  * Removes 'only' to allow full test run
+  * Updating readme in response to issue [#13](https://github.com/TechnologyAdvice/DevLab/issues/13)
+  * Forwarders: Add UDP forwarding
+  * Forwarders: Add tests
+  * Merge pull request [#12](https://github.com/TechnologyAdvice/DevLab/issues/12) from TechnologyAdvice/changelog
+    Adds changelog task and generated changelog
+  * Adds changelog task and generated changelog
+  * Forwarders: Return Promises for start methods
+  * Forwarding: Handle it internally
+  * Merge branch 'master' into sshtunnel
+  * README: Add port forwarding docs
+  * Tunnels: Add appropriate user output
+  * Tunnels: Make parser test less fragile
+  * Tunnels: Add env var config tests
+  * Test: Add tests for tunnel public API
+  * Tunnels: Add test for forwarded port parser
+
 1.4.1 / 2015-10-30
 ==================
 
   * Adding instance stamp to name/alias
+  * Tunnels: Add JSDoc
+  * Tunnels: Make forwarding the default
+  * Tunnels: Remove unused imports
   * Add missing comma
+  * Merging latest package.json and rm build dir
   * Adding 'files' entry to package
+  * Fixing merge conflicts with latest master
   * Cleanup nodeignore and add prepublish script
   * Gitignoring build
 
@@ -13,6 +41,8 @@
   * 1.4.0
   * Merge pull request [#9](https://github.com/TechnologyAdvice/DevLab/issues/9) from TechnologyAdvice/naming
     Naming
+  * Tunnels: Working prototype
+  * Merge branch 'master' into sshtunnel
   * Remove unused getManifest
   * Names services with devlab_{service}_{username} convention and supplies alias
   * Names container with devlab_{directory}_{username} convention
@@ -97,6 +127,7 @@
   * 1.2.0
   * Merge pull request [#7](https://github.com/TechnologyAdvice/DevLab/issues/7) from TechnologyAdvice/multi-task
     Multi task
+  * Tunnels: Initial structuring
   * Adding barrage of tests + fixtures for task setup
   * Adding some tests + fictures for command parser, builder
   * Cleanup, adding docs
@@ -142,29 +173,3 @@
   * Add note on multi-line tasks
   * Making naming in core file more generic
   * Changing config doc sections to use linkable headers
-  * Adds support for mapping volumes
-  * Adds support for interactive mode flag '-i', documentation
-  * Adds 'set -e' to all tasks to bail on non-zero's
-  * Adding custom exec docs
-  * Adds ability to execute custom task
-  * Adds support for multi-line tasks
-  * Updating docs
-  * Adding components to make module global, local-install task
-  * Adds support for persist boolean on service config
-  * Removing exec, not sure how to get this working ATM
-  * Adds support for passing env vars and exposing ports on services
-  * Fixes 'Starting services NAMEs' output
-  * Finish parsers lib, update services tests
-  * Separating parsers for reuse
-  * Making services setup more manageable
-  * WIP: using object for service config
-  * Cleanup and formatting
-  * All tests passing, build running
-  * Supress output during testing, run build
-  * More testing and lint cleanup
-  * WIP: testing core laminar, working out logging, misc
-  * Config lib cleaned up and tested
-  * Fixing issue with tasks definitions, misc ref's
-  * Modifying config for better testability
-  * Adding run test to services
-  * Adds tests for 'startSvc' method
