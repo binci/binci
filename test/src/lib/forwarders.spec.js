@@ -18,7 +18,7 @@ const listenProm = (serv, port) => {
   });
 };
 
-describe.only('forwarders', () => {
+describe('forwarders', () => {
   afterEach((done) => {
     forwarders.stopForwarders();
     if (server) {
