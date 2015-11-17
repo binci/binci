@@ -61,5 +61,21 @@ export default {
       lor: 'ips',
       fiz: '.foo .baz .lor'
     }
+  },
+  // Multi-expose
+  multiExpose: {
+    services: {
+      'ryanratcliff/dynamodb': {
+        expose: ['7000:8000']
+      },
+      'mysql': {
+        expose: ['3306:3306']
+      },
+      'mongo': {
+        expose: ['27017:27017'],
+        forward: false
+      }
+    },
+    expose: ['8181:8181', '8282:8282']
   }
 }

@@ -11,6 +11,8 @@ to setup and maintain these environments manually.
 npm install devlab -g
 ```
 
+**Note: DevLab requires Node v.0.12+ to run.** 
+
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
 
 ## Quickstart / Demo
@@ -192,6 +194,16 @@ lab -i -e "/bin/bash"
 The above will run the container with `STDIN` support at bash shell for working inside the container. **Executing the `exit` command will stop the service.**
 
 The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `devlab.yml`
+
+## Port forwarding
+
+If you're running the docker daemon remotely, as is commonly the case with docker-machine users, DevLab will attempt to forward any `expose`d ports (for your main project as well as any linked services) from your local machine to your remote docker machine, over both TCP and UDP. No more hunting down IP addresses to hit -- you can just hit localhost.
+
+To avoid this default behavior, add the following property to `devlab.yml` at the same level as any `expose` directive that you don't want to have forwarded:
+ 
+```
+forward: false
+```
 
 ## License
 
