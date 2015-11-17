@@ -1,10 +1,9 @@
 import config from './config';
 import username from 'username';
+import _ from 'lodash';
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import _ from 'lodash';
-
 const parsers = {
   /**
    * Parses host environment variables
@@ -81,9 +80,10 @@ const parsers = {
    * @param {String} name
    * @returns {String}
    */
-  parseSvcObjName: (name) => {
+  parseSvcObjName: (name, persist) => {
     let user = username.sync() || 'unknown';
-    return `devlab_${name}_${user}_${config.instance}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
+    const uid = (!persist) ? `_${config.instance}` : '';
+    return `devlab_${name}_${user}${uid}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
   },
   /**
    * Parses the service object and ensures all required props set
@@ -92,7 +92,7 @@ const parsers = {
    */
   parseSvcObj: (svc) => {
     const image = Object.keys(svc)[0];
-    const name = parsers.parseSvcObjName(svc[image].name || image);
+    const name = parsers.parseSvcObjName(svc[image].name || image, svc[image].persist);
     const alias = svc[image].name || image;
     const env = svc[image].env || false;
     const expose = svc[image].expose || false;
