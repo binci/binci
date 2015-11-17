@@ -3,6 +3,8 @@ import username from 'username';
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
+import _ from 'lodash';
+
 const parsers = {
   /**
    * Parses host environment variables
@@ -34,6 +36,33 @@ const parsers = {
   parseExpose: (expose) => {
     let ports = [];
     expose.map((p) => { ports = ports.concat([ '-p', p ]); });
+    return ports;
+  },
+
+  /**
+   * Scans the manifest for any exposed ports with `forward` not set to `false` at the same level.
+   * @param {Object} manifest A parsed devlab manifest
+   * @returns {Array<string>} An array of ports exposed on the host machine, in string form.
+   */
+  parseForwardedPorts: (manifest) => {
+    let ports = [];
+    let serviceBlocks = [manifest];
+    if (manifest.services) {
+      serviceBlocks = serviceBlocks.concat(_.values(manifest.services));
+    }
+    serviceBlocks
+      .filter((elem) => {
+        return elem.forward !== false && elem.expose && elem.expose.length;
+      })
+      .map((elem) => elem.expose)
+      .forEach((elem) => {
+        elem.forEach((expose) => {
+          const portMatch = expose.match(/^(\d+):/);
+          if (portMatch && portMatch[1]) {
+            ports.push(parseInt(portMatch[1], 10));
+          }
+        });
+      });
     return ports;
   },
 
