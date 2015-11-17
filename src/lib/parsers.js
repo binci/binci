@@ -1,10 +1,9 @@
 import config from './config';
 import username from 'username';
+import _ from 'lodash';
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import _ from 'lodash';
-
 const parsers = {
   /**
    * Parses host environment variables
