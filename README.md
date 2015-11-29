@@ -56,6 +56,8 @@ expose:
   - 8080:8080
 volumes:
   - ${HOME}/.ssh:/root/.ssh
+hosts:
+  google.com: 127.0.0.1
 quiet: false
 before-task: |
   echo starting.
@@ -127,6 +129,10 @@ lab {some_task} -p 3333
 ```
 
 **Note: this currently only works with the first exposed port config*
+
+#### `hosts`
+
+Maps a hostname to an IP address in the container's `/etc/hosts` file.
 
 #### `volumes`
 

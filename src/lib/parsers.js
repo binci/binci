@@ -16,6 +16,21 @@ const parsers = {
     // Replace matches on ${VAR}
     return str.toString().replace(/\$\{([^}]+)\}/g, matcher);
   },
+
+  /**
+   * Parse /etc/hosts mappings
+   * @param {Object} map A mapping of hostname to IP address
+   * @returns {Array} an array of Docker arguments to set up the host maps.
+   */
+  parseHostMap: (map) => {
+    const args = [];
+    _.forOwn(map, (val, key) => {
+      args.push('--add-host');
+      args.push(`${key}:${val}`);
+    });
+    return args;
+  },
+
   /**
    * Process environment variables
    * @param {Array} env Array of environment variables
