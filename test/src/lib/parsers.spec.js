@@ -13,6 +13,12 @@ describe('parsers', () => {
       expect(result).to.equal('bar');
     });
   });
+  describe('parseHostMap', () => {
+    it('parses a host map', () => {
+      const args = parsers.parseHostMap({ foo: '0.0.0.0' });
+      expect(args).to.deep.equal([ '--add-host', 'foo:0.0.0.0' ]);
+    });
+  });
   describe('parseEnvVars', () => {
     it('processes an array of env vars and returns arguments', () => {
       const result = parsers.parseEnvVars([ 'FOO=bar', 'LAM_TEST=${LAM_TEST}' ]);
