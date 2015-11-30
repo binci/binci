@@ -97,7 +97,7 @@ const parsers = {
    */
   parseSvcObjName: (name, persist) => {
     let user = username.sync() || 'unknown';
-    const uid = (!persist) ? `_${config.instance}` : '';
+    const uid = !persist ? `_${config.instance}` : '';
     return `devlab_${name}_${user}${uid}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
   },
   /**
