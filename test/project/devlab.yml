@@ -12,6 +12,9 @@ env:
   - LOCAL_HOME=${HOME}
 expose:
   - 8080:8080
+hosts:
+  foo: 127.0.0.1
+  bar: 127.0.0.1
 volumes:
   - ${HOME}/.ssh:/root/.ssh
 before-task: |

@@ -24,12 +24,13 @@ const core = {
 
   /**
    * Builds command arguments for executing task
-   * @returns {String} The command to execute the task
+   * @returns {Array} The command to execute the task
    */
   buildArgs: () => {
     const env = core.manifest.env ? parsers.parseEnvVars(core.manifest.env) : [];
     const ports = core.manifest.expose ? parsers.parseExpose(core.manifest.expose) : [];
     const volumes = core.manifest.volumes ? parsers.parseVolumes(core.manifest.volumes) : [];
+    const hosts = core.manifest.hosts ? parsers.parseHostMap(core.manifest.hosts) : [];
     // Spawn arguments
     let mode = core.manifest.interactive || process.stdout.isTTY  ? '-it' : '-t';
     let args = [ 'run', '--privileged', mode ];
@@ -48,6 +49,7 @@ const core = {
     args = env.length ? args.concat(env) : args;
     args = ports.length ? args.concat(ports) : args;
     args = volumes.length ? args.concat(volumes) : args;
+    args = hosts.length ? args.concat(hosts) : args;
     args = args.concat(workdir);
     args = args.concat(name);
     args = args.concat(from);
