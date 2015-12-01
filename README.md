@@ -25,7 +25,7 @@ For a hands-on crash course in utilizing DevLab, follow the steps below:
 4. Use DevLab to install dependencies: `lab install`
 5. Run tests: `lab test`
 
-For more information please see [this blog post](http://blog.fluidbyte.net/containerize-your-local-dev-in-minutes-with-devlab/) about getting started with DevLab.
+For more information please see [this blog post](http://fluidbyte.net/docker/devlab/nodejs/2015/10/15/containerize-your-local-dev-in-minutes-with-devlab/) about getting started with DevLab.
 
 ## Usage
 
