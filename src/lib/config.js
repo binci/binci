@@ -46,9 +46,9 @@ const config = {
    */
   checkArgs: args => {
     // Show help
-    if (args.h) output.log(config.helpMsg); process.exit(0);
+    if (args.h) { output.log(config.helpMsg); process.exit(0); }
     // Show version
-    if (args.v) output.log(pkg.version); process.exit(0);
+    if (args.v) { output.log(pkg.version); process.exit(0); }
     // Set quiet flag
     if (args.q) output.quiet = true;
     // Get interactive flag
