@@ -1,4 +1,3 @@
-/* global sinon, expect, request, describe, it, before, after */
 import './../../setup';
 import parsers from './../../../src/lib/parsers';
 import testManifests from './../../fixtures/manifests';
