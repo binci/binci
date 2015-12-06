@@ -13,7 +13,7 @@ const config = {
   /**
    * Generate random instance string
    */
-  instance: +new Date(),
+  instance: Date.now(),
   /**
    * Object to contain runtime opts
    */
@@ -25,7 +25,7 @@ const config = {
   /**
    * Get arguments
    */
-  args: process.argv[0] === 'node' ? min(process.argv.slice(1)) : min(process.argv.slice(2)),
+  args: min(process.argv.slice(process.argv[0] === 'node' ? 1 : 2)),
   /**
    * Help message template
    */
@@ -44,13 +44,13 @@ const config = {
    * Checks arguments for specific (immediate action) flags and config
    * @param {Object} args The arguments passed in
    */
-  checkArgs: (args) => {
+  checkArgs: args => {
     // Show help
-    if (args.h) { output.log(config.helpMsg); process.exit(0); }
+    if (args.h) output.log(config.helpMsg); process.exit(0);
     // Show version
-    if (args.v) { output.log(pkg.version); process.exit(0); }
+    if (args.v) output.log(pkg.version); process.exit(0);
     // Set quiet flag
-    if (args.q) { output.quiet = true; }
+    if (args.q) output.quiet = true;
     // Get interactive flag
     config.interactive = args.i ? true : false;
     // Set exec
