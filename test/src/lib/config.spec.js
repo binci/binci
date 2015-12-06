@@ -1,4 +1,3 @@
-/* global sinon, exitSpy, logSpy, expect, log, describe, it, before, after */
 import './../../setup';
 import testManifests from './../../fixtures/manifests';
 import config from './../../../src/lib/config';
@@ -6,7 +5,7 @@ import config from './../../../src/lib/config';
 describe('config', () => {
   before(() => {
     // Override process.exit with return of code
-    process.exit = (code) => code;
+    process.exit = code => code;
     global.exitSpy = sinon.spy(process, 'exit');
   });
   describe('cwd', () => {
