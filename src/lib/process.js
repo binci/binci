@@ -22,13 +22,10 @@ export default (proc, args) => {
       stdio
     });
     // Handle close
-    p.on('close', (code) => {
+    p.on('close', code => {
       output.insertBreak();
-      if (code === 0 || code === 130) {
-        resolve();
-      } else {
-        reject(code);
-      }
+      if (code === 0 || code === 130) return resolve();
+      reject(code);
     });
   });
 };
