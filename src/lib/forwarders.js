@@ -6,6 +6,11 @@ import dgram from 'dgram';
 import net from 'net';
 import Promise from 'bluebird';
 
+/**
+ * An array of server sockets
+ */
+let _servers = [];
+
 const forwarders = {
   /**
    * Enables TCP connection and UDP packet forwarding to a remote host.
@@ -29,8 +34,9 @@ const forwarders = {
    * @return {Promise} Resolves when all given ports are listening locally.
    */
   startForwarders: (host, ports) => {
-    const promises = ports.map((port) => forwarders.startForwarder(host, port));
-    return Promise.all(promises);
+    return Promise.all(
+      ports.map(port => forwarders.startForwarder(host, port))
+    );
   },
 
   /**
@@ -43,21 +49,21 @@ const forwarders = {
    * @return {Promise} Resolves when the given localPort is successfully listening.
    */
   startTcpForwarder: (host, localPort, remotePort = localPort) => {
-    const server = net.createServer((localConn) => {
+    const server = net.createServer(localConn => {
       const remoteConn = net.connect(remotePort, host);
       remoteConn.on('connect', () => {
         localConn.pipe(remoteConn);
         remoteConn.pipe(localConn);
       });
-      remoteConn.on('error', (err) => {
+      remoteConn.on('error', err => {
         output.error(err.message);
         localConn.end();
       });
     });
     output.success(`Forwarding {{localhost:${localPort}}} to {{${host}:${remotePort}}} over TCP`);
-    forwarders._servers.push(server);
+    _servers.push(server);
     return new Promise((resolve, reject) => {
-      server.on('error', (err) => reject(err));
+      server.on('error', err => reject(err));
       server.listen(localPort, resolve);
     });
   },
@@ -74,10 +80,8 @@ const forwarders = {
    */
   startUdpForwarder: (host, localPort, remotePort = localPort, type = 'udp4') => {
     const socket = dgram.createSocket(type);
-    socket.on('message', (msg) => {
-      socket.send(msg, 0, msg.length, remotePort, host);
-    });
-    forwarders._servers.push(socket);
+    socket.on('message', msg => socket.send(msg, 0, msg.length, remotePort, host));
+    _servers.push(socket);
     output.success(`Forwarding {{localhost:${localPort}}} to {{${host}:${remotePort}}} over UDP`);
     return new Promise((resolve, reject) => {
       try {
@@ -93,20 +97,21 @@ const forwarders = {
    * Stops any active forwarders. If no forwarders are active, this does nothing.
    */
   stopForwarders: () => {
-    if (forwarders._servers.length) {
-      output.success('Halting all port forwarding');
-      forwarders._servers.forEach((server) => {
+    if (!_servers.length) return Promise.resolve();
+    output.success('Halting all port forwarding');
+    return Promise.each(_servers, server => {
+      return new Promise(resolve => {
         server.unref();
-        server.close();
+        try {
+          server.close(resolve);
+        } catch (e) {
+          resolve();
+        }
       });
-      forwarders._servers = [];
-    }
-  },
+    })
+    .then(() => _servers = []);
+  }
 
-  /**
-   * An array of server sockets
-   */
-  _servers: []
 };
 
 export default forwarders;
