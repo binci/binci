@@ -10,7 +10,7 @@ const parsers = {
    * @param {String} str The string to parse
    * @returns {String}
    */
-  parseHostEnvVars: (str) => {
+  parseHostEnvVars: str => {
     // Matches any ${VAR} format vars
     const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
     // Replace matches on ${VAR}
@@ -22,7 +22,7 @@ const parsers = {
    * @param {Object} map A mapping of hostname to IP address
    * @returns {Array} an array of Docker arguments to set up the host maps.
    */
-  parseHostMap: (map) => {
+  parseHostMap: map => {
     const args = [];
     _.forOwn(map, (val, key) => {
       args.push('--add-host');
@@ -36,10 +36,8 @@ const parsers = {
    * @param {Array} env Array of environment variables
    * @returns {Array} env var flags and args
    */
-  parseEnvVars: (env) => {
-    let envs = [];
-    env.map((e) => { envs = envs.concat([ '-e', parsers.parseHostEnvVars(e) ]); });
-    return envs;
+  parseEnvVars: env => {
+    return env.reduce((envs, e) => { return envs.concat([ '-e', parsers.parseHostEnvVars(e) ]); }, []);
   },
 
   /**
@@ -48,9 +46,7 @@ const parsers = {
    * @returns {Array} port expose flags and args
    */
   parseExpose: (expose) => {
-    let ports = [];
-    expose.map((p) => { ports = ports.concat([ '-p', p ]); });
-    return ports;
+    return expose.reduce((ports, p)=> { return ports.concat([ '-p', p ]); }, []);
   },
 
   /**
@@ -58,26 +54,21 @@ const parsers = {
    * @param {Object} manifest A parsed devlab manifest
    * @returns {Array<string>} An array of ports exposed on the host machine, in string form.
    */
-  parseForwardedPorts: (manifest) => {
-    let ports = [];
+  parseForwardedPorts: manifest => {
     let serviceBlocks = [manifest];
     if (manifest.services) {
       serviceBlocks = serviceBlocks.concat(_.values(manifest.services));
     }
-    serviceBlocks
-      .filter((elem) => {
-        return elem.forward !== false && elem.expose && elem.expose.length;
-      })
-      .map((elem) => elem.expose)
-      .forEach((elem) => {
-        elem.forEach((expose) => {
+    return serviceBlocks
+      .filter(elem => elem.forward !== false && elem.expose && elem.expose.length)
+      .map(elem => elem.expose)
+      .reduce((ports, elem) => {
+        return elem.reduce((elemPorts, expose) => {
           const portMatch = expose.match(/^(\d+):/);
-          if (portMatch && portMatch[1]) {
-            ports.push(parseInt(portMatch[1], 10));
-          }
-        });
-      });
-    return ports;
+          if (portMatch && portMatch[1]) elemPorts.push(parseInt(portMatch[1], 10));
+          return elemPorts;
+        }, ports);
+      }, []);
   },
 
   /**
@@ -86,9 +77,7 @@ const parsers = {
    * @returns {Array} volume map flags and args
    */
   parseVolumes: (volumes) => {
-    let vols = [];
-    volumes.map((v) => { vols = vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); });
-    return vols;
+    return volumes.reduce((vols, v) => { return vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); }, []);
   },
   /**
    * Parses the service container name
@@ -120,10 +109,9 @@ const parsers = {
    * @param {String} task The task to parse
    * @returns {String}
    */
-  parseTask: (task) => {
+  parseTask: task => {
     if (task && task.indexOf('\n') >= 0) {
-      let tmp = task.split('\n');
-      return tmp.join('; ');
+      return task.split('\n').join('; ');
     }
     return task;
   },
