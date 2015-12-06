@@ -19,27 +19,19 @@ export default class {
    * @property {String} config.password
    */
   constructor (config) {
-    let connStr;
     this.db = false;
-    if (typeof config === 'string') {
-      // If full conn string is passed
-      connStr = config;
-    } else {
-      // Build from object
-      connStr = `mongodb://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`;
-    }
+    const connStr = typeof config === 'string' ? config :
+      `mongodb://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`;
+
     // Create connection
     MongoClient.connect(connStr, (err, db) => {
       /* istanbul ignore if */
-      if (err) {
-        throw new Error(err);
-      } else {
-        // Set instance db
-        this.db = db;
-        // Emit when conn established
-        event.emit('dbInit');
-        return db;
-      }
+      if (err) throw new Error(err);
+      // Set instance db
+      this.db = db;
+      // Emit when conn established
+      event.emit('dbInit');
+      return db;
     });
   }
 
@@ -48,15 +40,10 @@ export default class {
    * @returns {Object} promise
    */
   checkConn () {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       /* istanbul ignore if */
-      if (!this.db) {
-        event.on('dbInit', () => {
-          resolve();
-        });
-      } else {
-        resolve();
-      }
+      if (!this.db) return event.on('dbInit', resolve);
+      resolve();
     });
   }
 
@@ -88,13 +75,11 @@ export default class {
     });
   }
   
-    createCollection (options) {
-    return new Promise((resolve) => {
+  createCollection (options) {
+    return new Promise(resolve => {
       // Ensure (or wait for) connection
       this.checkConn()
-        .then(() => {
-          resolve(this.db.createCollection(this.collection, options));
-        });
+        .then(() => resolve(this.db.createCollection(this.collection, options)));
     });
   }
   

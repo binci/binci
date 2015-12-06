@@ -64,25 +64,17 @@ const core = {
    */
   startServices: (svc) => {
     return new Promise((resolve, reject) => {
-      if (!svc) {
-        resolve();
-      } else {
-        let svcNames = [];
-        svc.forEach((s) => {
-          let tmp = parsers.parseSvcObj(s);
-          svcNames.push(tmp.name);
+      if (!svc) return resolve();
+      services.run(svc)
+        .then(links => {
+          // Create links array for insert into run
+          links.map(l => core.links = core.links.concat([ '--link', l ]));
+          resolve();
+        })
+        .catch(e => {
+          output.error(e);
+          reject(1);
         });
-        services.run(svc)
-          .then((links) => {
-            // Create links array for insert into run
-            links.map((l) => { core.links = core.links.concat([ '--link', l ]); });
-            resolve();
-          })
-          .catch((e) => {
-            output.error(e);
-            reject(1);
-          });
-      }
     });
   },
 
@@ -93,14 +85,10 @@ const core = {
    */
   startForwarders: () => {
     const ports = parsers.parseForwardedPorts(core.manifest);
-    if (!ports.length || !process.env.DOCKER_HOST) {
-      // Pass; nothing to do
-      return Promise.resolve();
-    }
+    // Pass; nothing to do
+    if (!ports.length || !process.env.DOCKER_HOST) return Promise.resolve();
     const host = url.parse(process.env.DOCKER_HOST).hostname;
-    if (!host) {
-      return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'));
-    }
+    if (!host) return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'));
     return forwarders.startForwarders(host, ports);
   },
 
@@ -109,7 +97,7 @@ const core = {
    * @param {Array} args Array of arguments
    * @returns {Object} promise
    */
-  execTask: (args) => {
+  execTask: args => {
     output.success(`Running container {{${core.manifest.from}}}, task {{${core.manifest.run}}}`);
     return proc('docker', args);
   },
@@ -130,11 +118,11 @@ const core = {
       .then(forwarders.stopForwarders)
       .then(services.stopServices)
       .then(() => {
-        const closed = (new Date().getTime() - start) / 1000;
+        const closed = (Date.now() - start) / 1000;
         output.success(`Completed in {{${closed}}} seconds`);
         process.exit(0);
       })
-      .catch((code) => {
+      .catch(code => {
         output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
         forwarders.stopForwarders();
         services.stopServices();

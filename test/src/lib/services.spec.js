@@ -1,4 +1,3 @@
-/* global sinon, expect, request, describe, it, before, after */
 import './../../setup';
 import services from './../../../src/lib/services';
 import { exec } from 'child_process';
@@ -14,26 +13,23 @@ describe('services', () => {
     });
   });
   describe('startSvc', () => {
-    after((done) => {
-      exec('docker stop mongotest && docker rm mongotest', (err) => {
-        if (err) {
-          done(err);
-        } else {
-          done();
-        }
+    after(done => {
+      exec('docker stop mongotest && docker rm mongotest', err => {
+        if (err) return done(err);
+        done();
       });
     });
-    it('starts a service based on the object passed', (done) => {
+    it('starts a service based on the object passed', done => {
       services.startSvc({ name: 'mongotest', image: 'mongo' })
         .then(done)
         .catch(done);
     });
-    it('resolves if service is already started', (done) => {
+    it('resolves if service is already started', done => {
       services.startSvc({ name: 'mongotest', image: 'mongo' })
         .then(done)
         .catch(done);
     });
-    it('fails if invalid service is passed', (done) => {
+    it('fails if invalid service is passed', done => {
       services.startSvc({ name: 'noimage', image: 'noimage12345' })
         .then(() => {
           done('Should have failed');

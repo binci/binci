@@ -1,4 +1,3 @@
-/* global sinon, expect, logSpy, request, describe, it, before, after */
 import 'mocha-sinon';
 import './../../setup';
 import output from './../../../src/lib/output';
