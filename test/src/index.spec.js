@@ -1,4 +1,3 @@
-/* global sinon, expect, request, describe, it, before, after */
 import './../setup';
 import core from './../../src/index';
 import config from './../../src/lib/config';
