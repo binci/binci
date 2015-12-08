@@ -22,7 +22,7 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "mocha --timeout 5000 --compilers js:babel/register ./test/src --recursive",
+    "test": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- --compilers js:babel/register \"./test/src/**/*.spec.js\" --recursive --timeout 5000 --require ./test/setup.js",
     "lint": "eslint ./src ./test/src",
     "build": "babel ./src --out-dir ./build",
     "local-install": "npm run build && npm install -g .",
@@ -45,8 +45,10 @@
     "chai": "^3.3.0",
     "changelog": "^1.0.7",
     "eslint": "^1.5.1",
+    "istanbul": "^0.4.1",
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
+    "proxyquire": "^1.7.3",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
   },
