@@ -11,122 +11,114 @@ import parsers from './lib/parsers';
 import forwarders from './lib/forwarders';
 import url from 'url';
 
-// Process timer
-const start = new Date().getTime();
+// run-time manifest (from config)
+let manifest;
+// Service links placeholder
+let serviceLinks = [];
+
+/**
+ * Check for and starts services
+ * @param {Array} svc Array of services from manifest
+ * @returns {Object} promise
+ */
+const startServices = svc =>
+  !svc ? Promise.resolve() :
+    services.run(svc)
+      .then(sLinks => {
+        // Create links array for insert into run
+        serviceLinks = sLinks.reduce((links, l) => {
+          return links.concat([ '--link', l ]);
+        }, serviceLinks);
+      })
+      .catch(e => {
+        output.error(e);
+        throw 1;
+      });
+
+/**
+ * Forward any host-exposed ports that haven't explicitly disabled forwarding from localhost to the remote machine,
+ * if docker is configured to connect to a remote daemon.
+ * @returns {Promise} Resolves after forwarding is complete.
+ */
+const startForwarders = () => {
+  const ports = parsers.parseForwardedPorts(manifest);
+  // Pass; nothing to do
+  if (!ports || !ports.length || !process.env.DOCKER_HOST) return Promise.resolve();
+  const host = url.parse(process.env.DOCKER_HOST).hostname;
+  if (!host) return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'));
+  return forwarders.startForwarders(host, ports);
+};
+
+/**
+ * Builds command arguments for executing task
+ * @returns {Array} The command to execute the task
+ */
+const buildArgs = () => {
+  const env = manifest.env ? parsers.parseEnvVars(manifest.env) : [];
+  const ports = manifest.expose ? parsers.parseExpose(manifest.expose) : [];
+  const volumes = manifest.volumes ? parsers.parseVolumes(manifest.volumes) : [];
+  const hosts = manifest.hosts ? parsers.parseHostMap(manifest.hosts) : [];
+  // Spawn arguments
+  const mode = manifest.interactive || process.stdout.isTTY  ? '-it' : '-t';
+  const args = [ 'run', '--privileged', mode ];
+  // Check for no-rm
+  if (!process.env.DEVLAB_NO_RM || process.env.DEVLAB_NO_RM === 'false') args.push('--rm');
+  // Workdir config
+  const workdir = [ '-v', `${manifest.workdir}:${manifest.workdir}`, '-w', manifest.workdir ];
+  // Set name
+  const name = [ '--name', `devlab_${manifest.workdir.split('/').pop()}_${config.manifest.username}_${config.instance}`.toLowerCase() ];
+  // From (image) config
+  const from = [ manifest.from ];
+  // Split command into (space delimited) parts
+  const cmd = [ 'sh', '-c', manifest.run ];
+  // Build full args array
+  return args
+    .concat(serviceLinks.length && serviceLinks || [])
+    .concat(env.length && env || [])
+    .concat(ports.length && ports || [])
+    .concat(volumes.length && volumes || [])
+    .concat(hosts.length && hosts || [])
+    .concat(workdir).concat(name).concat(from).concat(cmd);
+};
+
+/**
+ * Executes the task with arguments
+ * @param {Array} args Array of arguments
+ * @returns {Object} promise
+ */
+const execTask = args => {
+  output.success(`Running container {{${manifest.from}}}, task {{${manifest.run}}}`);
+  return proc('docker', args);
+};
+
+const tearDown = () => forwarders.stopForwarders().then(services.stopServices);
 
 const core = {
-
-  // Service links placeholder
-  links: [],
-
-  // Create run-time manifest from config
-  manifest: null,
-
-  /**
-   * Builds command arguments for executing task
-   * @returns {Array} The command to execute the task
-   */
-  buildArgs: () => {
-    const env = core.manifest.env ? parsers.parseEnvVars(core.manifest.env) : [];
-    const ports = core.manifest.expose ? parsers.parseExpose(core.manifest.expose) : [];
-    const volumes = core.manifest.volumes ? parsers.parseVolumes(core.manifest.volumes) : [];
-    const hosts = core.manifest.hosts ? parsers.parseHostMap(core.manifest.hosts) : [];
-    // Spawn arguments
-    let mode = core.manifest.interactive || process.stdout.isTTY  ? '-it' : '-t';
-    let args = [ 'run', '--privileged', mode ];
-    // Check for no-rm
-    if (!process.env.DEVLAB_NO_RM || process.env.DEVLAB_NO_RM === 'false') args.push('--rm');
-    // Workdir config
-    const workdir = [ '-v', `${core.manifest.workdir}:${core.manifest.workdir}`, '-w', core.manifest.workdir ];
-    // Set name
-    const name = [ '--name', `devlab_${core.manifest.workdir.split('/').pop()}_${config.manifest.username}_${config.instance}`.toLowerCase() ];
-    // From (image) config
-    const from = [ core.manifest.from ];
-    // Split command into (space delimited) parts
-    const cmd = [ 'sh', '-c', core.manifest.run ];
-    // Build full args array
-    args = core.links.length ? args.concat(core.links) : args;
-    args = env.length ? args.concat(env) : args;
-    args = ports.length ? args.concat(ports) : args;
-    args = volumes.length ? args.concat(volumes) : args;
-    args = hosts.length ? args.concat(hosts) : args;
-    args = args.concat(workdir);
-    args = args.concat(name);
-    args = args.concat(from);
-    args = args.concat(cmd);
-    return args;
-  },
-
-  /**
-   * Check for and starts services
-   * @param {Array} svc Array of services from manifest
-   * @returns {Object} promise
-   */
-  startServices: (svc) => {
-    return new Promise((resolve, reject) => {
-      if (!svc) return resolve();
-      services.run(svc)
-        .then(links => {
-          // Create links array for insert into run
-          links.map(l => core.links = core.links.concat([ '--link', l ]));
-          resolve();
-        })
-        .catch(e => {
-          output.error(e);
-          reject(1);
-        });
-    });
-  },
-
-  /**
-   * Forward any host-exposed ports that haven't explicitly disabled forwarding from localhost to the remote machine,
-   * if docker is configured to connect to a remote daemon.
-   * @returns {Promise} Resolves after forwarding is complete.
-   */
-  startForwarders: () => {
-    const ports = parsers.parseForwardedPorts(core.manifest);
-    // Pass; nothing to do
-    if (!ports.length || !process.env.DOCKER_HOST) return Promise.resolve();
-    const host = url.parse(process.env.DOCKER_HOST).hostname;
-    if (!host) return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'));
-    return forwarders.startForwarders(host, ports);
-  },
-
-  /**
-   * Executes the task with arguments
-   * @param {Array} args Array of arguments
-   * @returns {Object} promise
-   */
-  execTask: args => {
-    output.success(`Running container {{${core.manifest.from}}}, task {{${core.manifest.run}}}`);
-    return proc('docker', args);
-  },
 
   /**
    * Runs the execution chain to carry out task
    */
   run: () => {
+    // Process timer
+    const start = Date.now();
     // Get manifest from config
-    core.manifest = config.get();
+    manifest = config.get();
     // Set user
-    core.manifest.username = username.sync() || 'unknown';
+    manifest.username = username.sync() || 'unknown';
     // Start
-    core.startServices(core.manifest.services)
-      .then(core.startForwarders)
-      .then(core.buildArgs)
-      .then(core.execTask)
-      .then(forwarders.stopForwarders)
-      .then(services.stopServices)
+    return startServices(manifest.services)
+      .then(startForwarders)
+      .then(buildArgs)
+      .then(execTask)
+      .then(tearDown)
       .then(() => {
         const closed = (Date.now() - start) / 1000;
         output.success(`Completed in {{${closed}}} seconds`);
         process.exit(0);
       })
       .catch(code => {
-        output.error(`Error running {{${core.manifest.run}}}, exited with code {{${code}}}`);
-        forwarders.stopForwarders();
-        services.stopServices();
-        process.exit(code);
+        output.error(`Error running {{${manifest.run}}}, exited with code {{${code}}}`);
+        tearDown().then(() => process.exit(code));
       });
   }
 
