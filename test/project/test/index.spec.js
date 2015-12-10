@@ -7,9 +7,7 @@ const mongo = new MongoTest(`mongodb://${mongoAddr}:${mongoPort}/test`);
 mongo.collection = 'test';
 
 describe('MongoTest', () => {
-
   describe('execute', () => {
-
     before(done => {
       mongo.createCollection()
         .then(() => done())
@@ -25,5 +23,4 @@ describe('MongoTest', () => {
         .catch(done);
     });
   });
-
 });

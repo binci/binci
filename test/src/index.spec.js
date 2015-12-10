@@ -67,7 +67,6 @@ const core = proxyquire('./../src/index', {
 });
 
 describe('core', () => {
-
   let originalProcessExit;
 
   beforeEach(() => {
@@ -102,9 +101,7 @@ describe('core', () => {
   afterEach(() => process.exit = originalProcessExit);
 
   describe('run', () => {
-
     describe('manifest', () => {
-
       it('gets the manifest from the config', done => {
         core.run()
           .then(() => {
@@ -120,11 +117,9 @@ describe('core', () => {
           })
           .then(done).catch(done);
       });
-
     });
 
     describe('the process', () => {
-
       it('calls docker with the proper default arguements and outputs success message', done => {
         core.run()
           .then(() => {
@@ -147,11 +142,9 @@ describe('core', () => {
           })
           .then(done).catch(done);
       });
-
     });
 
     describe('port forwarding', () => {
-
       it('does not attempt to start any ports if non are provided', done => {
         core.run()
           .then(() => {
@@ -167,7 +160,7 @@ describe('core', () => {
         core.run()
           .then(() => {
             expect(parseStub.args[0][0]).to.equal(process.env.DOCKER_HOST);
-            expect(startForwardersStub.args[0][0]).to.equal(testUrlHostname, ports)
+            expect(startForwardersStub.args[0][0]).to.equal(testUrlHostname, ports);
           })
           .then(done).catch(done);
       });
@@ -181,11 +174,9 @@ describe('core', () => {
           })
           .then(done).catch(done);
       });
-
     });
 
     describe('building arguments', () => {
-
       it('uses manifest env vars when provided', done => {
         manifest.env = 'env';
         parseEnvVarsStub.withArgs(manifest.env).returns(['-e', 'testEnvVar=testEnvVarValue']);
@@ -250,11 +241,9 @@ describe('core', () => {
           })
           .then(done).catch(done);
       });
-
     });
 
     describe('starting services', () => {
-
       beforeEach(() => {
         manifest.services = ['svc1', 'svc2', 'svc3', 'svc4'];
         runStub.withArgs(manifest.services).returns(Promise.resolve(manifest.services));
@@ -282,11 +271,9 @@ describe('core', () => {
           })
           .then(done).catch(done);
       });
-
     });
 
     describe('tearDown', () => {
-
       it('stops port forwarders and services and exits the process with status code 0', done => {
         core.run()
           .then(() => {
@@ -297,9 +284,6 @@ describe('core', () => {
           })
           .then(done).catch(done);
       });
-
     });
-
   });
-
 });

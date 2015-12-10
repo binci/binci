@@ -1,3 +1,3 @@
 #!/usr/bin/env node
-var devlab = require('./build/index');
+const devlab = require('./build/index');
 devlab.run();

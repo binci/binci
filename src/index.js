@@ -32,7 +32,7 @@ const startServices = svc =>
       })
       .catch(e => {
         output.error(e);
-        throw 1;
+        throw 1; // eslint-disable-line no-throw-literal
       });
 
 /**
