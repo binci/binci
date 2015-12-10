@@ -1,4 +1,3 @@
-import './../../setup';
 import services from './../../../src/lib/services';
 import { exec } from 'child_process';
 

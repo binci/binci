@@ -1,5 +1,4 @@
 import 'mocha-sinon';
-import './../../setup';
 import output from './../../../src/lib/output';
 
 describe('output', () => {

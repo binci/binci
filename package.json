@@ -23,7 +23,7 @@
   "preferGlobal": true,
   "scripts": {
     "test": "npm run lint && npm run mocha",
-    "mocha": "mocha test/src/**/*.spec.js",
+    "mocha": "mocha test/src/*.spec.js test/src/**/*.spec.js",
     "cover": "node_modules/isparta/bin/isparta cover node_modules/mocha/bin/_mocha -- test/src/**/*.spec.js",
     "lint": "eslint . --fix",
     "build": "babel ./src --out-dir ./build",

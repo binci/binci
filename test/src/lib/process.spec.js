@@ -1,4 +1,3 @@
-import './../../setup';
 import proc from './../../../src/lib/process';
 
 describe('process', () => {
