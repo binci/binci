@@ -93,7 +93,7 @@ const execTask = args => {
 
 const tearDown = () => forwarders.stopForwarders().then(services.stopServices);
 
-const core = {
+export const core = {
 
   /**
    * Runs the execution chain to carry out task
@@ -124,4 +124,4 @@ const core = {
 
 };
 
-export default core;
+module.exports = core;

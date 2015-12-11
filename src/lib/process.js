@@ -13,7 +13,7 @@ const stdio = output.setStdio();
  * @param {String} proc The command/process to run
  * @param {Array} args The arguments of the proc command
  */
-export default (proc, args) => {
+export const spawnProc = (proc, args) => {
   output.insertBreak();
   return new Promise((resolve, reject) => {
     const p = spawn(proc, args, {
@@ -29,3 +29,5 @@ export default (proc, args) => {
     });
   });
 };
+
+module.exports = spawnProc;

@@ -1,10 +1,10 @@
-import config from './config';
+import { config } from './config';
 import username from 'username';
 import _ from 'lodash';
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-const parsers = {
+export const parsers = {
   /**
    * Parses host environment variables
    * @param {String} str The string to parse
@@ -36,18 +36,14 @@ const parsers = {
    * @param {Array} env Array of environment variables
    * @returns {Array} env var flags and args
    */
-  parseEnvVars: env => {
-    return env.reduce((envs, e) => { return envs.concat([ '-e', parsers.parseHostEnvVars(e) ]); }, []);
-  },
+  parseEnvVars: env => env.reduce((envs, e) => { return envs.concat([ '-e', parsers.parseHostEnvVars(e) ]); }, []),
 
   /**
    * Process any ports to expose
    * @param {Array} expose Array of ports to expose
    * @returns {Array} port expose flags and args
    */
-  parseExpose: (expose) => {
-    return expose.reduce((ports, p)=> { return ports.concat([ '-p', p ]); }, []);
-  },
+  parseExpose: expose => expose.reduce((ports, p)=> { return ports.concat([ '-p', p ]); }, []),
 
   /**
    * Scans the manifest for any exposed ports with `forward` not set to `false` at the same level.
@@ -76,9 +72,7 @@ const parsers = {
    * @param {Array} volumes Array of volumes to map
    * @returns {Array} volume map flags and args
    */
-  parseVolumes: (volumes) => {
-    return volumes.reduce((vols, v) => { return vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); }, []);
-  },
+  parseVolumes: volumes => volumes.reduce((vols, v) => { return vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); }, []),
   /**
    * Parses the service container name
    * @param {String} name
@@ -94,7 +88,7 @@ const parsers = {
    * @param {Object} svc The service object from the manifest
    * @returns {Object}
    */
-  parseSvcObj: (svc) => {
+  parseSvcObj: svc => {
     const image = Object.keys(svc)[0];
     const name = parsers.parseSvcObjName(svc[image].name || image, svc[image].persist);
     const alias = svc[image].name || image;
@@ -132,4 +126,4 @@ const parsers = {
   }
 };
 
-export default parsers;
+module.exports = parsers;
