@@ -3,6 +3,9 @@ machine:
     - docker
   node:
     version: 4.2.3
+dependencies:
+  override:
+    - docker pull mongo:latest
 general:
   artifacts:
     - coverage
