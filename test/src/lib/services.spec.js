@@ -13,10 +13,7 @@ describe('services', () => {
   });
   describe('startSvc', () => {
     after(done => {
-      exec('docker stop mongotest && docker rm mongotest', err => {
-        if (err) return done(err);
-        done();
-      });
+      exec('docker stop mongotest && docker rm mongotest', () => done());
     });
     it('starts a service based on the object passed', done => {
       services.startSvc({ name: 'mongotest', image: 'mongo' })

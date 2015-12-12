@@ -128,7 +128,6 @@ describe('core', () => {
             expect(procStub.args[0][1][0]).to.equal('run');
             expect(procStub.args[0][1][1]).to.equal('--privileged');
             expect(procStub.args[0][1][2]).to.equal('-it');
-            expect(procStub.args[0][1][3]).to.equal('--rm');
             expect(procStub.args[0][1][4]).to.equal('-v');
             expect(procStub.args[0][1][5]).to.equal([manifest.workdir, manifest.workdir].join(':'));
             expect(procStub.args[0][1][6]).to.equal('-w');
