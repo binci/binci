@@ -3,8 +3,6 @@ machine:
     - docker
   node:
     version: 4.2.3
-  environment:
-    DEVLAB_NO_RM: true
 dependencies:
   override:
     - docker pull mongo:latest

@@ -125,19 +125,22 @@ describe('core', () => {
           .then(() => {
             expect(successStub.args[0][0]).to.equal('Running container {{from}}, task {{run}}');
             expect(procStub.args[0][0]).to.equal('docker');
-            expect(procStub.args[0][1][0]).to.equal('run');
-            expect(procStub.args[0][1][1]).to.equal('--privileged');
-            expect(procStub.args[0][1][2]).to.equal('-it');
-            expect(procStub.args[0][1][4]).to.equal('-v');
-            expect(procStub.args[0][1][5]).to.equal([manifest.workdir, manifest.workdir].join(':'));
-            expect(procStub.args[0][1][6]).to.equal('-w');
-            expect(procStub.args[0][1][7]).to.equal(manifest.workdir);
-            expect(procStub.args[0][1][8]).to.equal('--name');
-            expect(procStub.args[0][1][9].replace(/\d+$/, '')).to.equal('devlab_' + manifest.workdir.replace(/^\//, '') + '_manifestusername_instance');
-            expect(procStub.args[0][1][10]).to.equal('from');
-            expect(procStub.args[0][1][11]).to.equal('sh');
-            expect(procStub.args[0][1][12]).to.equal('-c');
-            expect(procStub.args[0][1][13]).to.equal('run');
+            expect(procStub.args[0][1]).to.eql([
+              'run',
+              '--privileged',
+              '-it',
+              '--rm',
+              '-v',
+              [manifest.workdir, manifest.workdir].join(':'),
+              '-w',
+              manifest.workdir,
+              '--name',
+              'devlab_' + manifest.workdir.replace(/^\//, '') + '_manifestusername_instance',
+              'from',
+              'sh',
+              '-c',
+              'run'
+            ]);
           })
           .then(done).catch(done);
       });
