@@ -1,3 +1,6 @@
+[![Circle CI](https://circleci.com/gh/TechnologyAdvice/DevLab/tree/master.svg?style=svg)](https://circleci.com/gh/TechnologyAdvice/DevLab/tree/master)
+[![Code Climate](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/gpa.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab)
+
 # DevLab
 
 DevLab is a utility that allows you to easily containerize your development
