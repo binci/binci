@@ -1,4 +1,3 @@
-import './../../setup';
 import parsers from './../../../src/lib/parsers';
 import testManifests from './../../fixtures/manifests';
 import config from './../../../src/lib/config';

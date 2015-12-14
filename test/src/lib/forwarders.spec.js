@@ -1,4 +1,3 @@
-import './../../setup';
 import forwarders from './../../../src/lib/forwarders';
 import dgram from 'dgram';
 import net from 'net';

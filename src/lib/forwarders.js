@@ -11,7 +11,7 @@ import Promise from 'bluebird';
  */
 let _servers = [];
 
-const forwarders = {
+export const forwarders = {
   /**
    * Enables TCP connection and UDP packet forwarding to a remote host.
    * @param {string} host The hostname or IP address of the remote server
@@ -114,4 +114,4 @@ const forwarders = {
 
 };
 
-export default forwarders;
+module.exports = forwarders;

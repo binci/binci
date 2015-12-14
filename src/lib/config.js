@@ -9,7 +9,7 @@ import output from './output';
 import parsers from './parsers';
 import pkg from './../../package.json';
 
-const config = {
+export const config = {
   /**
    * Generate random instance string
    */
@@ -129,4 +129,4 @@ const config = {
   }
 };
 
-export default config;
+module.exports = config;

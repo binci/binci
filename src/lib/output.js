@@ -3,7 +3,7 @@
  */
 import clc from 'cli-color';
 
-const output = {
+export const output = {
   // Holds quiet boolean
   quiet: false,
   /**
@@ -55,4 +55,4 @@ const output = {
   }
 };
 
-export default output;
+module.exports = output;

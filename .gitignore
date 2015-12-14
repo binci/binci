@@ -1,5 +1,7 @@
 build/
 node_modules/
-test/node_modules/
+!test/project/node_modules
 **/*.log
 .c9
+coverage/
+

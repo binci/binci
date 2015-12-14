@@ -7,7 +7,7 @@ import Promise from 'bluebird';
 import output from './output';
 import parsers from './parsers';
 
-const services = {
+export const services = {
   // Placeholder for links
   links: [],
   // Services which should not be persisted
@@ -114,4 +114,4 @@ const services = {
   }
 };
 
-export default services;
+module.exports = services;
