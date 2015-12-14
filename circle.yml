@@ -6,6 +6,10 @@ machine:
 dependencies:
   override:
     - docker pull mongo:latest
+test:
+  override:
+    - npm install
+    - npm test
 general:
   artifacts:
     - coverage
