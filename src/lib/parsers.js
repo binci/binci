@@ -95,8 +95,9 @@ export const parsers = {
     const env = svc[image].env || false;
     const expose = svc[image].expose || false;
     const persist = svc[image].persist === false ? false : true;
+    const exec = svc[image].exec || false;
     // Return svc object
-    return { image, name, alias, env, expose, persist };
+    return { image, name, alias, env, expose, persist, exec };
   },
   /**
    * Strips line breaks and splits with semicolons

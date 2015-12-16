@@ -53,6 +53,8 @@ services:
       expose:
         - 27017:27017
       persist: false
+      exec: |
+        echo "Some task"
 env:
   - LOCAL_HOME=${HOME}
 expose:
@@ -107,6 +109,7 @@ The "key" is the image, in the above example the service running will be version
 * `env`: Array of environment variables to pass to the service
 * `expose`: Expose any ports. This is useful if you would like to persist the service and access it directly after running tasks.
 * `persist`: Defaults to `true`; will keep the service running. A service (such as a database) not persisted will not retain data between runs.
+* `exec`: Executes a script/task on the container
 
 #### `env`
 

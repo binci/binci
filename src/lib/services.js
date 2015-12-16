@@ -27,6 +27,26 @@ export const services = {
     args = args.concat([ svc.image ]);
     return args;
   },
+
+  /**
+   * Runs exec task for a service
+   * @param {Object} svc The service object
+   * @returns {Object} promise
+   */
+  execSvcTask: svc => {
+    return new Promise((resolve, reject) => {
+      if (svc.exec) {
+        const toExec = parsers.parseTask(svc.exec).trim();
+        output.success(`Running service exec {{${toExec}}}`);
+        proc('docker', [ 'exec', '-t', svc.name, 'sh', '-c', toExec ])
+          .then(resolve)
+          .catch(reject);
+      } else {
+        resolve();
+      }
+    });
+  },
+
   /**
    * Checks if service is running, if not starts it
    * @param {Object} svc The service object
@@ -45,11 +65,9 @@ export const services = {
         // Build arguments
         const args = [ 'run', '-d', '--privileged' ].concat(services.getArgs(svc));
         // Start service
-        proc('docker', args)
-          .then(resolve)
-          .catch(reject);
+        resolve(proc('docker', args));
       });
-    });
+    }).then(() => services.execSvcTask(svc));
   },
   /**
    * Checks for non-persists services and (get this...) STOPS THEM.

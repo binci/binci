@@ -55,7 +55,8 @@ describe('parsers', () => {
         image: 'testImage',
         env: false,
         expose: false,
-        persist: true
+        persist: true,
+        exec: false
       });
     });
   });
