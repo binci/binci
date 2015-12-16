@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import proc from './process';
-import { exec } from 'child_process';
-import Promise from 'bluebird';
-import output from './output';
-import parsers from './parsers';
+import proc from './process'
+import { exec } from 'child_process'
+import Promise from 'bluebird'
+import output from './output'
+import parsers from './parsers'
 
 export const services = {
   // Placeholder for links
@@ -18,14 +18,14 @@ export const services = {
    * @returns {Array}
    */
   getArgs: svc => {
-    const env = svc.env ? parsers.parseEnvVars(svc.env) : [];
-    const ports = svc.expose ? parsers.parseExpose(svc.expose) : [];
-    let args = [];
-    args = env.length ? args.concat(env) : args;
-    args = ports.length ? args.concat(ports) : args;
-    args = args.concat([ '--name', svc.name ]);
-    args = args.concat([ svc.image ]);
-    return args;
+    const env = svc.env ? parsers.parseEnvVars(svc.env) : []
+    const ports = svc.expose ? parsers.parseExpose(svc.expose) : []
+    let args = []
+    args = env.length ? args.concat(env) : args
+    args = ports.length ? args.concat(ports) : args
+    args = args.concat([ '--name', svc.name ])
+    args = args.concat([ svc.image ])
+    return args
   },
 
   /**
@@ -36,15 +36,15 @@ export const services = {
   execSvcTask: svc => {
     return new Promise((resolve, reject) => {
       if (svc.exec) {
-        const toExec = parsers.parseTask(svc.exec).trim();
-        output.success(`Running service exec {{${toExec}}}`);
+        const toExec = parsers.parseTask(svc.exec).trim()
+        output.success(`Running service exec {{${toExec}}}`)
         proc('docker', [ 'exec', '-t', svc.name, 'sh', '-c', toExec ])
           .then(resolve)
-          .catch(reject);
+          .catch(reject)
       } else {
-        resolve();
+        resolve()
       }
-    });
+    })
   },
 
   /**
@@ -57,17 +57,17 @@ export const services = {
       // Check if service is running
       exec(`docker ps -f name=${svc.name} -q`, (err, stdout) => {
         // Error on check
-        if (err) return reject(err);
+        if (err) return reject(err)
         // Running; resolve
-        if (stdout.length) return resolve();
+        if (stdout.length) return resolve()
         // Not running; start
-        output.success(`Starting service {{${svc.name}}}`);
+        output.success(`Starting service {{${svc.name}}}`)
         // Build arguments
-        const args = [ 'run', '-d', '--privileged' ].concat(services.getArgs(svc));
+        const args = [ 'run', '-d', '--privileged' ].concat(services.getArgs(svc))
         // Start service
-        resolve(proc('docker', args));
-      });
-    }).then(() => services.execSvcTask(svc));
+        resolve(proc('docker', args))
+      })
+    }).then(() => services.execSvcTask(svc))
   },
   /**
    * Checks for non-persists services and (get this...) STOPS THEM.
@@ -75,18 +75,18 @@ export const services = {
    */
   stopServices: () => {
     return new Promise(resolve => {
-      if (!services.noPersist.length) return resolve();
-      output.success(`Stoping service${ services.noPersist.length > 1 ? 's' : '' }: {{${services.noPersist.join(', ')}}}`);
+      if (!services.noPersist.length) return resolve()
+      output.success(`Stoping service${ services.noPersist.length > 1 ? 's' : '' }: {{${services.noPersist.join(', ')}}}`)
       const command = services.noPersist.reduce((cmd, name, i) => {
         return cmd + `${i > 0 ? ' && ' : ''}docker stop ${name} && docker ` +
-        (process.env.DEVLAB_NO_RM ? `rename ${name} ${name + Date.now()}` : `rm ${name}`);
-      }, '');
+        (process.env.DEVLAB_NO_RM ? `rename ${name} ${name + Date.now()}` : `rm ${name}`)
+      }, '')
       exec(command, err => {
-        if (err) output.warn('Could not stop all services');
+        if (err) output.warn('Could not stop all services')
         // Always resolve
-        resolve();
-      });
-    });
+        resolve()
+      })
+    })
   },
   /**
    * Iterates over services array and starts non-running service containers
@@ -96,40 +96,40 @@ export const services = {
   run: serviceArray => {
     return new Promise((resolve, reject) => {
       // Incrementor
-      let i = 0;
-      const links = [];
+      let i = 0
+      const links = []
       // Service check/start
       const startSvc = service => {
-        const svc = parsers.parseSvcObj(service);
+        const svc = parsers.parseSvcObj(service)
         // Don't persist?
-        if (!svc.persist) services.noPersist.push(svc.name);
+        if (!svc.persist) services.noPersist.push(svc.name)
         // Push to service links
-        services.links.push(svc.name);
+        services.links.push(svc.name)
         // Push to resolve links
-        links.push(`${svc.name}:${svc.alias}`);
+        links.push(`${svc.name}:${svc.alias}`)
         // Check service
         services.startSvc(svc)
           .then(() => {
-            output.success(`Service {{${svc.name}}} running`);
+            output.success(`Service {{${svc.name}}} running`)
             // Check next incremet
-            i++;
+            i++
             if (serviceArray[i]) {
               // Recurse
-              startSvc(serviceArray[i]);
+              startSvc(serviceArray[i])
             } else {
               // Done.
-              resolve(links);
+              resolve(links)
             }
           })
           .catch(code => {
-            output.error(`Failed to start {{${svc.name}}}`);
-            reject(code);
-          });
-      };
+            output.error(`Failed to start {{${svc.name}}}`)
+            reject(code)
+          })
+      }
       // Kick off recursion over services
-      startSvc(serviceArray[i]);
-    });
+      startSvc(serviceArray[i])
+    })
   }
-};
+}
 
-module.exports = services;
+module.exports = services

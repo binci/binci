@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import shelljs from 'shelljs';
-import min from 'minimist';
-import yaml from 'js-yaml';
-import fs from 'fs';
-import output from './output';
-import parsers from './parsers';
-import pkg from './../../package.json';
+import shelljs from 'shelljs'
+import min from 'minimist'
+import yaml from 'js-yaml'
+import fs from 'fs'
+import output from './output'
+import parsers from './parsers'
+import pkg from './../../package.json'
 
 export const config = {
   /**
@@ -46,33 +46,33 @@ export const config = {
    */
   checkArgs: args => {
     // Show help
-    if (args.h) { output.log(config.helpMsg); process.exit(0); }
+    if (args.h) { output.log(config.helpMsg); process.exit(0) }
     // Show version
-    if (args.v) { output.log(pkg.version); process.exit(0); }
+    if (args.v) { output.log(pkg.version); process.exit(0) }
     // Set quiet flag
-    if (args.q) output.quiet = true;
+    if (args.q) output.quiet = true
     // Get interactive flag
-    config.interactive = args.i ? true : false;
+    config.interactive = args.i ? true : false
     // Set exec
-    config.exec = args.e ? args.e : false;
+    config.exec = args.e ? args.e : false
     // Port override
-    config.port = args.p ? args.p : false;
+    config.port = args.p ? args.p : false
     // Load yaml config
-    config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/devlab.yml`;
+    config.manifestPath = args.c ? `${config.cwd}/${args.c}` : `${config.cwd}/devlab.yml`
     // Override from
-    config.from = args.f ? args.f : false;
+    config.from = args.f ? args.f : false
     // Set task
-    config.task = args._ ? args._.pop() : false;
+    config.task = args._ ? args._.pop() : false
   },
   /**
    * Loads manifest and sets basic props
    */
   loadManifest: () => {
     try {
-      config.manifest = yaml.safeLoad(fs.readFileSync(config.manifestPath, 'utf8'));
+      config.manifest = yaml.safeLoad(fs.readFileSync(config.manifestPath, 'utf8'))
     } catch (e) {
-      output.error('Could not load config!');
-      process.exit(1);
+      output.error('Could not load config!')
+      process.exit(1)
     }
   },
   /**
@@ -82,51 +82,51 @@ export const config = {
    * @returns {String}
    */
   setupRun: (manifest, task) => {
-    const beforeTask = manifest['before-task'] ? parsers.parseTask(manifest['before-task']) + ';' : '';
-    const afterTask = manifest['after-task'] ? parsers.parseTask(manifest['after-task']) : '';
-    let tmp = parsers.parseTask(manifest.tasks[task]);
-    tmp = parsers.parseAliases(manifest, tmp);
-    if (tmp.slice(-1) !== ';') tmp += ';';
+    const beforeTask = manifest['before-task'] ? parsers.parseTask(manifest['before-task']) + ';' : ''
+    const afterTask = manifest['after-task'] ? parsers.parseTask(manifest['after-task']) : ''
+    let tmp = parsers.parseTask(manifest.tasks[task])
+    tmp = parsers.parseAliases(manifest, tmp)
+    if (tmp.slice(-1) !== ';') tmp += ';'
     return `set -e; ${beforeTask} ${tmp} ${afterTask}`
       // Some cleanup...
       .replace(/;;/g, ';')
       .replace(/; ;/g, ';')
       .replace(/\s\s+/g, ' ')
-      .trim();
+      .trim()
   },
   /**
    * Runs the config process
    */
   get: () => {
-    config.checkArgs(config.args);
-    config.loadManifest();
+    config.checkArgs(config.args)
+    config.loadManifest()
     // Check for port override
-    if (config.port) config.manifest.expose[0] = config.manifest.expose[0].replace(/^.+:/, `${config.port}:`);
+    if (config.port) config.manifest.expose[0] = config.manifest.expose[0].replace(/^.+:/, `${config.port}:`)
     // Check if set to quiet
     /* istanbul ignore next */
-    if (config.manifest.quiet) output.quiet = true;
+    if (config.manifest.quiet) output.quiet = true
     // Ensure task specified
     if (config.task && config.manifest.tasks.hasOwnProperty(config.task)) {
       // Set run
-      config.manifest.run = config.setupRun(config.manifest, config.task);
+      config.manifest.run = config.setupRun(config.manifest, config.task)
     } else if (config.exec) {
       // Execute arbitrary command
-      config.manifest.run = config.exec;
+      config.manifest.run = config.exec
     } else {
       // Missing task, halt
-      output.error('Please specify a task to run');
-      output.log(config.helpMsg);
-      process.exit(1);
+      output.error('Please specify a task to run')
+      output.log(config.helpMsg)
+      process.exit(1)
     }
     // Set workdir
-    config.manifest.workdir = config.cwd;
+    config.manifest.workdir = config.cwd
     // Check for container override
-    if (config.from) config.manifest.from = config.from;
+    if (config.from) config.manifest.from = config.from
     // Check interactive mode
-    if (config.interactive) config.manifest.interactive = true;
+    if (config.interactive) config.manifest.interactive = true
     // Return the compiled config manifest
-    return config.manifest;
+    return config.manifest
   }
-};
+}
 
-module.exports = config;
+module.exports = config

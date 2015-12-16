@@ -1,6 +1,6 @@
-import { config } from './config';
-import username from 'username';
-import _ from 'lodash';
+import { config } from './config'
+import username from 'username'
+import _ from 'lodash'
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
@@ -12,9 +12,9 @@ export const parsers = {
    */
   parseHostEnvVars: str => {
     // Matches any ${VAR} format vars
-    const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null;
+    const matcher = (i, match) =>  process.env.hasOwnProperty(match) ? process.env[match] : null
     // Replace matches on ${VAR}
-    return str.toString().replace(/\$\{([^}]+)\}/g, matcher);
+    return str.toString().replace(/\$\{([^}]+)\}/g, matcher)
   },
 
   /**
@@ -23,12 +23,12 @@ export const parsers = {
    * @returns {Array} an array of Docker arguments to set up the host maps.
    */
   parseHostMap: map => {
-    const args = [];
+    const args = []
     _.forOwn(map, (val, key) => {
-      args.push('--add-host');
-      args.push(`${key}:${val}`);
-    });
-    return args;
+      args.push('--add-host')
+      args.push(`${key}:${val}`)
+    })
+    return args
   },
 
   /**
@@ -36,14 +36,14 @@ export const parsers = {
    * @param {Array} env Array of environment variables
    * @returns {Array} env var flags and args
    */
-  parseEnvVars: env => env.reduce((envs, e) => { return envs.concat([ '-e', parsers.parseHostEnvVars(e) ]); }, []),
+  parseEnvVars: env => env.reduce((envs, e) => { return envs.concat([ '-e', parsers.parseHostEnvVars(e) ]) }, []),
 
   /**
    * Process any ports to expose
    * @param {Array} expose Array of ports to expose
    * @returns {Array} port expose flags and args
    */
-  parseExpose: expose => expose.reduce((ports, p)=> { return ports.concat([ '-p', p ]); }, []),
+  parseExpose: expose => expose.reduce((ports, p)=> { return ports.concat([ '-p', p ]) }, []),
 
   /**
    * Scans the manifest for any exposed ports with `forward` not set to `false` at the same level.
@@ -51,20 +51,20 @@ export const parsers = {
    * @returns {Array<string>} An array of ports exposed on the host machine, in string form.
    */
   parseForwardedPorts: manifest => {
-    let serviceBlocks = [manifest];
+    let serviceBlocks = [manifest]
     if (manifest.services) {
-      serviceBlocks = serviceBlocks.concat(_.values(manifest.services));
+      serviceBlocks = serviceBlocks.concat(_.values(manifest.services))
     }
     return serviceBlocks
       .filter(elem => elem.forward !== false && elem.expose && elem.expose.length)
       .map(elem => elem.expose)
       .reduce((ports, elem) => {
         return elem.reduce((elemPorts, expose) => {
-          const portMatch = expose.match(/^(\d+):/);
-          if (portMatch && portMatch[1]) elemPorts.push(parseInt(portMatch[1], 10));
-          return elemPorts;
-        }, ports);
-      }, []);
+          const portMatch = expose.match(/^(\d+):/)
+          if (portMatch && portMatch[1]) elemPorts.push(parseInt(portMatch[1], 10))
+          return elemPorts
+        }, ports)
+      }, [])
   },
 
   /**
@@ -72,16 +72,16 @@ export const parsers = {
    * @param {Array} volumes Array of volumes to map
    * @returns {Array} volume map flags and args
    */
-  parseVolumes: volumes => volumes.reduce((vols, v) => { return vols.concat([ '-v', parsers.parseHostEnvVars(v) ]); }, []),
+  parseVolumes: volumes => volumes.reduce((vols, v) => { return vols.concat([ '-v', parsers.parseHostEnvVars(v) ]) }, []),
   /**
    * Parses the service container name
    * @param {String} name
    * @returns {String}
    */
   parseSvcObjName: (name, persist) => {
-    let user = username.sync() || 'unknown';
-    const uid = !persist ? `_${config.instance}` : '';
-    return `devlab_${name}_${user}${uid}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_');
+    let user = username.sync() || 'unknown'
+    const uid = !persist ? `_${config.instance}` : ''
+    return `devlab_${name}_${user}${uid}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_')
   },
   /**
    * Parses the service object and ensures all required props set
@@ -89,15 +89,15 @@ export const parsers = {
    * @returns {Object}
    */
   parseSvcObj: svc => {
-    const image = Object.keys(svc)[0];
-    const name = parsers.parseSvcObjName(svc[image].name || image, svc[image].persist);
-    const alias = svc[image].name || image;
-    const env = svc[image].env || false;
-    const expose = svc[image].expose || false;
-    const persist = svc[image].persist === false ? false : true;
-    const exec = svc[image].exec || false;
+    const image = Object.keys(svc)[0]
+    const name = parsers.parseSvcObjName(svc[image].name || image, svc[image].persist)
+    const alias = svc[image].name || image
+    const env = svc[image].env || false
+    const expose = svc[image].expose || false
+    const persist = svc[image].persist === false ? false : true
+    const exec = svc[image].exec || false
     // Return svc object
-    return { image, name, alias, env, expose, persist, exec };
+    return { image, name, alias, env, expose, persist, exec }
   },
   /**
    * Strips line breaks and splits with semicolons
@@ -106,9 +106,9 @@ export const parsers = {
    */
   parseTask: task => {
     if (task && task.indexOf('\n') >= 0) {
-      return task.split('\n').join('; ');
+      return task.split('\n').join('; ')
     }
-    return task;
+    return task
   },
   /**
    * Parses aliases to other tasks
@@ -119,12 +119,12 @@ export const parsers = {
   parseAliases: (manifest, task) => {
     const matchAliases = (i, match) => {
       if (manifest.tasks[match]) {
-        return manifest.tasks[match] + ';';
+        return manifest.tasks[match] + ';'
       }
-      return '.' + match;
-    };
-    return parsers.parseTask(task.toString().replace(/\.(\S+)\b/g, matchAliases));
+      return '.' + match
+    }
+    return parsers.parseTask(task.toString().replace(/\.(\S+)\b/g, matchAliases))
   }
-};
+}
 
-module.exports = parsers;
+module.exports = parsers

@@ -1,5 +1,5 @@
-import services from './../../../src/lib/services';
-import { exec } from 'child_process';
+import services from './../../../src/lib/services'
+import { exec } from 'child_process'
 
 describe('services', () => {
   describe('getArgs', () => {
@@ -8,35 +8,35 @@ describe('services', () => {
         '--name',
         'testSvc',
         'testImage'
-      ]);
-    });
-  });
+      ])
+    })
+  })
   describe('startSvc', () => {
     after(done => {
       try {
-        exec('docker stop mongotest && docker rm mongotest', () => done());
+        exec('docker stop mongotest && docker rm mongotest', () => done())
       } catch (e) {
-        done();
+        done()
       }
-    });
+    })
     it('starts a service based on the object passed', done => {
       services.startSvc({ name: 'mongotest', image: 'mongo' })
         .then(done)
-        .catch(done);
-    });
+        .catch(done)
+    })
     it('resolves if service is already started', done => {
       services.startSvc({ name: 'mongotest', image: 'mongo' })
         .then(done)
-        .catch(done);
-    });
+        .catch(done)
+    })
     it('fails if invalid service is passed', done => {
       services.startSvc({ name: 'noimage', image: 'noimage12345' })
         .then(() => {
-          done('Should have failed');
+          done('Should have failed')
         })
         .catch(() => {
-          done();
-        });
-    });
-  });
-});
+          done()
+        })
+    })
+  })
+})
