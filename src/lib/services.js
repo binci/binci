@@ -8,6 +8,8 @@ import output from './output'
 import parsers from './parsers'
 
 export const services = {
+  // Placeholder for started services
+  running: {},
   // Placeholder for links
   links: [],
   // Services which should not be persisted
@@ -20,7 +22,9 @@ export const services = {
   getArgs: svc => {
     const env = svc.env ? parsers.parseEnvVars(svc.env) : []
     const ports = svc.expose ? parsers.parseExpose(svc.expose) : []
+    const links = svc.links ? parsers.parseSvcLinks(svc.links, services.running) : []
     let args = []
+    args = links.length ? args.concat(links) : args
     args = env.length ? args.concat(env) : args
     args = ports.length ? args.concat(ports) : args
     args = args.concat([ '--name', svc.name ])
@@ -64,10 +68,13 @@ export const services = {
         output.success(`Starting service {{${svc.name}}}`)
         // Build arguments
         const args = [ 'run', '-d', '--privileged' ].concat(services.getArgs(svc))
+        // Add to running obj
+        services.running[svc.alias] = svc.name
         // Start service
         resolve(proc('docker', args))
       })
-    }).then(() => services.execSvcTask(svc))
+    })
+      .then(() => services.execSvcTask(svc))
   },
   /**
    * Checks for non-persists services and (get this...) STOPS THEM.

@@ -56,7 +56,8 @@ describe('parsers', () => {
         env: false,
         expose: false,
         persist: true,
-        exec: false
+        exec: false,
+        links: false
       })
     })
   })

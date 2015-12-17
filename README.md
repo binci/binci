@@ -110,6 +110,26 @@ The "key" is the image, in the above example the service running will be version
 * `expose`: Expose any ports. This is useful if you would like to persist the service and access it directly after running tasks.
 * `persist`: Defaults to `true`; will keep the service running. A service (such as a database) not persisted will not retain data between runs.
 * `exec`: Executes a script/task on the container
+* 
+##### Linking Services
+
+Services can also be linked together. This can be achieved via the following:
+
+```yaml
+services:
+  - someDatabase:
+      name: foo
+      persist: false
+  - someApplication:
+      name: bar
+      persist: false
+      link:
+        - foo
+```
+
+The above would link the `someDatabase` container `foo` in the `someApplication` container `bar`. This is useful for mocking microservices or utilizing API's that depend on a shared data source.
+
+It is important to note that this is a linear process of linking so the order of services must be set so the dependency container is started before any services that link it.
 
 #### `env`
 

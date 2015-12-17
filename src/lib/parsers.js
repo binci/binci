@@ -1,5 +1,6 @@
 import { config } from './config'
 import username from 'username'
+import output from './output'
 import _ from 'lodash'
 /*
  * Copyright (c) 2015 TechnologyAdvice
@@ -88,7 +89,7 @@ export const parsers = {
    * @param {Object} svc The service object from the manifest
    * @returns {Object}
    */
-  parseSvcObj: svc => {
+  parseSvcObj: (svc) => {
     const image = Object.keys(svc)[0]
     const name = parsers.parseSvcObjName(svc[image].name || image, svc[image].persist)
     const alias = svc[image].name || image
@@ -96,8 +97,25 @@ export const parsers = {
     const expose = svc[image].expose || false
     const persist = svc[image].persist === false ? false : true
     const exec = svc[image].exec || false
+    const links = svc[image].link || false
     // Return svc object
-    return { image, name, alias, env, expose, persist, exec }
+    return { image, name, alias, env, expose, persist, exec, links }
+  },
+  /**
+   * Parses service links
+   * @param {Array} links Links to parse
+   * @param {Object} running List of running containers
+   */
+  parseSvcLinks: (links, running) => {
+    let linksArr = []
+    links.forEach((l) => {
+      if (running[l]) {
+        linksArr = linksArr.concat([ '--link', `${running[l]}:${l}` ])
+      } else {
+        output.warn(`Could not link service to ${l}, please check config.`)
+      }
+    })
+    return linksArr
   },
   /**
    * Strips line breaks and splits with semicolons
