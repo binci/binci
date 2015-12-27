@@ -4,7 +4,7 @@ import output from './../../../src/lib/output'
 describe('output', () => {
   describe('renderVars', () => {
     it('replaces mustache-bracket delimited vars', () => {
-      expect(output.renderVars('this is a {{test}}')).to.equal('this is a \u001b[36mtest\u001b[39m')
+      expect(output.renderVars('this is a {{test}}')).to.equal('this is a \u001b[34mtest\u001b[39m')
     })
   })
 

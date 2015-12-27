@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import clc from 'cli-color'
+import chalk from 'chalk'
 
 export const output = {
   // Holds quiet boolean
@@ -11,34 +11,34 @@ export const output = {
    * @param {String} m Raw message
    */
   renderVars: m => m.toString()
-    .replace(/\{\{([^}]+)\}\}/g, (i, match) => clc.cyan(match))
+    .replace(/\{\{([^}]+)\}\}/g, (i, match) => chalk.blue(match))
     .replace('set -e;', ''),
   /**
    * Output success message
    * @param {String} m Output message
    */
   success: m => {
-    if (!output.quiet) output.log(clc.green.bold('#> ') + clc.bold(output.renderVars(m)))
+    if (!output.quiet) output.log(chalk.bold.green('⦿ ') + chalk.bold(output.renderVars(m)))
   },
   /**
    * Output warning message
    * @param {String} m Output message
    */
   warn: m => {
-    if (!output.quiet)output.log(clc.yellow.bold('!> ') + clc.bold(output.renderVars(m)))
+    if (!output.quiet)output.log(chalk.bold.yellow('⦿ ') + chalk.bold(output.renderVars(m)))
   },
   /**
    * Output error message
    * @param {String} m Output message
    */
   error: m => {
-    if (!output.quiet) output.log(clc.red.bold('!> ') + clc.bold(output.renderVars(m)))
+    if (!output.quiet) output.log(chalk.bold.red('⦿ ') + chalk.bold(output.renderVars(m)))
   },
   /**
    * Inserts break before commands are run
    */
   insertBreak: () => {
-    if (!output.quiet) output.log(clc.white('---'))
+    if (!output.quiet) output.log(chalk.gray('---'))
   },
   /**
    * Determine stdio fro process
