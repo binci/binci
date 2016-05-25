@@ -1,5 +1,5 @@
 {
-  "parser": "babel-eslint",
+  "parser": "eslint",
   "env": {
     "node": true,
     "es6": true
