@@ -23,7 +23,7 @@
   "preferGlobal": true,
   "scripts": {
     "test": "npm run lint && npm run mocha",
-    "mocha": "mocha",
+    "mocha": "mocha test/src/*.spec.js test/src/**/*.spec.js",
     "cover": "istanbul cover _mocha",
     "lint": "eslint . --fix",
     "local-install": "npm install -g .",
@@ -37,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/TechnologyAdvice/DevLab/issues"
   },
-  "author": "TechnologyAdvice",
+  "author": "Kent Safranski <devteam+devlab@technologyadvice.com>",
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.3.0",

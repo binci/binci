@@ -21,7 +21,8 @@ const forwarders = {
    *    localPort is used.
    * @return {Promise} Resolves when the given localPort is successfully listening for both TCP and UDP.
    */
-  startForwarder: (host, localPort, remotePort = localPort) => {
+  startForwarder: (host, localPort, remotePort) => {
+    remotePort = remotePort || localPort
     return Promise.all([
       forwarders.startTcpForwarder(host, localPort, remotePort),
       forwarders.startUdpForwarder(host, localPort, remotePort)

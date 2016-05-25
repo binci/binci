@@ -1,5 +1,6 @@
-import 'mocha-sinon'
-import output from './../../../src/lib/output'
+'use strict'
+require('mocha-sinon')
+const output = require('./../../../src/lib/output')
 
 describe('output', () => {
   describe('renderVars', () => {
