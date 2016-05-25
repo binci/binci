@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import { spawn } from 'child_process'
-import Promise from 'bluebird'
-import output from './output'
+'use strict'
+const spawn = require('child_process').spawn
+const Promise = require('bluebird')
+const output = require('./output')
 
 // Test output supression
 const stdio = output.setStdio()
@@ -13,7 +14,7 @@ const stdio = output.setStdio()
  * @param {String} proc The command/process to run
  * @param {Array} args The arguments of the proc command
  */
-export const spawnProc = (proc, args) => {
+const spawnProc = (proc, args) => {
   output.insertBreak()
   return new Promise((resolve, reject) => {
     const p = spawn(proc, args, {

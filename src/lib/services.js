@@ -1,13 +1,14 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import proc from './process'
-import { exec } from 'child_process'
-import Promise from 'bluebird'
-import output from './output'
-import parsers from './parsers'
+'use strict'
+const proc = require('./process')
+const exec = require('child_process').exec
+const Promise = require('bluebird')
+const output = require('./output')
+const parsers = require('./parsers')
 
-export const services = {
+const services = {
   // Placeholder for started services
   running: {},
   // Placeholder for links
