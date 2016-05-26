@@ -25,8 +25,6 @@
 /**
  * Strict mode
  */
-    // babel inserts "use strict"; for us
-    // http://eslint.org/docs/rules/strict
     "strict": [0, "never"],
 
 /**
