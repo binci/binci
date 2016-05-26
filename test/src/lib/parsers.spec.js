@@ -1,6 +1,6 @@
 'use strict'
-const parsers = require('./../../../src/lib/parsers')
-const testManifests = require('./../../fixtures/manifests')
+const parsers = require('src/lib/parsers')
+const testManifests = require('test/fixtures/manifests')
 
 describe('parsers', () => {
   describe('parseHostEnvVars', () => {

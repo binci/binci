@@ -1,5 +1,5 @@
 'use strict'
-const services = require('./../../../src/lib/services')
+const services = require('src/lib/services')
 const exec = require('child_process').exec
 
 describe('services', () => {

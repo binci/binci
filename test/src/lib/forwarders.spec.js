@@ -1,5 +1,5 @@
 'use strict'
-const forwarders = require('./../../../src/lib/forwarders')
+const forwarders = require('src/lib/forwarders')
 const dgram = require('dgram')
 const net = require('net')
 const Promise = require('bluebird')

@@ -1,5 +1,5 @@
 'use strict'
-const proc = require('./../../../src/lib/process')
+const proc = require('src/lib/process')
 
 describe('process', () => {
   it('resolves when a process is successful', done => {

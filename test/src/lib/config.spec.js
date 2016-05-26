@@ -1,6 +1,6 @@
 'use strict'
-const testManifests = require('./../../fixtures/manifests')
-const config = require('./../../../src/lib/config')
+const testManifests = require('test/fixtures/manifests')
+const config = require('src/lib/config')
 
 const originalProcessExit = process.exit
 const exitSpy = sinon.stub()
