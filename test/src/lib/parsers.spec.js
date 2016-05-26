@@ -1,8 +1,6 @@
 'use strict'
 const parsers = require('./../../../src/lib/parsers')
 const testManifests = require('./../../fixtures/manifests')
-const config = require('./../../../src/lib/config')
-const username = require('username')
 
 describe('parsers', () => {
   describe('parseHostEnvVars', () => {
@@ -49,7 +47,6 @@ describe('parsers', () => {
   })
   describe('parseSvcObj', () => {
     it('returns an object with properties of service', () => {
-      const user = username.sync() || 'unknown'
       const actual = parsers.parseSvcObj({ testImage: { name: 'testSvc' } })
       delete actual.name
       expect(actual).to.deep.equal({
