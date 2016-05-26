@@ -1,17 +1,18 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import output from './output'
-import dgram from 'dgram'
-import net from 'net'
-import Promise from 'bluebird'
+'use strict'
+const output = require('./output')
+const dgram = require('dgram')
+const net = require('net')
+const Promise = require('bluebird')
 
 /**
  * An array of server sockets
  */
 let _servers = []
 
-export const forwarders = {
+const forwarders = {
   /**
    * Enables TCP connection and UDP packet forwarding to a remote host.
    * @param {string} host The hostname or IP address of the remote server
@@ -20,7 +21,8 @@ export const forwarders = {
    *    localPort is used.
    * @return {Promise} Resolves when the given localPort is successfully listening for both TCP and UDP.
    */
-  startForwarder: (host, localPort, remotePort = localPort) => {
+  startForwarder: (host, localPort, remotePort) => {
+    remotePort = remotePort || localPort
     return Promise.all([
       forwarders.startTcpForwarder(host, localPort, remotePort),
       forwarders.startUdpForwarder(host, localPort, remotePort)
@@ -48,7 +50,8 @@ export const forwarders = {
    *    If omitted, localPort is used.
    * @return {Promise} Resolves when the given localPort is successfully listening.
    */
-  startTcpForwarder: (host, localPort, remotePort = localPort) => {
+  startTcpForwarder: (host, localPort, remotePort) => {
+    remotePort = remotePort || localPort
     const server = net.createServer(localConn => {
       const remoteConn = net.connect(remotePort, host)
       remoteConn.on('connect', () => {
@@ -78,7 +81,9 @@ export const forwarders = {
    * @param {string} [type='udp4'] The UDP message type to support
    * @return {Promise} Resolves when the given localPort is successfully listening.
    */
-  startUdpForwarder: (host, localPort, remotePort = localPort, type = 'udp4') => {
+  startUdpForwarder: (host, localPort, remotePort, type) => {
+    remotePort = remotePort || localPort
+    type = type || 'udp4'
     const socket = dgram.createSocket(type)
     socket.on('message', msg => socket.send(msg, 0, msg.length, remotePort, host))
     _servers.push(socket)

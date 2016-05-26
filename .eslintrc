@@ -1,5 +1,4 @@
 {
-  "parser": "babel-eslint",
   "env": {
     "node": true,
     "es6": true
@@ -26,9 +25,7 @@
 /**
  * Strict mode
  */
-    // babel inserts "use strict"; for us
-    // http://eslint.org/docs/rules/strict
-    "strict": [2, "never"],
+    "strict": [2, "global"],
 
 /**
  * ES6
@@ -74,7 +71,7 @@
 /**
  * Best practices
  */
-    "consistent-return": 2,          // http://eslint.org/docs/rules/consistent-return
+    "consistent-return": 0,          // http://eslint.org/docs/rules/consistent-return
     "curly": [2, "multi-line"],      // http://eslint.org/docs/rules/curly
     "default-case": 2,               // http://eslint.org/docs/rules/default-case
     "dot-notation": [2, {            // http://eslint.org/docs/rules/dot-notation
@@ -100,10 +97,10 @@
     "no-new-wrappers": 2,            // http://eslint.org/docs/rules/no-new-wrappers
     "no-octal": 2,                   // http://eslint.org/docs/rules/no-octal
     "no-octal-escape": 2,            // http://eslint.org/docs/rules/no-octal-escape
-    "no-param-reassign": 2,          // http://eslint.org/docs/rules/no-param-reassign
+    "no-param-reassign": 0,          // http://eslint.org/docs/rules/no-param-reassign
     "no-proto": 2,                   // http://eslint.org/docs/rules/no-proto
     "no-redeclare": 2,               // http://eslint.org/docs/rules/no-redeclare
-    "no-return-assign": 2,           // http://eslint.org/docs/rules/no-return-assign
+    "no-return-assign": 0,           // http://eslint.org/docs/rules/no-return-assign
     "no-script-url": 2,              // http://eslint.org/docs/rules/no-script-url
     "no-self-compare": 2,            // http://eslint.org/docs/rules/no-self-compare
     "no-sequences": 2,               // http://eslint.org/docs/rules/no-sequences
@@ -158,11 +155,10 @@
       "before": false,
       "after": true
     }],
-    "space-after-keywords": 2,       // http://eslint.org/docs/rules/space-after-keywords
+    "keyword-spacing": 2,       // http://eslint.org/docs/rules/space-after-keywords
     "space-before-blocks": 2,        // http://eslint.org/docs/rules/space-before-blocks
     "space-before-function-paren": [2, "never"], // http://eslint.org/docs/rules/space-before-function-paren
     "space-infix-ops": 2,            // http://eslint.org/docs/rules/space-infix-ops
-    "space-return-throw-case": 2,    // http://eslint.org/docs/rules/space-return-throw-case
     "spaced-comment": 2,        // http://eslint.org/docs/rules/spaced-line-comment
   }
 }

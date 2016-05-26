@@ -1,4 +1,5 @@
-export default {
+'use strict'
+module.exports = {
   // Simple task
   simple: {
     tasks: {
