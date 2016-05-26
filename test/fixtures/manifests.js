@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   // Simple task
   simple: {
     tasks: {

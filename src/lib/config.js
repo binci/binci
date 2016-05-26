@@ -1,15 +1,16 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import shelljs from 'shelljs'
-import min from 'minimist'
-import yaml from 'js-yaml'
-import fs from 'fs'
-import output from './output'
-import parsers from './parsers'
-import pkg from './../../package.json'
+'use strict'
+const shelljs = require('shelljs')
+const min = require('minimist')
+const yaml = require('js-yaml')
+const fs = require('fs')
+const output = require('./output')
+const parsers = require('./parsers')
+const pkg = require('./../../package.json')
 
-export const config = {
+const config = {
   /**
    * Generate random instance string
    */

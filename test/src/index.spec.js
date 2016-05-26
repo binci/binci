@@ -1,3 +1,4 @@
+'use strict'
 const manifest = {}
 
 manifest.from = 'from'

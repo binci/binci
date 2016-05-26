@@ -1,5 +1,6 @@
-import testManifests from './../../fixtures/manifests'
-import config from './../../../src/lib/config'
+'use strict'
+const testManifests = require('./../../fixtures/manifests')
+const config = require('./../../../src/lib/config')
 
 const originalProcessExit = process.exit
 const exitSpy = sinon.stub()
