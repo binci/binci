@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 'use strict'
-const devlab = require('./build/index')
+const devlab = require('./src/index')
 devlab.run()

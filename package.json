@@ -13,7 +13,7 @@
   ],
   "main": "index.js",
   "files": [
-    "build",
+    "src",
     "index.js"
   ],
   "bin": {
