@@ -11,6 +11,10 @@
     "workflow",
     "task"
   ],
+  "engineStrict": true,
+  "engines": {
+    "node": ">=4"
+  },
   "main": "index.js",
   "files": [
     "src",
