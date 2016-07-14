@@ -1,5 +1,5 @@
-[![Circle CI](https://circleci.com/gh/TechnologyAdvice/DevLab/tree/master.svg?style=svg)](https://circleci.com/gh/TechnologyAdvice/DevLab/tree/master)
-[![Code Climate](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/gpa.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab)
+[![CircleCI branch](https://img.shields.io/circleci/project/TechnologyAdvice/DevLab/master.svg?maxAge=2592000)]()
+[![Code Climate](https://img.shields.io/codeclimate/github/TechnologyAdvice/DevLab.svg?maxAge=2592000)]()
 
 # DevLab
 
