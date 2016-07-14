@@ -1,7 +1,8 @@
-import forwarders from './../../../src/lib/forwarders'
-import dgram from 'dgram'
-import net from 'net'
-import Promise from 'bluebird'
+'use strict'
+const forwarders = require('src/lib/forwarders')
+const dgram = require('dgram')
+const net = require('net')
+const Promise = require('bluebird')
 
 let server = null
 

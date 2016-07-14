@@ -1,7 +1,6 @@
-import parsers from './../../../src/lib/parsers'
-import testManifests from './../../fixtures/manifests'
-import config from './../../../src/lib/config'
-import username from 'username'
+'use strict'
+const parsers = require('src/lib/parsers')
+const testManifests = require('test/fixtures/manifests')
 
 describe('parsers', () => {
   describe('parseHostEnvVars', () => {
@@ -48,9 +47,9 @@ describe('parsers', () => {
   })
   describe('parseSvcObj', () => {
     it('returns an object with properties of service', () => {
-      const user = username.sync() || 'unknown'
-      expect(parsers.parseSvcObj({ testImage: { name: 'testSvc' } })).to.deep.equal({
-        name: `devlab_testsvc_${user}_${config.instance}`,
+      const actual = parsers.parseSvcObj({ testImage: { name: 'testSvc' } })
+      delete actual.name
+      expect(actual).to.deep.equal({
         alias: 'testSvc',
         image: 'testImage',
         env: false,

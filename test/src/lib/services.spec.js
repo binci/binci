@@ -1,5 +1,6 @@
-import services from './../../../src/lib/services'
-import { exec } from 'child_process'
+'use strict'
+const services = require('src/lib/services')
+const exec = require('child_process').exec
 
 describe('services', () => {
   describe('getArgs', () => {

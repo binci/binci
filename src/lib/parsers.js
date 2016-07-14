@@ -1,11 +1,13 @@
-import { config } from './config'
-import username from 'username'
-import output from './output'
-import _ from 'lodash'
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-export const parsers = {
+'use strict'
+const config = require('./config')
+const username = require('username')
+const output = require('./output')
+const _ = require('lodash')
+
+const parsers = {
   /**
    * Parses host environment variables
    * @param {String} str The string to parse

@@ -1,15 +1,16 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import Promise from 'bluebird'
-import username from 'username'
-import config from './lib/config'
-import services from './lib/services'
-import proc from './lib/process'
-import output from './lib/output'
-import parsers from './lib/parsers'
-import forwarders from './lib/forwarders'
-import url from 'url'
+'use strict'
+const Promise = require('bluebird')
+const username = require('username')
+const config = require('./lib/config')
+const services = require('./lib/services')
+const proc = require('./lib/process')
+const output = require('./lib/output')
+const parsers = require('./lib/parsers')
+const forwarders = require('./lib/forwarders')
+const url = require('url')
 
 // run-time manifest (from config)
 let manifest
@@ -93,7 +94,7 @@ const execTask = args => {
 
 const tearDown = () => forwarders.stopForwarders().then(services.stopServices)
 
-export const core = {
+const core = {
 
   /**
    * Runs the execution chain to carry out task

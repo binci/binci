@@ -1,9 +1,10 @@
 /*
  * Copyright (c) 2015 TechnologyAdvice
  */
-import chalk from 'chalk'
+'use strict'
+const chalk = require('chalk')
 
-export const output = {
+const output = {
   // Holds quiet boolean
   quiet: false,
   /**
