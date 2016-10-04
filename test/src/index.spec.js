@@ -167,16 +167,6 @@ describe('core', () => {
           })
           .then(done).catch(done)
       })
-
-      it('throws an error if DOCKER_HOST env var is malformed', done => {
-        process.env.DOCKER_HOST = 'malformed'
-        parseStub.returns({ hostname: '' })
-        core.run()
-          .then(() => {
-            expect(errorStub.args[0][0]).to.equal('Error running {{run}}, exited with code {{Error: DOCKER_HOST is malformed. Cannot start forwarders.}}')
-          })
-          .then(done).catch(done)
-      })
     })
 
     describe('building arguments', () => {
