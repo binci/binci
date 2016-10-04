@@ -237,6 +237,16 @@ To avoid this default behavior, add the following property to `devlab.yml` at th
 forward: false
 ```
 
+## Filesystem Event forwarding
+
+If you're running the Docker daemon remotely or in a VM, especially if you're mounting volumes with NFS, chances are your file changes in volumes aren't picked up by file change monitors running in docker. DevLab fixes that by integrating with [FS-EventBridge](https://github.com/TechnologyAdvice/fs_eventbridge). If you have the fs_eventbridge binary running in your VM, just add the following environment variable:
+
+```
+FS_EVENTBRIDGE_PORT=65056
+```
+
+DevLab will detect if you're running a Docker VM by looking for the `DOCKER_HOST` environment variable you already have set, and connects if it finds the above env var as well. The entire project folder from which you run the `lab` command will have change notifications for non-hidden files forwarded through the bridge.
+
 ## License
 
 DevLab is licensed under the MIT license. Please see `LICENSE.txt` for full details.
