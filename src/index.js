@@ -4,6 +4,7 @@
 'use strict'
 const Promise = require('bluebird')
 const username = require('username')
+const FSEventBridgeClient = require('fs-eventbridge-js')
 const config = require('./lib/config')
 const services = require('./lib/services')
 const proc = require('./lib/process')
@@ -16,6 +17,10 @@ const url = require('url')
 let manifest
 // Service links placeholder
 let serviceLinks = []
+// FS-EventBridge client
+let bridge = { stop: () => {} }
+// Remote docker host, if applicable
+let dockerHost
 
 /**
  * Check for and starts services
@@ -36,6 +41,28 @@ const startServices = svc =>
         throw 1 // eslint-disable-line no-throw-literal
       })
 
+const getDockerHost = () => {
+  if (!dockerHost) {
+    dockerHost = url.parse(process.env.DOCKER_HOST).hostname
+    if (!dockerHost) throw new Error('DOCKER_HOST is malformed. Correct it and try again.')
+  }
+  return dockerHost
+}
+
+const startEventBridge = () => {
+  if (process.env.DOCKER_HOST && process.env.FS_EVENTBRIDGE_PORT) {
+    bridge = new FSEventBridgeClient({
+      host: getDockerHost(),
+      port: process.env.FS_EVENTBRIDGE_PORT
+    })
+    return bridge.start().then(() => {
+      output.success(`Bridging filesystem events on ${process.cwd()}`)
+    }).catch(e => {
+      output.warn(`Filesystem event bridge failed: ${e.message}`)
+    })
+  }
+}
+
 /**
  * Forward any host-exposed ports that haven't explicitly disabled forwarding from localhost to the remote machine,
  * if docker is configured to connect to a remote daemon.
@@ -45,9 +72,7 @@ const startForwarders = () => {
   const ports = parsers.parseForwardedPorts(manifest)
   // Pass; nothing to do
   if (!ports || !ports.length || !process.env.DOCKER_HOST) return Promise.resolve()
-  const host = url.parse(process.env.DOCKER_HOST).hostname
-  if (!host) return Promise.reject(new Error('DOCKER_HOST is malformed. Cannot start forwarders.'))
-  return forwarders.startForwarders(host, ports)
+  return forwarders.startForwarders(getDockerHost(), ports)
 }
 
 /**
@@ -92,7 +117,9 @@ const execTask = args => {
   return proc('docker', args)
 }
 
-const tearDown = () => forwarders.stopForwarders().then(services.stopServices)
+const tearDown = () => forwarders.stopForwarders()
+  .then(services.stopServices)
+  .then(() => bridge.stop())
 
 const core = {
 
@@ -108,6 +135,7 @@ const core = {
     manifest.username = username.sync() || 'unknown'
     // Start
     return startServices(manifest.services)
+      .then(startEventBridge)
       .then(startForwarders)
       .then(buildArgs)
       .then(execTask)
