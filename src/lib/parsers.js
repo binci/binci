@@ -80,7 +80,7 @@ const parsers = {
    * @param {String} name
    * @returns {String}
    */
-  parseSvcObjName: (name, persist) => `dl_${name}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_'),
+  parseSvcObjName: name => `dl_${name}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_'),
   /**
    * Parses the service object and ensures all required props set
    * @param {Object} svc The service object from the manifest
@@ -88,7 +88,7 @@ const parsers = {
    */
   parseSvcObj: (svc) => {
     const image = Object.keys(svc)[0]
-    const name = parsers.parseSvcObjName(svc[image].name || image, svc[image].persist)
+    const name = parsers.parseSvcObjName(svc[image].name || image)
     const alias = svc[image].name || image
     const env = svc[image].env || false
     const expose = svc[image].expose || false
