@@ -85,7 +85,7 @@ lab test
 
 The above will spin up the `node:0.10` container, link to `mongo:3.0`, expose the environment variables needed, and run `npm run test`, which would look something like this:
 
-![DevLab_Demo](https://giant.gfycat.com/ShockingFickleBarasinga.gif)
+![DevLab_Demo](demo.gif)
 
 To further explain the configuration:
 
