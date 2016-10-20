@@ -2,7 +2,6 @@
  * Copyright (c) 2015 TechnologyAdvice
  */
 'use strict'
-const username = require('username')
 const output = require('./output')
 const _ = require('lodash')
 
