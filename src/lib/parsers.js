@@ -2,7 +2,6 @@
  * Copyright (c) 2015 TechnologyAdvice
  */
 'use strict'
-const config = require('./config')
 const username = require('username')
 const output = require('./output')
 const _ = require('lodash')
@@ -81,11 +80,7 @@ const parsers = {
    * @param {String} name
    * @returns {String}
    */
-  parseSvcObjName: (name, persist) => {
-    let user = username.sync() || 'unknown'
-    const uid = !persist ? `_${config.instance}` : ''
-    return `devlab_${name}_${user}${uid}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_')
-  },
+  parseSvcObjName: (name, persist) => `dl_${name}`.toLowerCase().replace(/[^A-Z0-9]/ig, '_'),
   /**
    * Parses the service object and ensures all required props set
    * @param {Object} svc The service object from the manifest
