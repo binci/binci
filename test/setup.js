@@ -15,8 +15,5 @@ global.logSpy = sinon.spy(output, 'log')
 const proxyquire = require('proxyquire')
 global.proxyquire = proxyquire
 
-process.env.LAM_TEST = true
-
-// importing files with ../../../../../.. makes my brain hurt
 process.env.NODE_PATH = path.join(__dirname, '..') + path.delimiter + (process.env.NODE_PATH || '')
 mod._initPaths()
