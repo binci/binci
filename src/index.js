@@ -14,3 +14,5 @@ const instance = {
   args: min(process.argv.slice(process.argv[0] === 'node' ? 1 : 2)),
   
 }
+
+module.exports = instance

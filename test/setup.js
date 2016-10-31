@@ -8,10 +8,6 @@ global.sinon = sinon
 global.expect = chai.expect
 chai.use(schai)
 
-// Global spies
-const output = require('./../src/lib/output')
-global.logSpy = sinon.spy(output, 'log')
-
 const proxyquire = require('proxyquire')
 global.proxyquire = proxyquire
 
