@@ -28,7 +28,7 @@
   "scripts": {
     "test": "npm run lint && npm run mocha",
     "mocha": "mocha test/src/*.spec.js test/src/**/*.spec.js",
-    "cover": "istanbul cover _mocha",
+    "cover": "istanbul cover _mocha test/src/*.spec.js",
     "lint": "eslint . --fix",
     "local-install": "npm install -g .",
     "changelog": "changelog devlab all -m > CHANGELOG.md"

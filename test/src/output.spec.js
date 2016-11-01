@@ -35,4 +35,11 @@ describe('output', () => {
       expect(logStub).to.be.called
     })
   })
+
+  describe('insertBreak', () => {
+    it('outputs a break', () => {
+      output.insertBreak()
+      expect(logStub).to.be.called
+    })
+  })
 })
