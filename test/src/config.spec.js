@@ -1,9 +1,10 @@
 'use strict'
 const config = require('src/config')
+const output = require('src/output')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
 
-describe.only('config', () => {
+describe('config', () => {
   describe('load', () => {
     const confPath = `${process.cwd()}/devlab.yml`
     before(() => fs.writeFileAsync(confPath, 'from: node:4'))
@@ -16,8 +17,11 @@ describe.only('config', () => {
     })
     it('exits the process if file cannot be loaded', () => {
       const procExitStub = sinon.stub(process, 'exit')
+      const outputErrorStub = sinon.stub(output, 'error')
       config.load('/no/conf')
+      expect(outputErrorStub).to.be.calledWith('Cannot load config file')
       expect(procExitStub).to.be.calledWith(1)
+      output.error.restore()
       process.exit.restore()
     })
   })  
