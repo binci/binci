@@ -59,7 +59,6 @@
     "js-yaml": "^3.4.2",
     "lodash": "^3.10.1",
     "minimist": "^1.2.0",
-    "shelljs": "^0.5.3",
     "username": "^1.0.1"
   }
 }
