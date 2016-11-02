@@ -30,7 +30,7 @@
     "mocha": "mocha test/src/**/*.spec.js",
     "mocha:auto": "nodemon --exec mocha test/src/**/*.spec.js",
     "cover": "istanbul cover _mocha test/src/**/*.spec.js",
-    "lint": "eslint . --fix"
+    "lint": "eslint test/ src/ --fix"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {

@@ -24,5 +24,5 @@ describe('config', () => {
       output.error.restore()
       process.exit.restore()
     })
-  })  
+  })
 })
