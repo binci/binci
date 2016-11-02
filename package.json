@@ -65,6 +65,6 @@
     "ignore": [
       "coverage"
     ],
-    "globals": [ "describe", "before", "after", "it", "expect", "sinon" ]
+    "globals": [ "describe", "before", "beforeEach", "after", "afterEach", "it", "expect", "sinon" ]
   }
 }
