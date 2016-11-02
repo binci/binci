@@ -1,4 +1,3 @@
-'use strict'
 const chai = require('chai')
 const sinon = require('sinon')
 const schai = require('sinon-chai')

@@ -1,4 +1,3 @@
-'use strict'
 const config = require('src/config')
 const output = require('src/output')
 const Promise = require('bluebird')

@@ -30,7 +30,7 @@
     "mocha": "mocha test/src/**/*.spec.js",
     "mocha:auto": "nodemon --exec mocha test/src/**/*.spec.js",
     "cover": "istanbul cover _mocha test/src/**/*.spec.js",
-    "lint": "eslint test/ src/ --fix"
+    "lint": "standard --fix"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
@@ -50,7 +50,8 @@
     "mocha-sinon": "^1.1.4",
     "nodemon": "^1.11.0",
     "sinon": "^1.17.0",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "standard": "^8.5.0"
   },
   "dependencies": {
     "bluebird": "^2.10.1",
@@ -59,5 +60,11 @@
     "js-yaml": "^3.4.2",
     "lodash": "^3.10.1",
     "minimist": "^1.2.0"
+  },
+  "standard": {
+    "ignore": [
+      "coverage"
+    ],
+    "globals": [ "describe", "before", "after", "it", "expect", "sinon" ]
   }
 }

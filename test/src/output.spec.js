@@ -1,4 +1,3 @@
-'use strict'
 const output = require('src/output')
 
 describe('output', () => {

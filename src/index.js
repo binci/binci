@@ -1,4 +1,3 @@
-'use strict'
 const min = require('minimist')
 
 const instance = {
