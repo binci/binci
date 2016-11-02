@@ -27,8 +27,9 @@
   "preferGlobal": true,
   "scripts": {
     "test": "npm run lint && npm run cover",
-    "mocha": "mocha test/src/*.spec.js test/src/**/*.spec.js",
-    "cover": "istanbul cover _mocha test/src/*.spec.js",
+    "mocha": "mocha test/src/**/*.spec.js",
+    "mocha:auto": "nodemon --exec mocha test/src/**/*.spec.js",
+    "cover": "istanbul cover _mocha test/src/**/*.spec.js",
     "lint": "eslint . --fix"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
@@ -48,6 +49,7 @@
     "istanbul": "^0.4.3",
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
+    "nodemon": "^1.11.0",
     "proxyquire": "^1.7.3",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
