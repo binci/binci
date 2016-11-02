@@ -142,21 +142,6 @@ Variables specified with `${NAME}` will pull from the host machine, or strings c
 
 Sets ports to expose to host machine. This is useful for long-running tasks. For example if you're testing a service and have a task that runs the service this will allow you to access the ports needed to make requests against the service.
 
-To quickly override a port you can use the `-p` flag, for instance, if the following is set in the config:
-
-```yaml
-expose:
-  - 8888:9999
-```
-
-The `8888` exposed to the host could be overridden to instead expose to `3333` on the host with:
-
-```
-lab {some_task} -p 3333
-```
-
-**Note: this currently only works with the first exposed port config*
-
 #### `hosts`
 
 Maps a hostname to an IP address in the container's `/etc/hosts` file.
@@ -213,20 +198,6 @@ DevLab uses the `-e` flag to allow for execution of tasks not in the `devlab.yml
 ```
 lab -e "echo hello world"
 ```
-
-## Interactive Mode
-
-By default, DevLab attempts to use Docker's `-it` flag when running, however, some configurations may require manually instructing interactive (`STDIN`) support.
-
-For debugging or running custom commands inside the container the `-i` (interactive) flag is available:
-
-```
-lab -i -e "/bin/bash"
-```
-
-The above will run the container with `STDIN` support at bash shell for working inside the container. **Executing the `exit` command will stop the service.**
-
-The interactive command can be used with the `-e` flag as in the example above or with any tasks configured in the `devlab.yml`
 
 ## Port forwarding
 
