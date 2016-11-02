@@ -44,13 +44,11 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.3.0",
-    "changelog": "^1.0.7",
     "eslint": "^2.10.2",
     "istanbul": "^0.4.3",
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
     "nodemon": "^1.11.0",
-    "proxyquire": "^1.7.3",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0"
   },
@@ -60,7 +58,6 @@
     "fs-eventbridge-js": "^0.2.0",
     "js-yaml": "^3.4.2",
     "lodash": "^3.10.1",
-    "minimist": "^1.2.0",
-    "username": "^1.0.1"
+    "minimist": "^1.2.0"
   }
 }
