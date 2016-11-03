@@ -15,7 +15,7 @@ to setup and maintain these environments manually.
 npm install devlab -g
 ```
 
-**Note: DevLab requires Node v.4+ to run.** 
+**Note: DevLab requires Node v.4+ to run.**
 
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
 

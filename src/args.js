@@ -1,4 +1,6 @@
 'use strict'
+const _ = require('lodash')
+
 const pkg = require('../package.json')
 const output = require('./output')
 
@@ -9,7 +11,7 @@ const args = {
   available: {
     h: { action: 'showHelp', help: 'Displays help and usage' },
     v: { action: 'showVersion', help: 'Displays the current installed version' },
-    e: { action: 'execCommand', help: 'Run a custom command instead of defined task' },
+    e: { action: 'setExecCommand', help: 'Run a custom command instead of defined task' },
     f: { action: 'setPrimaryFrom', help: 'Run with specified docker image' },
     c: { action: 'setCustomConf', help: 'Run with custom config file path' },
     q: { action: 'setQuietMode', help: 'Run in quiet-mode, execution only output' }
@@ -31,6 +33,43 @@ const args = {
   showVersion: () => {
     output.log(pkg.version)
     process.exit(0)
+  },
+  /**
+   * Sets the execution task
+   */
+  setExecCommand: (e) => {
+    return { exec: e }
+  },
+  /**
+   * Sets the primary container source (FROM)
+   */
+  setPrimaryFrom: (f) => {
+    return { from: f }
+  },
+  /**
+   * Sets custom config path
+   */
+  setCustomConf: (c) => {
+    return { configPath: c }
+  },
+  /**
+   * Sets quiteMode boolean
+   */
+  setQuietMode: (q) => {
+    return { quietMode: true }
+  },
+  /**
+   * Parse arguments
+   * @param {object} argObj Arguments
+   */
+  parse: (argObj) => {
+    const argsOut = {}
+    Object.keys(argObj).forEach((arg) => {
+      if (args.available[arg]) _.assign(argsOut, args[args.available[arg].action].apply(null, [ argObj[arg] ]))
+    })
+    // Set task from _
+    argsOut.task = argObj._.pop()
+    return argsOut
   }
 }
 
