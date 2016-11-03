@@ -50,13 +50,13 @@ describe('args', () => {
   })
   describe('parse', () => {
     it('parses args object and returns formatted config object', () => {
-      const actual = args.parse({ e: '/bin/bash', f: 'node:6', c: '/etc/devlab', q: true, _: [ 'some-task' ] })
+      const actual = args.parse({ e: '/bin/bash', f: 'node:6', c: '/etc/devlab', q: true, _: [ 'foo', 'bar' ] })
       expect(actual).to.deep.equal({
         exec: '/bin/bash',
         from: 'node:6',
         configPath: '/etc/devlab',
         quietMode: true,
-        task: 'some-task'
+        task: 'foo bar'
       })
     })
   })

@@ -37,27 +37,19 @@ const args = {
   /**
    * Sets the execution task
    */
-  setExecCommand: (e) => {
-    return { exec: e }
-  },
+  setExecCommand: (e) => new Object({ exec: e }),
   /**
    * Sets the primary container source (FROM)
    */
-  setPrimaryFrom: (f) => {
-    return { from: f }
-  },
+  setPrimaryFrom: (f) => new Object({ from: f }),
   /**
    * Sets custom config path
    */
-  setCustomConf: (c) => {
-    return { configPath: c }
-  },
+  setCustomConf: (c) => new Object({ configPath: c }),
   /**
    * Sets quiteMode boolean
    */
-  setQuietMode: (q) => {
-    return { quietMode: true }
-  },
+  setQuietMode: (q) => new Object({ quietMode: true }),
   /**
    * Parse arguments
    * @param {object} argObj Arguments
@@ -68,7 +60,7 @@ const args = {
       if (args.available[arg]) _.assign(argsOut, args[args.available[arg].action].apply(null, [ argObj[arg] ]))
     })
     // Set task from _
-    argsOut.task = argObj._.pop()
+    argsOut.task = argObj._.join(' ')
     return argsOut
   }
 }
