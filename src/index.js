@@ -16,8 +16,8 @@ const instance = {
    */
   getArgs: () => args.parse(instance.rawArgs),
   /**
-   * Initializes config
-   * @returns {object} the full config for the instance
+   * Initializes config by merging parsed arguments with config object
+   * @returns {object} Full config for the instance
    */
   getConfig: () => {
     const argsObj = instance.getArgs()

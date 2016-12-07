@@ -4,7 +4,7 @@ const output = require('./output')
 
 const args = {
   /**
-   * @property {object} available run-time flags
+   * @property {object} Available run-time flags
    * - @property {string} action - the method to call when parsing
    * - @property {string} prop - the prop to set when parsing
    * - @property {string} help - the help text to display to the user

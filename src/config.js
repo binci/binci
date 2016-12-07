@@ -5,12 +5,12 @@ const output = require('./output')
 
 const config = {
   /**
-   * @property {string} default location of devlab.yml config file
+   * @property {string} Sefault location of devlab.yml config file
    */
   defaultPath: `${process.cwd()}/devlab.yml`,
   /**
    * Loads config from yaml, attempts to parse to object
-   * @param {string} (path) path to config file if not to use local $CWD/devlab.yml
+   * @param {string} (path) Path to config file or use defaultPath
    * @returns {object}
    */
   load: (path = config.defaultPath) => {
