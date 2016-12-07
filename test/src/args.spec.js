@@ -28,26 +28,6 @@ describe('args', () => {
       expect(processExitStub).to.be.calledWith(0)
     })
   })
-  describe('setExecCommand', () => {
-    it('returns object with exec property set', () => {
-      expect(args.setExecCommand('foo')).to.deep.equal({ exec: 'foo' })
-    })
-  })
-  describe('setPrimaryFrom', () => {
-    it('returns object with from property set', () => {
-      expect(args.setPrimaryFrom('foo')).to.deep.equal({ from: 'foo' })
-    })
-  })
-  describe('setCustomConf', () => {
-    it('returns object with configPath property set', () => {
-      expect(args.setCustomConf('foo')).to.deep.equal({ configPath: 'foo' })
-    })
-  })
-  describe('setQuietMode', () => {
-    it('returns object with quietMode property set', () => {
-      expect(args.setQuietMode(true)).to.deep.equal({ quietMode: true })
-    })
-  })
   describe('parse', () => {
     it('parses args object and returns formatted config object', () => {
       const actual = args.parse({ e: '/bin/bash', f: 'node:6', c: '/etc/devlab', q: true, _: [ 'foo', 'bar' ] })

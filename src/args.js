@@ -1,6 +1,4 @@
 'use strict'
-const _ = require('lodash')
-
 const pkg = require('../package.json')
 const output = require('./output')
 
@@ -13,10 +11,10 @@ const args = {
   available: {
     h: { action: 'showHelp', help: 'Displays help and usage' },
     v: { action: 'showVersion', help: 'Displays the current installed version' },
-    e: { action: 'setExecCommand', help: 'Run a custom command instead of defined task' },
-    f: { action: 'setPrimaryFrom', help: 'Run with specified docker image' },
-    c: { action: 'setCustomConf', help: 'Run with custom config file path' },
-    q: { action: 'setQuietMode', help: 'Run in quiet-mode, execution only output' }
+    e: { prop: 'exec', help: 'Run a custom command instead of defined task' },
+    f: { prop: 'from', help: 'Run with specified docker image' },
+    c: { prop: 'configPath', help: 'Run with custom config file path' },
+    q: { prop: 'quietMode', help: 'Run in quiet-mode, execution only output' }
   },
   /**
    * Displays the help and usage message
@@ -37,41 +35,19 @@ const args = {
     process.exit(0)
   },
   /**
-   * Sets the execution task
-   * @param {string} e the exec command
-   * @returns {object}
-   */
-  setExecCommand: (e) => new Object({ exec: e }),
-  /**
-   * Sets the primary container source (FROM)
-   * @param {string} f the container specification
-   * @returns {object}
-   */
-  setPrimaryFrom: (f) => new Object({ from: f }),
-  /**
-   * Sets custom config path
-   * @param {string} c the path to the config file
-   * @returns {object}
-   */
-  setCustomConf: (c) => new Object({ configPath: c }),
-  /**
-   * Sets quiteMode boolean
-   * @param {boolean} q whether or not quiet mode was passed
-   * @returns {object}
-   */
-  setQuietMode: (q) => new Object({ quietMode: true }),
-  /**
    * Parse arguments
    * @param {object} argObj arguments from invocation
    * @returns {object}
    */
   parse: (argObj) => {
-    const argsOut = {}
+    const argsOut = { task: argObj._.join(' ') }
     Object.keys(argObj).forEach((arg) => {
-      if (args.available[arg]) _.assign(argsOut, args[args.available[arg].action].apply(null, [ argObj[arg] ]))
+      if (args.available[arg] && args.available[arg].prop) {
+        argsOut[args.available[arg].prop] = argObj[arg]
+      } else if (args.available[arg] && args.available[arg].action) {
+        args[args.available[arg].action].apply(null, [ argObj[arg] ])
+      }
     })
-    // Set task from _
-    argsOut.task = argObj._.join(' ')
     return argsOut
   }
 }
