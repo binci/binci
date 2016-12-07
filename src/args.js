@@ -37,7 +37,7 @@ const args = {
   },
   /**
    * Parse arguments
-   * @param {object} argObj arguments from invocation
+   * @param {object} argObj Arguments from invocation
    * @returns {object}
    */
   parse: (argObj) => {

@@ -18,7 +18,7 @@ describe('config', () => {
       const procExitStub = sinon.stub(process, 'exit')
       const outputErrorStub = sinon.stub(output, 'error')
       config.load('/no/conf')
-      expect(outputErrorStub).to.be.calledWith('Cannot load config file')
+      expect(outputErrorStub).to.be.calledWith('Cannot load config file. Please ensure you have a valid ./devlab.yml file or specify one with the `-c` flag')
       expect(procExitStub).to.be.calledWith(1)
       output.error.restore()
       process.exit.restore()

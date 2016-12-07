@@ -1,17 +1,28 @@
 const min = require('minimist')
+const args = require('./args')
+const config = require('./config')
+
+/* istanbul ignore next */
+const processArgs = process.argv[0] === 'node' ? 1 : 2
 
 const instance = {
-
   /**
-   * @property {number} generated timstamp as identifier of this instance
+   * @property {object} Arguments passed to the instance
    */
-  id: Date().now,
-
+  rawArgs: min(process.argv.slice(processArgs)),
   /**
-   * @property {object} arguments passed to this instance
+   * Gets parsed arguments object
+   * @returns {object} Parsed object containing argument values
    */
-  args: min(process.argv.slice(process.argv[0] === 'node' ? 1 : 2))
-
+  getArgs: () => args.parse(instance.rawArgs),
+  /**
+   * Initializes config
+   * @returns {object} the full config for the instance
+   */
+  getConfig: () => {
+    const argsObj = instance.getArgs()
+    return Object.assign(config.load(argsObj.configPath || undefined), argsObj)
+  }
 }
 
 module.exports = instance
