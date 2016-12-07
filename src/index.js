@@ -29,6 +29,14 @@ const instance = {
     return cfg
   },
   /**
+   * Gets all services and returns name and command
+   * @param {array} services List of service(s) objects
+   * @returns {array}
+   */
+  getServices: (services) => {
+    return services
+  },
+  /**
    * Initializes instance from config and args
    */
   start: () => {

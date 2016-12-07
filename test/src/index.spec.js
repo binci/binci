@@ -34,6 +34,16 @@ describe('index', () => {
       expect(instance.getConfig()).to.deep.equal(Object.assign(config.load(), args.parse(configPathArgs)))
     })
   })
+  describe('getServices', () => {
+    before(() => {
+      config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')
+    })
+    it('returns an array of services and their command arrays', () => {
+      const services = config.load().services
+      console.log(services)
+      expect(instance.getServices(services))
+    })
+  })
   describe('start', () => {
     it('starts the instance using config and args', () => {
       expect(instance.start()).to.be.an.object
