@@ -40,7 +40,7 @@ const args = {
    * @returns {object}
    */
   parse: (argObj) => {
-    const argsOut = { task: argObj._.join(' ') }
+    const argsOut = argObj._ ? { task: argObj._.join(' ') } : {}
     Object.keys(argObj).forEach((arg) => {
       if (args.available[arg] && args.available[arg].prop) {
         argsOut[args.available[arg].prop] = argObj[arg]

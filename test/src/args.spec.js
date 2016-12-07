@@ -39,5 +39,11 @@ describe('args', () => {
         task: 'foo bar'
       })
     })
+    it('parses args and calls an action when passed', () => {
+      const showVersionStub = sinon.stub(args, 'showVersion')
+      args.parse({ v: true })
+      expect(showVersionStub).to.be.calledOnce
+      showVersionStub.restore()
+    })
   })
 })
