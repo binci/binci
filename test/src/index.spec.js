@@ -34,4 +34,9 @@ describe('index', () => {
       expect(instance.getConfig()).to.deep.equal(Object.assign(config.load(), args.parse(configPathArgs)))
     })
   })
+  describe('start', () => {
+    it('starts the instance using config and args', () => {
+      expect(instance.start()).to.be.an.object
+    })
+  })
 })
