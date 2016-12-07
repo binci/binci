@@ -47,6 +47,9 @@ const args = {
         argsOut[args.available[arg].prop] = argObj[arg]
       } else if (args.available[arg] && args.available[arg].action) {
         args[args.available[arg].action].apply(null, [ argObj[arg] ])
+      } else if (arg !== '_' && !args.available[arg]) {
+        output.error(`Invalid argument '${arg}', please see documentation`)
+        process.exit(1)
       }
     })
     return argsOut

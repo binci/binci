@@ -6,13 +6,16 @@ const output = require('src/output')
 describe('args', () => {
   let processExitStub
   let outputLogStub
+  let outputErrorStub
   beforeEach(() => {
     processExitStub = sinon.stub(process, 'exit')
     outputLogStub = sinon.stub(output, 'log')
+    outputErrorStub = sinon.stub(output, 'error')
   })
   afterEach(() => {
     process.exit.restore()
     output.log.restore()
+    output.error.restore()
   })
   describe('showHelp', () => {
     it('shows the help message and exits', () => {
@@ -44,6 +47,11 @@ describe('args', () => {
       args.parse({ v: true })
       expect(showVersionStub).to.be.calledOnce
       showVersionStub.restore()
+    })
+    it('displays an error and exits if argument is not supported', () => {
+      args.parse({ badArg: true })
+      expect(outputErrorStub).to.be.calledWith('Invalid argument \'badArg\', please see documentation')
+      expect(processExitStub).to.be.calledOnce
     })
   })
 })
