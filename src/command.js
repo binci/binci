@@ -1,3 +1,5 @@
+const output = require('./output')
+
 const command = {
   /**
    * Parses host environment variables specified with ${VAR}
@@ -16,13 +18,27 @@ const command = {
     env: '-e'
   },
   /**
+   * Reduces args array into flagged arguments list
+   * @param {string} type Name of the argument
+   * @param {array} args Array of values
+   * @returns {array}
+   */
+  parseArgs: (type, args) => args.reduce((acc, item) => {
+    return acc.concat([ command.args[type], item ])
+  }, []),
+  /**
    * Parses config object and returns array of command arguments
    * @param {object} cfg Config object of instance or service
    * @returns {array} Command arguments
    */
-  getArgs: (cfg) => {
-    return Object.keys(cfg)
-  }
+  getArgs: (cfg) => Object.keys(cfg).reduce((acc, item) => {
+    if (command.args[item] && Array.isArray(cfg[item])) {
+      return acc.concat(command.parseArgs(item, cfg[item]))
+    } else if (command.args[item] && !Array.isArray(cfg[item])) {
+      output.warn(`Config error: '${item}' should be an array`)
+    }
+    return acc
+  }, [])
 }
 
 module.exports = command

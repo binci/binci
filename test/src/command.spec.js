@@ -1,4 +1,5 @@
 const command = require('src/command')
+const output = require('src/output')
 
 describe('command', () => {
   describe('parseHostEnvVars', () => {
@@ -13,9 +14,23 @@ describe('command', () => {
       expect(command.parseHostEnvVars('test-${DL_TEST_EV_DNE}')).to.equal('test-null') // eslint-disable-line no-template-curly-in-string
     })
   })
+  describe('parseArgs', () => {
+    it('returns an array of a specific argument type and its values', () => {
+      expect(command.parseArgs('expose', [ '8080:8080', '9090:9090' ])).to.deep.equal([ '-p', '8080:8080', '-p', '9090:9090' ])
+    })
+  })
   describe('getArgs', () => {
-    it('returns array of command arguments', () => {
-      expect(command.getArgs({})).to.be.a('array')
+    let outputWarnStub
+    beforeEach(() => {
+      outputWarnStub = sinon.stub(output, 'warn')
+    })
+    afterEach(() => outputWarnStub.restore())
+    it('returns array of all args to run with command based off config', () => {
+      expect(command.getArgs({ expose: [ '8080:8080' ], volumes: [ '/tmp:/tmp' ] })).to.deep.equal([ '-p', '8080:8080', '-v', '/tmp:/tmp' ])
+    })
+    it('outputs a warning if an argument is not an array', () => {
+      command.getArgs({ env: 'foo' })
+      expect(outputWarnStub).to.be.calledWith('Config error: \'env\' should be an array')
     })
   })
 })

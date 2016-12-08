@@ -44,7 +44,7 @@ describe('index', () => {
     it('returns an array of services and their command arrays', () => {
       const services = instance.getServices(config.load())
       expect(services[0].name).to.equal('mongodb')
-      expect(services[0].args).to.be.an('array')
+      expect(services[0].args).to.deep.equal([ '-p', '27017:27017' ])
     })
   })
   describe('start', () => {

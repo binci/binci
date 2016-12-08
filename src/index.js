@@ -10,6 +10,10 @@ const processArgs = process.argv[0] === 'node' ? 1 : 2
 
 const instance = {
   /**
+   * @property {number} Timestamp of instance start
+   */
+  startTS: Date.now(),
+  /**
    * @property {object} Arguments passed to the instance
    */
   rawArgs: min(process.argv.slice(processArgs)),
