@@ -4,8 +4,8 @@ const command = {
    * @param {object} cfg Config object of instance or service
    * @returns {array} Command arguments
    */
-  get: (cfg) => {
-    return []
+  getArgs: (cfg) => {
+    return Object.keys(cfg)
   }
 }
 

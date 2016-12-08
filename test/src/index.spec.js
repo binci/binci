@@ -38,10 +38,13 @@ describe('index', () => {
     before(() => {
       config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')
     })
+    it('returns false if no services are specified', () => {
+      expect(instance.getServices({})).to.be.false()
+    })
     it('returns an array of services and their command arrays', () => {
-      const services = config.load().services
-      console.log(services)
-      expect(instance.getServices(services))
+      const services = instance.getServices(config.load())
+      expect(services[0].name).to.equal('mongodb')
+      expect(services[0].args).to.be.an('array')
     })
   })
   describe('start', () => {

@@ -1,7 +1,7 @@
 const min = require('minimist')
 const args = require('./args')
 const config = require('./config')
-// const command = require('./command')
+const command = require('./command')
 // const proc = require('./proc')
 const output = require('./output')
 
@@ -32,11 +32,14 @@ const instance = {
   },
   /**
    * Gets all services and returns name and command
-   * @param {array} services List of service(s) objects
+   * @param {array} cfg Instance config object
    * @returns {array}
    */
-  getServices: (services) => {
-    return services
+  getServices: (cfg) => {
+    return !cfg.services ? false : cfg.services.reduce((acc, item) => {
+      acc.push({ name: Object.keys(item)[0], args: command.getArgs(item[Object.keys(item)[0]]) })
+      return acc
+    }, [])
   },
   /**
    * Initializes instance from config and args

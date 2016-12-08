@@ -1,9 +1,9 @@
 const command = require('src/command')
 
 describe('command', () => {
-  describe('get', () => {
+  describe('getArgs', () => {
     it('returns array of command arguments', () => {
-      expect(command.get({})).to.be.a('array')
+      expect(command.getArgs({})).to.be.a('array')
     })
   })
 })
