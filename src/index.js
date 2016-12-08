@@ -1,6 +1,8 @@
 const min = require('minimist')
 const args = require('./args')
 const config = require('./config')
+// const command = require('./command')
+// const proc = require('./proc')
 const output = require('./output')
 
 /* istanbul ignore next */
