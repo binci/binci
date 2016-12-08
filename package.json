@@ -44,6 +44,8 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.3.0",
+    "chai-as-promised": "^6.0.0",
+    "dirty-chai": "^1.2.2",
     "eslint": "^2.10.2",
     "istanbul": "^0.4.3",
     "mocha": "^2.3.3",
@@ -65,6 +67,15 @@
     "ignore": [
       "coverage"
     ],
-    "globals": [ "describe", "before", "beforeEach", "after", "afterEach", "it", "expect", "sinon" ]
+    "globals": [
+      "describe",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect",
+      "sinon"
+    ]
   }
 }

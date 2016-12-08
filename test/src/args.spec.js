@@ -20,7 +20,7 @@ describe('args', () => {
   describe('showHelp', () => {
     it('shows the help message and exits', () => {
       args.showHelp()
-      expect(outputLogStub).to.be.called
+      expect(outputLogStub).to.be.calledOnce()
       expect(processExitStub).to.be.calledWith(0)
     })
   })
@@ -45,13 +45,13 @@ describe('args', () => {
     it('parses args and calls an action when passed', () => {
       const showVersionStub = sinon.stub(args, 'showVersion')
       args.parse({ v: true })
-      expect(showVersionStub).to.be.calledOnce
+      expect(showVersionStub).to.be.calledOnce()
       showVersionStub.restore()
     })
     it('displays an error and exits if argument is not supported', () => {
       args.parse({ badArg: true })
       expect(outputErrorStub).to.be.calledWith('Invalid argument \'badArg\', please see documentation')
-      expect(processExitStub).to.be.calledOnce
+      expect(processExitStub).to.be.calledOnce()
     })
   })
 })

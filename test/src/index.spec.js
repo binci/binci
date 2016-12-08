@@ -46,7 +46,7 @@ describe('index', () => {
   })
   describe('start', () => {
     it('starts the instance using config and args', () => {
-      expect(instance.start()).to.be.an.object
+      expect(instance.start()).to.be.an('object')
     })
   })
 })
