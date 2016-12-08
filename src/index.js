@@ -31,7 +31,7 @@ const instance = {
     return cfg
   },
   /**
-   * Gets all services and returns name and command
+   * Gets all services and returns name and arguments
    * @param {array} cfg Instance config object
    * @returns {array}
    */

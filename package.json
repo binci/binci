@@ -26,11 +26,11 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "npm run lint && npm run cover",
+    "test": "npm run lint -s && npm run cover -s",
     "mocha": "mocha test/src/**/*.spec.js",
     "mocha:watch": "nodemon --exec mocha test/src/**/*.spec.js",
     "cover": "istanbul cover _mocha test/src/**/*.spec.js",
-    "lint": "standard --fix"
+    "lint": "standard --fix --verbose"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
