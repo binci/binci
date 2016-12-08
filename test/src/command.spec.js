@@ -33,4 +33,50 @@ describe('command', () => {
       expect(outputWarnStub).to.be.calledWith('Config error: \'env\' should be an array')
     })
   })
+  describe('getExec', () => {
+    let outputErrorStub
+    let processExitStub
+    beforeEach(() => {
+      outputErrorStub = sinon.stub(output, 'error')
+      processExitStub = sinon.stub(process, 'exit')
+    })
+    afterEach(() => {
+      outputErrorStub.restore()
+      processExitStub.restore()
+    })
+    it('returns custom task if exec (-e) was called in arguments', () => {
+      expect(command.getExec({ exec: true, task: 'echo "foo"' })).to.deep.equal([ '/bin/sh', '-c', '"echo "foo""' ])
+    })
+    it('outputs an error and exits if no tasks are specified', () => {
+      command.getExec({ task: 'foo' })
+      expect(outputErrorStub).to.be.calledWith('Task \'foo\' does not exist')
+      expect(processExitStub).to.be.calledWith(1)
+    })
+    it('outputs an error and exits if invalid task is specified', () => {
+      command.getExec({ task: 'foo', tasks: { bar: 'echo "foo"' } })
+      expect(outputErrorStub).to.be.calledWith('Task \'foo\' does not exist')
+      expect(processExitStub).to.be.calledWith(1)
+    })
+    it('returns exec task array when all criteria are met', () => {
+      const actual = command.getExec({ task: 'foo', tasks: { foo: 'echo "foo"\necho "bar"' } })
+      expect(actual).to.deep.equal([ '/bin/sh', '-c', '"echo "foo"; echo "bar""' ])
+    })
+  })
+  describe('get', () => {
+    let outputErrorStub
+    let processExitStub
+    beforeEach(() => {
+      outputErrorStub = sinon.stub(output, 'error')
+      processExitStub = sinon.stub(process, 'exit')
+    })
+    afterEach(() => {
+      outputErrorStub.restore()
+      processExitStub.restore()
+    })
+    it('outputs error and exits if missing \'from\' property', () => {
+      command.get({})
+      expect(outputErrorStub).to.be.calledWith('Missing \'from\' property in config or argument')
+      expect(processExitStub).to.be.calledWith(1)
+    })
+  })
 })

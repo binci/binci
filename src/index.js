@@ -29,8 +29,6 @@ const instance = {
   getConfig: () => {
     const argsObj = instance.getArgs()
     const cfg = Object.assign(config.load(argsObj.configPath || undefined), argsObj)
-    // Set output mode for instance
-    output.quiet = cfg.quietMode
     // Return config object
     return cfg
   },
@@ -50,6 +48,9 @@ const instance = {
    */
   start: () => {
     const cfg = instance.getConfig()
+    // @TODO Build service and
+    // Set output mode for instance
+    output.quiet = cfg.quietMode
     // TEMP
     return cfg
   }
