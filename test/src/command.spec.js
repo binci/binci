@@ -65,18 +65,33 @@ describe('command', () => {
   describe('get', () => {
     let outputErrorStub
     let processExitStub
+    let processCwdStub
     beforeEach(() => {
       outputErrorStub = sinon.stub(output, 'error')
       processExitStub = sinon.stub(process, 'exit')
+      processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
     })
     afterEach(() => {
       outputErrorStub.restore()
       processExitStub.restore()
+      processCwdStub.restore()
     })
     it('outputs error and exits if missing \'from\' property', () => {
       command.get({})
       expect(outputErrorStub).to.be.calledWith('Missing \'from\' property in config or argument')
       expect(processExitStub).to.be.calledWith(1)
+    })
+    it('returns array of arguments for a service config', () => {
+      process.env.DL_TEST_EV = 'foo'
+      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ] }) // eslint-disable-line no-template-curly-in-string
+      expect(actual).to.deep.equal([ 'run', '--rm', '-v', '/tmp:/tmp', '-w', '/tmp', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080' ])
+      delete process.env.DL_TEST_EV
+    })
+    it('returns array of arguments for a primary container config', () => {
+      process.env.DL_TEST_EV = 'foo'
+      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], task: 'foo', tasks: { foo: 'echo "foo"' } }, true) // eslint-disable-line no-template-curly-in-string
+      expect(actual).to.deep.equal([ 'run', '--rm', '-v', '/tmp:/tmp', '-w', '/tmp', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '/bin/sh', '-c', '"echo "foo""' ])
+      delete process.env.DL_TEST_EV
     })
   })
 })

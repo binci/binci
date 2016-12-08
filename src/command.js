@@ -28,7 +28,7 @@ const command = {
    * @returns {array}
    */
   parseArgs: (type, args) => args.reduce((acc, item) => {
-    return acc.concat([ command.args[type], item ])
+    return acc.concat([ command.args[type], command.parseHostEnvVars(item) ])
   }, []),
   /**
    * Parses config object and returns array of command arguments
@@ -73,7 +73,7 @@ const command = {
     const cwd = process.cwd()
     let args = [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd ]
     args = args.concat(command.getArgs(cfg))
-    args = primary ? args.concat[command.getExec(cfg)] : ''
+    args = primary ? args.concat(command.getExec(cfg)) : args
     return args
   }
 }
