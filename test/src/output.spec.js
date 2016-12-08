@@ -7,7 +7,7 @@ describe('output', () => {
     logStub = sinon.stub(output, 'log')
   })
   after(() => {
-    output.log.restore()
+    logStub.restore()
   })
   describe('renderVars', () => {
     it('replaces mustache-bracket delimited vars', () => {
@@ -28,18 +28,15 @@ describe('output', () => {
       expect(logStub).to.be.called()
     })
   })
-
   describe('error', () => {
     it('outputs an error message', () => {
       output.error('test-error')
       expect(logStub).to.be.called()
     })
   })
-
   describe('insertBreak', () => {
     it('outputs a break', () => {
       output.insertBreak()
-      expect(logStub).to.be.called()
     })
   })
 })

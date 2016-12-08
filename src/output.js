@@ -16,17 +16,17 @@ const output = {
    * Output success message
    * @param {string} m Output message
    */
-  success: m => output.log(chalk.bold.green('⦿ ') + chalk.bold(output.renderVars(m))),
+  success: m => output.log(chalk.green('⦿ ') + output.renderVars(m)),
   /**
    * Output warning message
    * @param {string} m Output message
    */
-  warn: m => output.log(chalk.bold.yellow('⦿ ') + chalk.bold(output.renderVars(m))),
+  warn: m => output.log(chalk.yellow('⦿ ') + output.renderVars(m)),
   /**
    * Output error message
    * @param {string} m Output message
    */
-  error: m => output.log(chalk.bold.red('⦿ ') + chalk.bold(output.renderVars(m))),
+  error: m => output.log(chalk.red('⦿ ') + output.renderVars(m)),
   /**
    * Inserts break before commands are run
    */
