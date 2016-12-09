@@ -1,3 +1,4 @@
+const _ = require('redash')
 const min = require('minimist')
 const args = require('./args')
 const config = require('./config')
@@ -29,7 +30,7 @@ const instance = {
    */
   getConfig: () => {
     const argsObj = instance.getArgs()
-    const cfg = Object.assign(config.load(argsObj.configPath || undefined), argsObj)
+    const cfg = _.merge(config.load(argsObj.configPath || undefined), argsObj)
     // Return config object
     return cfg
   },

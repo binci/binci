@@ -1,4 +1,5 @@
 'use strict'
+const _ = require('redash')
 const pkg = require('../package.json')
 const output = require('./output')
 
@@ -24,7 +25,7 @@ const args = {
     let help = ''
     help += `  ${pkg.name} v.${pkg.version}\n`
     help += `  Usage: [${Object.keys(pkg.bin).join('|')}] task [options]\n`
-    help += Object.keys(args.available).reduce((p, c) => `${p}\n    -${c}  ${args.available[c].help}`, '')
+    help += _.keys(args.available).reduce((p, c) => `${p}\n    -${c}  ${args.available[c].help}`, '')
     output.log(help)
     process.exit(0)
   },
@@ -40,20 +41,17 @@ const args = {
    * @param {object} argObj Arguments from invocation
    * @returns {object}
    */
-  parse: (argObj) => {
-    const argsOut = argObj._ ? { task: argObj._.join(' ') } : {}
-    Object.keys(argObj).forEach((arg) => {
-      if (args.available[arg] && args.available[arg].prop) {
-        argsOut[args.available[arg].prop] = argObj[arg]
-      } else if (args.available[arg] && args.available[arg].action) {
-        args[args.available[arg].action].apply(null, [ argObj[arg] ])
-      } else if (arg !== '_' && !args.available[arg]) {
-        output.error(`Invalid argument '${arg}', please see documentation`)
-        process.exit(1)
-      }
-    })
-    return argsOut
-  }
+  parse: (argObj) => _.keys(argObj).reduce((acc, arg) => {
+    if (args.available[arg] && args.available[arg].prop) {
+      acc[args.available[arg].prop] = argObj[arg]
+    } else if (args.available[arg] && args.available[arg].action) {
+      args[args.available[arg].action].apply(null, [ argObj[arg] ])
+    } else if (arg !== '_' && !args.available[arg]) {
+      output.error(`Invalid argument '${arg}', please see documentation`)
+      process.exit(1)
+    }
+    return acc
+  }, argObj._ ? { task: argObj._.join(' ') } : {})
 }
 
 module.exports = args
