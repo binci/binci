@@ -13,7 +13,7 @@ describe('services', () => {
     it('returns an array of services and their command arrays', () => {
       const svc = services.get(config.load())
       expect(svc[0].name).to.equal('mongodb')
-      expect(svc[0].args).to.deep.equal([ '-p', '27017:27017' ])
+      expect(svc[0].args).to.deep.equal([ 'run', '--rm', '-d', '--privileged', '-p', '27017:27017', 'mongo:3.0' ])
     })
   })
 })

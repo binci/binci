@@ -51,6 +51,7 @@ const command = {
   getExec: (cfg) => {
     // Custom exec, just run native task
     if (cfg.exec) return [ '/bin/sh', '-c', `"${cfg.task}"` ]
+    // Get from
     // Use predefined task
     if (!cfg.tasks || !cfg.tasks[cfg.task]) {
       output.error(`Task '${cfg.task}' does not exist`)
@@ -73,6 +74,7 @@ const command = {
     const cwd = process.cwd()
     let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '--rm', '-d', '--privileged' ]
     args = args.concat(command.getArgs(cfg))
+    args = args.concat([ cfg.from ])
     args = primary ? args.concat(command.getExec(cfg)) : args
     return args
   }

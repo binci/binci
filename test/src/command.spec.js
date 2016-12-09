@@ -84,13 +84,13 @@ describe('command', () => {
     it('returns array of arguments for a service config', () => {
       process.env.DL_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ] }) // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal([ 'run', '--rm', '-d', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080' ])
+      expect(actual).to.deep.equal([ 'run', '--rm', '-d', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', 'mongo' ])
       delete process.env.DL_TEST_EV
     })
     it('returns array of arguments for a primary container config', () => {
       process.env.DL_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], task: 'foo', tasks: { foo: 'echo "foo"' } }, true) // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal([ 'run', '--rm', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '/bin/sh', '-c', '"echo "foo""' ])
+      expect(actual).to.deep.equal([ 'run', '--rm', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', 'mongo', '/bin/sh', '-c', '"echo "foo""' ])
       delete process.env.DL_TEST_EV
     })
   })

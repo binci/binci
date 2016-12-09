@@ -2,7 +2,7 @@ const _ = require('redash')
 const args = require('./args')
 const config = require('./config')
 // const command = require('./command')
-// const services = require('./services')
+const services = require('./services')
 // const proc = require('./proc')
 // const output = require('./output')
 
@@ -20,7 +20,9 @@ const instance = {
    * Initializes instance from config and args
    */
   start: () => {
-    return true
+    const cfg = instance.getConfig()
+    const svc = services.get(cfg)
+    return { cfg, svc }
   }
 }
 
