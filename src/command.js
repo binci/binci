@@ -71,7 +71,7 @@ const command = {
       process.exit(1)
     }
     const cwd = process.cwd()
-    let args = [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd ]
+    let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd ] : [ 'run', '--rm' ]
     args = args.concat(command.getArgs(cfg))
     args = primary ? args.concat(command.getExec(cfg)) : args
     return args
