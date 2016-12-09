@@ -1,27 +1,32 @@
 const path = require('path')
-const _ = require('redash')
 const instance = require('src/index')
 const args = require('src/args')
-const config = require('src/config')
-const services = require('src/services')
+const fixtures = require('test/fixtures/instance')
 
 const configPath = path.resolve(__dirname, '../fixtures/devlab.yml')
 
 describe('index', () => {
+  let processCwdStub
+  before(() => {
+    processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
+  })
+  after(() => {
+    processCwdStub.restore()
+  })
   describe('getConfig', () => {
-    it('loads config from devlab.yml and arguments', () => {
-      args.raw = { f: 'node:6', _: [ '/bin/sh' ], c: configPath }
-      const cfg = _.merge(config.load(configPath), args.parse())
-      const svc = services.get(cfg)
-      cfg.services = svc
-      expect(instance.getConfig()).to.deep.equal(cfg)
+    it('loads config and args and returns exec run command objects', () => {
+      args.raw = { f: 'node:6', e: true, _: [ 'echo "foo"' ], c: configPath }
+      expect(instance.getConfig()).to.deep.equal(fixtures.exec)
+    })
+    it('loads config and args and returns task run command objects', () => {
+      args.raw = { f: 'node:6', _: [ 'env' ], c: configPath }
+      expect(instance.getConfig()).to.deep.equal(fixtures.task)
     })
   })
   describe('start', () => {
     it('starts the instance using config and args', () => {
-      args.raw = { _: [ 'node', 'index.js' ], c: configPath }
+      args.raw = { _: [ 'env' ], c: configPath }
       const inst = instance.start()
-      console.log(JSON.stringify(inst, null, 4))
       expect(inst).to.be.an('object')
     })
   })
