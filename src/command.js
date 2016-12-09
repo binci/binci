@@ -36,14 +36,17 @@ const command = {
    * @param {object} cfg Config object of instance or service
    * @returns {array} Command arguments
    */
-  getArgs: (cfg) => _.keys(cfg).reduce((acc, item) => {
-    if (command.args[item] && Array.isArray(cfg[item])) {
-      return acc.concat(command.parseArgs(item, cfg[item]))
-    } else if (command.args[item] && !Array.isArray(cfg[item])) {
-      output.warn(`Config error: '${item}' should be an array`)
-    }
-    return acc
-  }, []),
+  getArgs: (cfg) => _.pipe(
+    _.keys,
+    _.filter((key) => !!command.args[key]),
+    _.chain(_.cond([
+      [(key) => !_.isType('Array', cfg[key]), (key) => {
+        output.warn(`Config error: '${key}' should be an array`)
+        return []
+      }],
+      [_.always(true), (key) => command.parseArgs(key, cfg[key])]
+    ]))
+  )(cfg),
   /**
    * Returns array of execution commands
    * @param {object} cfg Config object for instance

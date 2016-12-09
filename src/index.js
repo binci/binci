@@ -15,14 +15,18 @@ const instance = {
    * Gets config by merging parsed arguments with config object
    * @returns {object} Full config for the instance
    */
-  getConfig: () => _.merge(config.load(args.parse().configPath), args.parse()),
+  getConfig: () => {
+    const cfg = _.merge(config.load(args.parse().configPath), args.parse())
+    const svc = services.get(cfg)
+    cfg.services = svc
+    return cfg
+  },
   /**
    * Initializes instance from config and args
    */
   start: () => {
     const cfg = instance.getConfig()
-    const svc = services.get(cfg)
-    return { cfg, svc }
+    return cfg
   }
 }
 
