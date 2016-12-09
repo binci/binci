@@ -1,44 +1,21 @@
 const path = require('path')
-const _ = require('lodash')
+const _ = require('redash')
 const instance = require('src/index')
 const args = require('src/args')
 const config = require('src/config')
 
-const fixtures = {
-  args: require('test/fixtures/args.js')
-}
-
 describe('index', () => {
-  describe('getArgs', () => {
-    let parseArgsStub
-    before(() => {
-      parseArgsStub = sinon.stub(args, 'parse', () => { return {} })
-    })
-    after(() => parseArgsStub.restore())
-    it('returns the args object for the instance', () => {
-      expect(instance.getArgs()).to.deep.equal({})
-    })
-  })
   describe('getConfig', () => {
-    before(() => {
-      config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')
-      instance.rawArgs = fixtures.args
-    })
-    it('returns the full config for the instance from default devlab.yml', () => {
-      expect(instance.getConfig()).to.deep.equal(Object.assign(config.load(), args.parse(fixtures.args)))
-    })
-    it('returns the full config for the instance from arg-specified config path', () => {
-      const configPathArgs = _.cloneDeep(fixtures.args)
-      configPathArgs.c = path.resolve(__dirname, '../fixtures/devlab.yml')
-      instance.rawArgs = configPathArgs
-      expect(instance.getConfig()).to.deep.equal(Object.assign(config.load(), args.parse(configPathArgs)))
+    it('loads config from devlab.yml and arguments', () => {
+      const configPath = path.resolve(__dirname, '../fixtures/devlab.yml')
+      args.raw = { f: 'node:6', _: [ '/bin/sh' ], c: configPath }
+      expect(instance.getConfig()).to.deep.equal(_.merge(config.load(configPath), args.parse()))
     })
   })
   describe('start', () => {
     it('starts the instance using config and args', () => {
       const inst = instance.start()
-      console.log(inst)
-      expect(inst).to.be.an('object')
+      expect(inst).to.be.true
     })
   })
 })

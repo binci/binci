@@ -1,9 +1,17 @@
 'use strict'
 const _ = require('redash')
+const min = require('minimist')
 const pkg = require('../package.json')
 const output = require('./output')
 
+/* istanbul ignore next */
+const processArgs = process.argv[0] === 'node' ? 1 : 2
+
 const args = {
+  /**
+   * @property {object} Arguments passed to the instance
+   */
+  raw: min(process.argv.slice(processArgs)),
   /**
    * @property {object} Available run-time flags
    * - @property {string} action - the method to call when parsing
@@ -24,7 +32,7 @@ const args = {
   showHelp: () => {
     let help = ''
     help += `  ${pkg.name} v.${pkg.version}\n`
-    help += `  Usage: [${Object.keys(pkg.bin).join('|')}] task [options]\n`
+    help += `  Usage: [${_.keys(pkg.bin).join('|')}] task [options]\n`
     help += _.keys(args.available).reduce((p, c) => `${p}\n    -${c}  ${args.available[c].help}`, '')
     output.log(help)
     process.exit(0)
@@ -37,21 +45,40 @@ const args = {
     process.exit(0)
   },
   /**
+   * Ensures argument is valid or outputs an error
+   * @param {string} arg The argument to check
+   * @returns {boolean}
+   */
+  isArg: (arg) => {
+    if (args.available[arg]) return true
+    output.error(`Invalid argument '${arg}', please see documentation`)
+    process.exit(1)
+    return false
+  },
+  /**
+   * Gets the task elements and returns joined string
+   * @returns {string}
+   */
+  getTask: () => _.has('_', args.raw) ? _.join(' ', args.raw._) : '',
+  /**
    * Parse arguments
    * @param {object} argObj Arguments from invocation
    * @returns {object}
    */
-  parse: (argObj) => _.keys(argObj).reduce((acc, arg) => {
-    if (args.available[arg] && args.available[arg].prop) {
-      acc[args.available[arg].prop] = argObj[arg]
-    } else if (args.available[arg] && args.available[arg].action) {
-      args[args.available[arg].action].apply(null, [ argObj[arg] ])
-    } else if (arg !== '_' && !args.available[arg]) {
-      output.error(`Invalid argument '${arg}', please see documentation`)
-      process.exit(1)
-    }
-    return acc
-  }, argObj._ ? { task: argObj._.join(' ') } : {})
+  parse: () => _.pipe(
+    _.omit(['_']),
+    _.keys,
+    _.filter(args.isArg),
+    _.reduce((acc, key) => {
+      const arg = args.available[key]
+      // Accumulate property
+      if (arg.prop) acc[arg.prop] = args.raw[key]
+      // Apply action
+      if (arg.action) args[arg.action].call(null, args.raw[key])
+      return acc
+    }, {}),
+    _.merge({ task: args.getTask() })
+  )(args.raw)
 }
 
 module.exports = args
