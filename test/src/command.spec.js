@@ -83,8 +83,8 @@ describe('command', () => {
     })
     it('returns array of arguments for a service config', () => {
       process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ] }) // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal([ 'run', '--rm', '-d', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', 'mongo' ])
+      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080', '9090:9090' ] }) // eslint-disable-line no-template-curly-in-string
+      expect(actual).to.deep.equal([ 'run', '--rm', '-d', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', 'mongo' ])
       delete process.env.DL_TEST_EV
     })
     it('returns array of arguments for a primary container config', () => {

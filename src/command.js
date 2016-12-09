@@ -1,3 +1,4 @@
+const _ = require('redash')
 const output = require('./output')
 
 const command = {
@@ -35,7 +36,7 @@ const command = {
    * @param {object} cfg Config object of instance or service
    * @returns {array} Command arguments
    */
-  getArgs: (cfg) => Object.keys(cfg).reduce((acc, item) => {
+  getArgs: (cfg) => _.keys(cfg).reduce((acc, item) => {
     if (command.args[item] && Array.isArray(cfg[item])) {
       return acc.concat(command.parseArgs(item, cfg[item]))
     } else if (command.args[item] && !Array.isArray(cfg[item])) {
