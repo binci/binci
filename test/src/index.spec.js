@@ -34,22 +34,11 @@ describe('index', () => {
       expect(instance.getConfig()).to.deep.equal(Object.assign(config.load(), args.parse(configPathArgs)))
     })
   })
-  describe('getServices', () => {
-    before(() => {
-      config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')
-    })
-    it('returns false if no services are specified', () => {
-      expect(instance.getServices({})).to.be.false()
-    })
-    it('returns an array of services and their command arrays', () => {
-      const services = instance.getServices(config.load())
-      expect(services[0].name).to.equal('mongodb')
-      expect(services[0].args).to.deep.equal([ '-p', '27017:27017' ])
-    })
-  })
   describe('start', () => {
     it('starts the instance using config and args', () => {
-      expect(instance.start()).to.be.an('object')
+      const inst = instance.start()
+      console.log(inst)
+      expect(inst).to.be.an('object')
     })
   })
 })
