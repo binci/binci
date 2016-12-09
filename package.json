@@ -60,8 +60,8 @@
     "chalk": "^1.1.1",
     "fs-eventbridge-js": "^0.2.0",
     "js-yaml": "^3.4.2",
-    "lodash": "^3.10.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "redash": "^0.14.2"
   },
   "standard": {
     "ignore": [
