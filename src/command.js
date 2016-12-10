@@ -61,15 +61,17 @@ const command = {
   getExec: (cfg) => {
     // Set `before` command
     const before = cfg.before ? `${command.formatTask(cfg.before)}; ` : ''
+    // Set `after` command
+    const after = cfg.after ? `; ${command.formatTask(cfg.after)}` : ''
     // Custom exec, just run native task
-    if (cfg.exec) return [ '/bin/sh', '-c', `"${before}${cfg.task}"` ]
+    if (cfg.exec) return [ '/bin/sh', '-c', `"${before}${cfg.task}${after}"` ]
     // Get from
     // Use predefined task
     if (!cfg.tasks || !cfg.tasks[cfg.task]) {
       output.error(`Task '${cfg.task}' does not exist`)
       process.exit(1)
     } else {
-      return [ '/bin/sh', '-c', `"${before}${command.formatTask(cfg.tasks[cfg.task])}"` ]
+      return [ '/bin/sh', '-c', `"${before}${command.formatTask(cfg.tasks[cfg.task])}${after}"` ]
     }
   },
   /**

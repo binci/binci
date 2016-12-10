@@ -63,8 +63,8 @@ describe('command', () => {
       expect(processExitStub).to.be.calledWith(1)
     })
     it('returns exec task array when all criteria are met', () => {
-      const actual = command.getExec({ task: 'foo', before: 'bar', tasks: { foo: 'echo "foo"\necho "bar"' } })
-      expect(actual).to.deep.equal([ '/bin/sh', '-c', '"bar; echo "foo"; echo "bar""' ])
+      const actual = command.getExec({ task: 'foo', before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
+      expect(actual).to.deep.equal([ '/bin/sh', '-c', '"bar; echo "foo"; echo "bar"; bizz"' ])
     })
   })
   describe('get', () => {
