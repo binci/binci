@@ -33,6 +33,11 @@ describe('command', () => {
       expect(outputWarnStub).to.be.calledWith('Config error: \'env\' should be an array')
     })
   })
+  describe('formatTask', () => {
+    it('returns single line format task', () => {
+      expect(command.formatTask('foo\nbar')).to.equal('foo; bar')
+    })
+  })
   describe('getExec', () => {
     let outputErrorStub
     let processExitStub
@@ -58,8 +63,8 @@ describe('command', () => {
       expect(processExitStub).to.be.calledWith(1)
     })
     it('returns exec task array when all criteria are met', () => {
-      const actual = command.getExec({ task: 'foo', tasks: { foo: 'echo "foo"\necho "bar"' } })
-      expect(actual).to.deep.equal([ '/bin/sh', '-c', '"echo "foo"; echo "bar""' ])
+      const actual = command.getExec({ task: 'foo', before: 'bar', tasks: { foo: 'echo "foo"\necho "bar"' } })
+      expect(actual).to.deep.equal([ '/bin/sh', '-c', '"bar; echo "foo"; echo "bar""' ])
     })
   })
   describe('get', () => {

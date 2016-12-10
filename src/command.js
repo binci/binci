@@ -48,20 +48,28 @@ const command = {
     ]))
   )(cfg),
   /**
+   * Formats task by replacing line breaks with semicolons
+   * @param {string} task The task command(s)
+   * @returns {string} Formatted task
+   */
+  formatTask: (task) => task.replace('\n', '; '),
+  /**
    * Returns array of execution commands
    * @param {object} cfg Config object for instance
    * @returns {array} Array of execution tasks
    */
   getExec: (cfg) => {
+    // Set `before` command
+    const before = cfg.before ? `${command.formatTask(cfg.before)}; ` : ''
     // Custom exec, just run native task
-    if (cfg.exec) return [ '/bin/sh', '-c', `"${cfg.task}"` ]
+    if (cfg.exec) return [ '/bin/sh', '-c', `"${before}${cfg.task}"` ]
     // Get from
     // Use predefined task
     if (!cfg.tasks || !cfg.tasks[cfg.task]) {
       output.error(`Task '${cfg.task}' does not exist`)
       process.exit(1)
     } else {
-      return [ '/bin/sh', '-c', `"${cfg.tasks[cfg.task].replace('\n', '; ')}"` ]
+      return [ '/bin/sh', '-c', `"${before}${command.formatTask(cfg.tasks[cfg.task])}"` ]
     }
   },
   /**
