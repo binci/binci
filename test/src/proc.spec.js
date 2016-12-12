@@ -9,6 +9,9 @@ describe('proc', () => {
     })
   })
   describe('run', () => {
+    beforeEach(() => {
+      proc.log = '' // Reset logs
+    })
     it('rejects after a process exits with non-0 code', () => {
       return proc.run([ 'foo' ]).then(() => new Error('Should have failed'))
         .catch((code) => {
