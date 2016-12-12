@@ -1,5 +1,6 @@
 const _ = require('redash')
 const command = require('./command')
+const proc = require('./proc')
 
 const services = {
   /**
@@ -16,11 +17,17 @@ const services = {
   }, []),
   /**
    * Runs services and resolves or rejects
-   * @param {array} cfg Instance config object
+   * @param {array} svc Array of service command arrays
    * @returns {object} promise
    */
-  run: (cfg) => {
-
+  run: (svc) => {
+    const procs = svc.reduce((acc, cur) => {
+      acc.push(proc.run(cur.args).then(() => {
+        services.running.push(`dl_${cur.name}`)
+      }))
+      return acc
+    }, [])
+    return Promise.all(procs)
   }
 }
 

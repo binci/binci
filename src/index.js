@@ -25,6 +25,7 @@ const instance = {
    */
   start: () => {
     const cfg = instance.getConfig()
+    console.log('CFG', JSON.stringify(cfg, null, 2))
     return cfg
   }
 }
