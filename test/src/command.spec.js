@@ -1,3 +1,4 @@
+'use strict'
 const command = require('src/command')
 const output = require('src/output')
 
