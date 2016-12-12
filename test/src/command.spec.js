@@ -67,6 +67,14 @@ describe('command', () => {
       expect(actual).to.deep.equal([ '/bin/sh', '-c', '"bar; echo "foo"; echo "bar"; bizz"' ])
     })
   })
+  describe('getLinks', () => {
+    it('returns an empty array if no services are present', () => {
+      expect(command.getLinks({})).to.deep.equal([])
+    })
+    it('returns formatted link arguments if services are present', () => {
+      expect(command.getLinks({ services: [ { foo: {} }, { bar: {} } ] })).to.deep.equal([ '--link', 'dl_foo:foo', '--link', 'dl_bar:bar' ])
+    })
+  })
   describe('get', () => {
     let outputErrorStub
     let processExitStub

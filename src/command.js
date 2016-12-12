@@ -75,6 +75,15 @@ const command = {
     }
   },
   /**
+   * Returns concatted array of link arguments
+   * @param {object} cfg The config object for the primary container
+   * @returns {array} Concatted link arguments
+   */
+  getLinks: (cfg) => {
+    if (!cfg.services) return []
+    return cfg.services.reduce((acc, svc) => acc.concat([ '--link', `dl_${_.keys(svc)[0]}:${_.keys(svc)[0]}` ]), [])
+  },
+  /**
    * Returns full command
    * @param {object} cfg Config object for instance
    * @param {string} name Container name
@@ -89,6 +98,7 @@ const command = {
     const cwd = process.cwd()
     let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '--rm', '-d', '--privileged' ]
     args = args.concat(command.getArgs(cfg))
+    args = args.concat(command.getLinks(cfg))
     args = args.concat([ '--name', `dl_${name}` ])
     args = args.concat([ cfg.from ])
     args = primary ? args.concat(command.getExec(cfg)) : args
