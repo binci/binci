@@ -41,4 +41,33 @@ describe('services', () => {
         })
     })
   })
+  describe('stop', () => {
+    let procRunStub
+    afterEach(() => {
+      if (procRunStub) procRunStub.restore()
+      services.running = []
+    })
+    it('resolves if no services are running', () => {
+      services.running = []
+      return expect(services.stop()).to.be.fulfilled()
+    })
+    it('resolves when services all stop', () => {
+      procRunStub = sinon.stub(proc, 'run', () => Promise.resolve())
+      services.running = [ 'foo', 'bar' ]
+      return services.stop().then(() => {
+        expect(services.running.length).to.equal(0)
+      })
+    })
+    it('rejects when a service fails to stop', () => {
+      procRunStub = sinon.stub(proc, 'run', (args) => Promise.reject())
+      services.running = [ 'foo', 'bar' ]
+      return services.stop()
+        .then(() => {
+          throw new Error('Should have failed')
+        })
+        .catch(() => {
+          expect(services.running).to.deep.equal([ 'foo', 'bar' ])
+        })
+    })
+  })
 })

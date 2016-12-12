@@ -28,6 +28,23 @@ const services = {
       return acc
     }, [])
     return Promise.all(procs)
+  },
+  /**
+   * Kills all running services
+   * @returns {object} promise
+   */
+  stop: () => {
+    // Nothing to do here
+    if (services.running.length === 0) return Promise.resolve()
+    const procs = services.running.reduce((acc, cur) => {
+      acc.push(proc.run([ 'stop', cur ])
+        .then(() => {
+          const i = services.running.indexOf(cur)
+          services.running.splice(i, 1)
+        }))
+      return acc
+    }, [])
+    return Promise.all(procs)
   }
 }
 
