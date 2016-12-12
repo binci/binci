@@ -3,6 +3,10 @@ const command = require('./command')
 
 const services = {
   /**
+   * @property {array} All running services
+   */
+  running: [],
+  /**
    * Gets all services and returns name and arguments
    * @param {array} cfg Instance config object
    * @returns {array} Array of services names and run args
