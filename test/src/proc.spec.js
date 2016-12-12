@@ -20,5 +20,8 @@ describe('proc', () => {
         expect(proc.log).to.match(/CONTAINER ID/)
       })
     })
+    it('runs silently if `silent` flag is passed', () => {
+      return expect(proc.run([ 'ps' ], true)).to.be.fulfilled()
+    })
   })
 })

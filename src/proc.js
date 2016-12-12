@@ -19,14 +19,18 @@ const proc = {
    * Runs a process and returns promise which reolves or rejects based on process exit
    * @param {string} cmd Command to run
    * @param {array} args Arguments to pass to command
+   * @param {boolean} silent Silences output
    * @returns {object} promise
    */
-  run: (args) => new Promise((resolve, reject) => {
+  run: (args, silent = false) => new Promise((resolve, reject) => {
     proc.log = '' // Reset
-    const p = spawn('docker', args, {
+    const opts = {
       env: process.env,
       cwd: process.env.HOME
-    })
+    }
+    if (silent) opts.stdio = [ null, null, null ]
+    // Start
+    const p = spawn('docker', args, opts)
 
     // Handle stdout and stderr
     const stdout = readline.createInterface({ input: p.stdout, terminal: false })
