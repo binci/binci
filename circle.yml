@@ -5,17 +5,7 @@ machine:
     version: 6.2.0
 dependencies:
   cache_directories:
-    - "~/docker"
     - node_modules
-  override:
-    - |
-      if [[ -e ~/docker/mongo_test.tar ]]; then
-        docker load -i ~/docker/mongo_test.tar
-      else
-        docker pull mongo:latest &&
-        mkdir -p ~/docker &&
-        docker save mongo:latest > ~/docker/mongo_test.tar
-      fi
 test:
   override:
     - npm install
