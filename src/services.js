@@ -20,32 +20,19 @@ const services = {
    * @param {array} svc Array of service command arrays
    * @returns {object} promise
    */
-  run: (svc) => {
-    const procs = svc.reduce((acc, cur) => {
-      acc.push(proc.run(cur.args).then(() => {
-        services.running.push(`dl_${cur.name}`)
-      }))
-      return acc
-    }, [])
-    return Promise.all(procs)
-  },
+  run: (svc) => Promise.all(svc.reduce((acc, cur) =>
+    acc.concat([proc.run(cur.args).then(() => {
+      services.running.push(`dl_${cur.name}`)
+    })]), [])),
   /**
    * Kills all running services
    * @returns {object} promise
    */
-  stop: () => {
-    // Nothing to do here
-    if (services.running.length === 0) return Promise.resolve()
-    const procs = services.running.reduce((acc, cur) => {
-      acc.push(proc.run([ 'stop', cur ])
-        .then(() => {
-          const i = services.running.indexOf(cur)
-          services.running.splice(i, 1)
-        }))
-      return acc
-    }, [])
-    return Promise.all(procs)
-  }
+  stop: () => Promise.all(services.running.map(cur =>
+    proc.run(['stop', cur]).then(() => {
+      const i = services.running.indexOf(cur)
+      services.running.splice(i, 1)
+    })))
 }
 
 module.exports = services
