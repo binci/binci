@@ -10,6 +10,8 @@ const instance = {
           '--privileged',
           '-p',
           '27017:27017',
+          '--name',
+          'dl_mongodb',
           'mongo:3.0'
         ]
       }
@@ -25,6 +27,8 @@ const instance = {
         '--privileged',
         '-p',
         '8080:8080',
+        '--name',
+        'dl_primary',
         'node:6',
         '/bin/sh',
         '-c',
@@ -43,6 +47,8 @@ const instance = {
           '--privileged',
           '-p',
           '27017:27017',
+          '--name',
+          'dl_mongodb',
           'mongo:3.0'
         ]
       }
@@ -58,6 +64,8 @@ const instance = {
         '--privileged',
         '-p',
         '8080:8080',
+        '--name',
+        'dl_primary',
         'node:6',
         '/bin/sh',
         '-c',

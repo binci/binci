@@ -77,10 +77,11 @@ const command = {
   /**
    * Returns full command
    * @param {object} cfg Config object for instance
+   * @param {string} name Container name
    * @param {boolean} primary If this is primary (not service container)
    * @returns {array} Arguments for docker command
    */
-  get: (cfg, primary = false) => {
+  get: (cfg, name, primary = false) => {
     if (!cfg.from) {
       output.error('Missing \'from\' property in config or argument')
       process.exit(1)
@@ -88,6 +89,7 @@ const command = {
     const cwd = process.cwd()
     let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '--rm', '-d', '--privileged' ]
     args = args.concat(command.getArgs(cfg))
+    args = args.concat([ '--name', `dl_${name}` ])
     args = args.concat([ cfg.from ])
     args = primary ? args.concat(command.getExec(cfg)) : args
     return args

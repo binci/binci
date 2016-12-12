@@ -18,7 +18,7 @@ const instance = {
    */
   getConfig: () => {
     const cfg = _.merge(config.load(args.parse().configPath), args.parse())
-    return { services: services.get(cfg), primary: [ command.get(cfg, true) ] }
+    return { services: services.get(cfg), primary: [ command.get(cfg, 'primary', true) ] }
   },
   /**
    * Initializes instance from config and args
