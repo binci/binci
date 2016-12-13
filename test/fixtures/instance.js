@@ -17,25 +17,23 @@ const instance = {
       }
     ],
     primary: [
-      [
-        'run',
-        '--rm',
-        '-v',
-        '/tmp:/tmp',
-        '-w',
-        '/tmp',
-        '--privileged',
-        '-p',
-        '8080:8080',
-        '--link',
-        'dl_mongodb:mongodb',
-        '--name',
-        'dl_primary',
-        'node:6',
-        '/bin/sh',
-        '-c',
-        '"echo "foo""'
-      ]
+      'run',
+      '--rm',
+      '-v',
+      '/tmp:/tmp',
+      '-w',
+      '/tmp',
+      '--privileged',
+      '-p',
+      '8080:8080',
+      '--link',
+      'dl_mongodb:mongodb',
+      '--name',
+      'dl_primary',
+      'node:6',
+      '/bin/sh',
+      '-c',
+      '"echo "foo""'
     ]
   },
   task: {
@@ -56,25 +54,23 @@ const instance = {
       }
     ],
     primary: [
-      [
-        'run',
-        '--rm',
-        '-v',
-        '/tmp:/tmp',
-        '-w',
-        '/tmp',
-        '--privileged',
-        '-p',
-        '8080:8080',
-        '--link',
-        'dl_mongodb:mongodb',
-        '--name',
-        'dl_primary',
-        'node:6',
-        '/bin/sh',
-        '-c',
-        '"env | sort"'
-      ]
+      'run',
+      '--rm',
+      '-v',
+      '/tmp:/tmp',
+      '-w',
+      '/tmp',
+      '--privileged',
+      '-p',
+      '8080:8080',
+      '--link',
+      'dl_mongodb:mongodb',
+      '--name',
+      'dl_primary',
+      'node:6',
+      '/bin/sh',
+      '-c',
+      '"env | sort"'
     ]
   }
 }

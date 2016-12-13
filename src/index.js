@@ -18,7 +18,7 @@ const instance = {
    */
   getConfig: () => {
     const cfg = _.merge(config.load(args.parse().configPath), args.parse())
-    return { services: services.get(cfg), primary: [ command.get(cfg, 'primary', true) ] }
+    return { services: services.get(cfg), primary: command.get(cfg, 'primary', true) }
   },
   /**
    * Initializes instance from config and args
@@ -27,6 +27,13 @@ const instance = {
     const cfg = instance.getConfig()
     console.log('CFG', JSON.stringify(cfg, null, 2))
     return cfg
+    // const svcNames = config.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
+    // if (svcNames.length) output.log(`Starting services ${svcNames}`)
+    // services.run(cfg.services)
+    //   .then(() => {
+    //     output.log(`Starting command ${_.last(cfg.primary)}`)
+    //     return proc.run(cfg.primary)
+    //   })
   }
 }
 
