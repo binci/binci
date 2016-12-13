@@ -4,7 +4,7 @@ const config = require('./config')
 const command = require('./command')
 const services = require('./services')
 const proc = require('./proc')
-const output = require('./output')
+// const output = require('./output')
 
 const instance = {
   /**
@@ -24,28 +24,42 @@ const instance = {
    * Initializes instance from config and args
    */
   start: () => Promise.resolve().then(() => {
-    let servicesSpinner
+    // let servicesSpinner
     const cfg = instance.getConfig()
-    const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
-    if (svcNames.length) {
-      servicesSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
-    }
+    // const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
+    // if (svcNames.length) {
+    //   servicesSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
+    // }
     return services.run(cfg.services)
       .then(() => {
-        servicesSpinner.succeed()
-        console.log('PRIMARY', cfg.primary)
-        output.success(`Starting command ${_.last(cfg.primary)}`)
+        console.log('services started')
         return proc.run(cfg.primary)
       })
       .then(() => {
-        output.success(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
+        console.log('stopping services')
+        return services.stop()
       })
-      .then(() => services.stop())
-  }).catch((e) => {
-    services.stop()
-    output.error(e.message || 'Process failed')
-    process.exit(1)
+      .catch((e) => {
+        console.log('e', e)
+        return services.stop()
+      })
+      // .then(() => {
+      //   servicesSpinner.succeed()
+      //   console.log('PRIMARY', cfg.primary)
+      //   output.success(`Starting command ${_.last(cfg.primary)}`)
+      //   return proc.run(cfg.primary)
+      // })
+      // .then(() => {
+      //   output.success(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
+      // })
   })
+  // .then(() => {
+  //   return services.stop()
+  // })
+  // .catch((e) => {
+  //   services.stop()
+  //   output.error(e.message || 'Process failed')
+  // })
 }
 
 module.exports = instance

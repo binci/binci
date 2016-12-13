@@ -33,7 +33,7 @@ const instance = {
       'node:6',
       'sh',
       '-c',
-      '"echo "foo""'
+      'echo "foo"'
     ]
   },
   task: {
@@ -70,7 +70,7 @@ const instance = {
       'node:6',
       'sh',
       '-c',
-      '"env | sort"'
+      'env | sort'
     ]
   }
 }
