@@ -18,6 +18,7 @@ const instance = {
     primary: [
       'run',
       '--rm',
+      '-it',
       '-v',
       '/tmp:/tmp',
       '-w',
@@ -54,6 +55,7 @@ const instance = {
     primary: [
       'run',
       '--rm',
+      '-it',
       '-v',
       '/tmp:/tmp',
       '-w',

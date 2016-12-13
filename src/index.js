@@ -37,13 +37,14 @@ const instance = {
         output.success(`Starting command ${_.last(cfg.primary)}`)
         return proc.run(cfg.primary)
       })
-      .then(() => services.stop())
       .then(() => {
         output.success(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
       })
+      .then(() => services.stop())
   }).catch((e) => {
     services.stop()
     output.error(e.message || 'Process failed')
+    process.exit(1)
   })
 }
 
