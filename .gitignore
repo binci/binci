@@ -1,6 +1,6 @@
 build/
 node_modules/
-!test/project/node_modules
+test/fixtures/project/node_modules/
 **/*.log
 .c9
 coverage/

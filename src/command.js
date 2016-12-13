@@ -3,10 +3,6 @@ const output = require('./output')
 
 const command = {
   /**
-   * @property {array} default arguments
-   */
-  defaultArgs: [ '--rm' ],
-  /**
    * @property {object} available args parsing instructions
    */
   args: {
@@ -65,7 +61,6 @@ const command = {
     const after = cfg.after ? `; ${command.formatTask(cfg.after)}` : ''
     // Custom exec, just run native task
     if (cfg.exec) return [ '/bin/sh', '-c', `"${before}${cfg.task}${after}"` ]
-    // Get from
     // Use predefined task
     if (!cfg.tasks || !cfg.tasks[cfg.task]) {
       output.error(`Task '${cfg.task}' does not exist`)
