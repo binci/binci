@@ -1,8 +1,6 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
 
-const output = require('./output')
-
 const config = {
   /**
    * @property {string} Sefault location of devlab.yml config file
@@ -17,8 +15,7 @@ const config = {
     try {
       return yaml.safeLoad(fs.readFileSync(path, 'utf8'))
     } catch (e) {
-      output.error('Cannot load config file. Please ensure you have a valid ./devlab.yml file or specify one with the `-c` flag')
-      process.exit(1)
+      throw new Error('Cannot load config file. Please ensure you have a valid ./devlab.yml file or specify one with the `-c` flag')
     }
   }
 }

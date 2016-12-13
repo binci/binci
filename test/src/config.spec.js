@@ -1,5 +1,4 @@
 const config = require('src/config')
-const output = require('src/output')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
 
@@ -15,13 +14,7 @@ describe('config', () => {
       expect(config.load(confPath)).to.deep.equal({ from: 'node:4' })
     })
     it('exits the process if file cannot be loaded', () => {
-      const procExitStub = sinon.stub(process, 'exit')
-      const outputErrorStub = sinon.stub(output, 'error')
-      config.load('/no/conf')
-      expect(outputErrorStub).to.be.calledWith('Cannot load config file. Please ensure you have a valid ./devlab.yml file or specify one with the `-c` flag')
-      expect(procExitStub).to.be.calledWith(1)
-      output.error.restore()
-      process.exit.restore()
+      expect(() => config.load('/no/conf')).to.throw('Cannot load config file. Please ensure you have a valid ./devlab.yml file or specify one with the `-c` flag')
     })
   })
 })

@@ -1,5 +1,4 @@
 const spawn = require('child_process').spawn
-const readline = require('readline')
 
 const proc = {
   /**

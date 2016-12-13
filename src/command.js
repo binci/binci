@@ -1,5 +1,4 @@
 const _ = require('redash')
-const output = require('./output')
 
 const command = {
   /**
@@ -37,8 +36,7 @@ const command = {
     _.filter((key) => !!command.args[key]),
     _.chain(_.cond([
       [(key) => !_.isType('Array', cfg[key]), (key) => {
-        output.warn(`Config error: '${key}' should be an array`)
-        return []
+        throw new Error(`Config error: '${key}' should be an array`)
       }],
       [_.always(true), (key) => command.parseArgs(key, cfg[key])]
     ]))
@@ -63,8 +61,7 @@ const command = {
     if (cfg.exec) return [ '/bin/sh', '-c', `"${before}${cfg.task}${after}"` ]
     // Use predefined task
     if (!cfg.tasks || !cfg.tasks[cfg.task]) {
-      output.error(`Task '${cfg.task}' does not exist`)
-      process.exit(1)
+      throw new Error(`Task '${cfg.task}' does not exist`)
     } else {
       return [ '/bin/sh', '-c', `"${before}${command.formatTask(cfg.tasks[cfg.task])}${after}"` ]
     }
@@ -86,10 +83,7 @@ const command = {
    * @returns {array} Arguments for docker command
    */
   get: (cfg, name, primary = false) => {
-    if (!cfg.from) {
-      output.error('Missing \'from\' property in config or argument')
-      process.exit(1)
-    }
+    if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
     let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
     args = args.concat(command.getArgs(cfg))

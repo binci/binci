@@ -1,6 +1,5 @@
 'use strict'
 const command = require('src/command')
-const output = require('src/output')
 
 describe('command', () => {
   describe('parseHostEnvVars', () => {
@@ -21,17 +20,11 @@ describe('command', () => {
     })
   })
   describe('getArgs', () => {
-    let outputWarnStub
-    beforeEach(() => {
-      outputWarnStub = sinon.stub(output, 'warn')
-    })
-    afterEach(() => outputWarnStub.restore())
     it('returns array of all args to run with command based off config', () => {
       expect(command.getArgs({ expose: [ '8080:8080' ], volumes: [ '/tmp:/tmp' ] })).to.deep.equal([ '-p', '8080:8080', '-v', '/tmp:/tmp' ])
     })
     it('outputs a warning if an argument is not an array', () => {
-      command.getArgs({ env: 'foo' })
-      expect(outputWarnStub).to.be.calledWith('Config error: \'env\' should be an array')
+      expect(() => command.getArgs({ env: 'foo' })).to.throw('Config error: \'env\' should be an array')
     })
   })
   describe('formatTask', () => {
@@ -40,28 +33,14 @@ describe('command', () => {
     })
   })
   describe('getExec', () => {
-    let outputErrorStub
-    let processExitStub
-    beforeEach(() => {
-      outputErrorStub = sinon.stub(output, 'error')
-      processExitStub = sinon.stub(process, 'exit')
-    })
-    afterEach(() => {
-      outputErrorStub.restore()
-      processExitStub.restore()
-    })
     it('returns custom task if exec (-e) was called in arguments', () => {
       expect(command.getExec({ exec: true, task: 'echo "foo"' })).to.deep.equal([ '/bin/sh', '-c', '"echo "foo""' ])
     })
-    it('outputs an error and exits if no tasks are specified', () => {
-      command.getExec({ task: 'foo' })
-      expect(outputErrorStub).to.be.calledWith('Task \'foo\' does not exist')
-      expect(processExitStub).to.be.calledWith(1)
+    it('throws error if no tasks are specified', () => {
+      expect(() => command.getExec({ task: 'foo' })).to.throw('Task \'foo\' does not exist')
     })
-    it('outputs an error and exits if invalid task is specified', () => {
-      command.getExec({ task: 'foo', tasks: { bar: 'echo "foo"' } })
-      expect(outputErrorStub).to.be.calledWith('Task \'foo\' does not exist')
-      expect(processExitStub).to.be.calledWith(1)
+    it('throws error if invalid task is specified', () => {
+      expect(() => command.getExec({ task: 'foo', tasks: { bar: 'echo "foo"' } })).to.throw('Task \'foo\' does not exist')
     })
     it('returns exec task array when all criteria are met', () => {
       const actual = command.getExec({ task: 'foo', before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
@@ -77,23 +56,15 @@ describe('command', () => {
     })
   })
   describe('get', () => {
-    let outputErrorStub
-    let processExitStub
     let processCwdStub
     beforeEach(() => {
-      outputErrorStub = sinon.stub(output, 'error')
-      processExitStub = sinon.stub(process, 'exit')
       processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
     })
     afterEach(() => {
-      outputErrorStub.restore()
-      processExitStub.restore()
       processCwdStub.restore()
     })
-    it('outputs error and exits if missing \'from\' property', () => {
-      command.get({})
-      expect(outputErrorStub).to.be.calledWith('Missing \'from\' property in config or argument')
-      expect(processExitStub).to.be.calledWith(1)
+    it('throws error if missing \'from\' property', () => {
+      expect(() => command.get({})).to.throw('Missing \'from\' property in config or argument')
     })
     it('returns array of arguments for a service config', () => {
       process.env.DL_TEST_EV = 'foo'

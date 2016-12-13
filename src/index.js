@@ -23,10 +23,10 @@ const instance = {
   /**
    * Initializes instance from config and args
    */
-  start: () => {
+  start: () => Promise.resolve().then(() => {
     const cfg = instance.getConfig()
     const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
-    if (svcNames.length) output.log(`Starting service${cfg.services.length > 1 ? 's': ''} ${svcNames}`)
+    if (svcNames.length) output.log(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
     return services.run(cfg.services)
       .then(() => {
         output.success(`Starting command ${_.last(cfg.primary)}`)
@@ -40,7 +40,9 @@ const instance = {
         services.stop()
         console.log('ERR', e)
       })
-  }
+  }).catch((e) => {
+    console.log('ERROR', e.message)
+  })
 }
 
 module.exports = instance

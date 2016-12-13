@@ -26,7 +26,7 @@ describe('index', () => {
   describe('start', () => {
     it('starts the instance using config and args', () => {
       args.raw = { _: [ 'env' ], c: configPath }
-      const inst = instance.start()
+      // instance.start()
       expect(true).to.be.true
     })
   })
