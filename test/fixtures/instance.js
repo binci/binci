@@ -30,7 +30,7 @@ const instance = {
       '--name',
       'dl_primary',
       'node:6',
-      '/bin/sh',
+      'sh',
       '-c',
       '"echo "foo""'
     ]
@@ -66,7 +66,7 @@ const instance = {
       '--name',
       'dl_primary',
       'node:6',
-      '/bin/sh',
+      'sh',
       '-c',
       '"env | sort"'
     ]

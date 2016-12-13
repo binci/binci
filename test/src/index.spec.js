@@ -15,7 +15,7 @@ describe('index', () => {
   })
   describe('getConfig', () => {
     it('loads config and args and returns exec run command objects', () => {
-      args.raw = { f: 'node:6', e: true, _: [ 'echo "foo"' ], c: configPath }
+      args.raw = { f: 'node:6', e: 'echo "foo"', _: [], c: configPath }
       expect(instance.getConfig()).to.deep.equal(fixtures.exec)
     })
     it('loads config and args and returns task run command objects', () => {

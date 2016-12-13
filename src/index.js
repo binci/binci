@@ -33,6 +33,7 @@ const instance = {
     return services.run(cfg.services)
       .then(() => {
         servicesSpinner.succeed()
+        console.log('PRIMARY', cfg.primary)
         output.success(`Starting command ${_.last(cfg.primary)}`)
         return proc.run(cfg.primary)
       })
@@ -42,7 +43,7 @@ const instance = {
       })
   }).catch((e) => {
     services.stop()
-    output.error(e.message)
+    output.error(e.message || 'Process failed')
   })
 }
 

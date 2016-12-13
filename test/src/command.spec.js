@@ -34,7 +34,7 @@ describe('command', () => {
   })
   describe('getExec', () => {
     it('returns custom task if exec (-e) was called in arguments', () => {
-      expect(command.getExec({ exec: true, task: 'echo "foo"' })).to.deep.equal([ '/bin/sh', '-c', '"echo "foo""' ])
+      expect(command.getExec({ exec: 'echo "foo"' })).to.deep.equal([ 'sh', '-c', '"echo "foo""' ])
     })
     it('throws error if no tasks are specified', () => {
       expect(() => command.getExec({ task: 'foo' })).to.throw('Task \'foo\' does not exist')
@@ -44,7 +44,7 @@ describe('command', () => {
     })
     it('returns exec task array when all criteria are met', () => {
       const actual = command.getExec({ task: 'foo', before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
-      expect(actual).to.deep.equal([ '/bin/sh', '-c', '"bar; echo "foo"; echo "bar"; bizz"' ])
+      expect(actual).to.deep.equal([ 'sh', '-c', '"bar; echo "foo"; echo "bar"; bizz"' ])
     })
   })
   describe('getLinks', () => {
@@ -75,7 +75,7 @@ describe('command', () => {
     it('returns array of arguments for a primary container config', () => {
       process.env.DL_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], task: 'foo', tasks: { foo: 'echo "foo"' } }, 'primary', true) // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal([ 'run', '--rm', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary', 'mongo', '/bin/sh', '-c', '"echo "foo""' ])
+      expect(actual).to.deep.equal([ 'run', '--rm', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary', 'mongo', 'sh', '-c', '"echo "foo""' ])
       delete process.env.DL_TEST_EV
     })
   })
