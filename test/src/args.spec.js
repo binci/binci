@@ -1,7 +1,6 @@
 'use strict'
 const pkg = require('package.json')
 const args = require('src/args')
-const output = require('src/output')
 
 const fixtures = {
   args: { e: true, _: [ '/bin/bash' ] }
@@ -9,30 +8,26 @@ const fixtures = {
 
 describe('args', () => {
   let processExitStub
-  let outputLogStub
-  let outputErrorStub
+  let logSpy
   beforeEach(() => {
+    logSpy = sinon.spy(console, 'log')
     processExitStub = sinon.stub(process, 'exit')
-    outputLogStub = sinon.stub(output, 'log')
-    outputErrorStub = sinon.stub(output, 'error')
-    // args.raw = fixtures.args
   })
   afterEach(() => {
     process.exit.restore()
-    output.log.restore()
-    output.error.restore()
+    logSpy.restore()
   })
   describe('showHelp', () => {
     it('shows the help message and exits', () => {
       args.showHelp()
-      expect(outputLogStub).to.be.calledOnce()
+      expect(logSpy).to.be.calledOnce()
       expect(processExitStub).to.be.calledWith(0)
     })
   })
   describe('showVersion', () => {
     it('shows the installed version and exits', () => {
       args.showVersion()
-      expect(outputLogStub).to.be.calledWith(pkg.version)
+      expect(logSpy).to.be.calledWith(pkg.version)
       expect(processExitStub).to.be.calledWith(0)
     })
   })
@@ -41,9 +36,7 @@ describe('args', () => {
       expect(args.isArg('f')).to.be.true
     })
     it('displays an error and exits if argument is not valid', () => {
-      expect(args.isArg('nope')).to.be.false
-      expect(outputErrorStub).to.be.calledWith('Invalid argument \'nope\', please see documentation')
-      expect(processExitStub).to.be.called()
+      expect(() => args.isArg('nope')).to.throw('Invalid argument \'nope\', please see documentation')
     })
   })
   describe('getTask', () => {

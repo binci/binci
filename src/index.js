@@ -24,24 +24,25 @@ const instance = {
    * Initializes instance from config and args
    */
   start: () => Promise.resolve().then(() => {
+    let servicesSpinner
     const cfg = instance.getConfig()
     const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
-    if (svcNames.length) output.log(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
+    if (svcNames.length) {
+      servicesSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
+    }
     return services.run(cfg.services)
       .then(() => {
+        servicesSpinner.succeed()
         output.success(`Starting command ${_.last(cfg.primary)}`)
         return proc.run(cfg.primary)
       })
       .then(() => services.stop())
       .then(() => {
-        console.log(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
-      })
-      .catch((e) => {
-        services.stop()
-        console.log('ERR', e)
+        output.success(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
       })
   }).catch((e) => {
-    console.log('ERROR', e.message)
+    services.stop()
+    output.error(e.message)
   })
 }
 

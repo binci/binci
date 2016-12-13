@@ -2,7 +2,6 @@
 const _ = require('redash')
 const min = require('minimist')
 const pkg = require('../package.json')
-const output = require('./output')
 
 /* istanbul ignore next */
 const processArgs = process.argv[0] === 'node' ? 1 : 2
@@ -34,14 +33,14 @@ const args = {
     help += `  ${pkg.name} v.${pkg.version}\n`
     help += `  Usage: [${_.keys(pkg.bin).join('|')}] task [options]\n`
     help += _.keys(args.available).reduce((p, c) => `${p}\n    -${c}  ${args.available[c].help}`, '')
-    output.log(help)
+    console.log(help)
     process.exit(0)
   },
   /**
    * Displays the current version
    */
   showVersion: () => {
-    output.log(pkg.version)
+    console.log(pkg.version)
     process.exit(0)
   },
   /**
@@ -51,9 +50,7 @@ const args = {
    */
   isArg: (arg) => {
     if (args.available[arg]) return true
-    output.error(`Invalid argument '${arg}', please see documentation`)
-    process.exit(1)
-    return false
+    throw new Error(`Invalid argument '${arg}', please see documentation`)
   },
   /**
    * Gets the task elements and returns joined string
