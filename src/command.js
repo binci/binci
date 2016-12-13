@@ -91,7 +91,7 @@ const command = {
       process.exit(1)
     }
     const cwd = process.cwd()
-    let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '--rm', '-d', '--privileged' ]
+    let args = primary ? [ 'run', '--rm', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
     args = args.concat(command.getArgs(cfg))
     args = args.concat(command.getLinks(cfg))
     args = args.concat([ '--name', `dl_${name}` ])

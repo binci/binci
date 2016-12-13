@@ -3,8 +3,8 @@ const args = require('./args')
 const config = require('./config')
 const command = require('./command')
 const services = require('./services')
-// const proc = require('./proc')
-// const output = require('./output')
+const proc = require('./proc')
+const output = require('./output')
 
 const instance = {
   /**
@@ -25,15 +25,21 @@ const instance = {
    */
   start: () => {
     const cfg = instance.getConfig()
-    console.log('CFG', JSON.stringify(cfg, null, 2))
-    return cfg
-    // const svcNames = config.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
-    // if (svcNames.length) output.log(`Starting services ${svcNames}`)
-    // services.run(cfg.services)
-    //   .then(() => {
-    //     output.log(`Starting command ${_.last(cfg.primary)}`)
-    //     return proc.run(cfg.primary)
-    //   })
+    const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
+    if (svcNames.length) output.log(`Starting service${cfg.services.length > 1 ? 's': ''} ${svcNames}`)
+    return services.run(cfg.services)
+      .then(() => {
+        output.success(`Starting command ${_.last(cfg.primary)}`)
+        return proc.run(cfg.primary)
+      })
+      .then(() => services.stop())
+      .then(() => {
+        console.log(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
+      })
+      .catch((e) => {
+        services.stop()
+        console.log('ERR', e)
+      })
   }
 }
 

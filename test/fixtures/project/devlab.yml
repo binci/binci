@@ -3,7 +3,7 @@ services:
   - mongodb:
       from: mongo:3.0
 tasks:
-  env: env | sort
+  env: env
   clean: rm -rf node_modules
   install: npm install
   test: npm run test

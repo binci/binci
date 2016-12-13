@@ -2,7 +2,6 @@ module.exports = [{
   name: 'mongodb',
   args: [
     'run',
-    '--rm',
     '-d',
     '--privileged',
     '-p',

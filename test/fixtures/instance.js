@@ -5,7 +5,6 @@ const instance = {
         name: 'mongodb',
         args: [
           'run',
-          '--rm',
           '-d',
           '--privileged',
           '-p',
@@ -42,7 +41,6 @@ const instance = {
         name: 'mongodb',
         args: [
           'run',
-          '--rm',
           '-d',
           '--privileged',
           '-p',

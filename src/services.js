@@ -29,9 +29,11 @@ const services = {
    * @returns {object} promise
    */
   stop: () => Promise.all(services.running.map(cur =>
-    proc.run(['stop', cur]).then(() => {
-      const i = services.running.indexOf(cur)
-      services.running.splice(i, 1)
+    proc.run(['stop', cur], true).then(() => {
+      return proc.run([ 'rm', cur ], true).then(() => {
+        const i = services.running.indexOf(cur)
+        services.running.splice(i, 1)
+      })
     })))
 }
 
