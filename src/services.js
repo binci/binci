@@ -21,7 +21,7 @@ const services = {
    * @returns {object} promise
    */
   run: (svc) => Promise.all(svc.reduce((acc, cur) =>
-    acc.concat([proc.run(cur.args).then(() => {
+    acc.concat([proc.run(cur.args, true).then(() => {
       services.running.push(`dl_${cur.name}`)
     })]), [])),
   /**
