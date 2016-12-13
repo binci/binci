@@ -3,9 +3,9 @@ services:
   - mongodb:
       from: mongo:3.0
 tasks:
-  env: env
+  env: env | sort
   clean: rm -rf node_modules
   install: npm install
   test: npm run test
   lint: npm run lint
-  build: npm run build
+  shell: /bin/sh
