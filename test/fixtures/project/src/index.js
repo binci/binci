@@ -6,7 +6,7 @@ const event = new EventEmitter()
 /**
  * @class mongo
  */
-export default class {
+module.exports = class {
 
   /**
    * Handles setup of connection

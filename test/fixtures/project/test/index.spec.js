@@ -9,14 +9,11 @@ mongo.collection = 'test'
 
 describe('MongoTest', () => {
   describe('execute', () => {
-    before((done) => {
-      return mongo.createCollection()
-    })
-    it('executes a method with args supplied', (done) => {
-      return mongo.execute('stats')
-        .then((res) => {
-          expect(res).to.be.an.object
-        })
-    })
+    before(() => mongo.createCollection())
+    it('executes a method with args supplied', () =>  mongo.execute('stats')
+      .then((res) => {
+        expect(res).to.be.an.object
+      })
+    )
   })
 })

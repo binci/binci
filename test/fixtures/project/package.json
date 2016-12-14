@@ -4,8 +4,7 @@
   "description": "Test",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel/register ./test --recursive",
-    "build": "babel ./src --out-dir ./build",
+    "test": "mocha ./test --recursive",
     "lint": "eslint ./src ./test"
   },
   "license": "MIT",
