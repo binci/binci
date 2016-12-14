@@ -19,10 +19,10 @@ const proc = {
   }),
   /**
    * Creates a detached process for shutting down services
-   * @param {array} args
+   * @param {string} cmd Command to execute
    */
-  runDetached: (args) => {
-    const child = spawn('sh', [ '-c', ...args ], {
+  runDetached: (cmd) => {
+    const child = spawn('sh', [ '-c', cmd ], {
       detached: true,
       stdio: 'ignore'
     })

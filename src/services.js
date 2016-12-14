@@ -31,9 +31,8 @@ const services = {
   stop: () => {
     if (services.running.length) {
       proc.runDetached(services.running.reduce((acc, cur, i) => {
-        if (i > 0) acc.push('&&')
-        return acc.concat([ 'docker', 'stop', cur, '&&', 'docker', 'rm', cur ])
-      }, []))
+        return `${acc}${i > 0 ? ' && ' : ''}docker stop ${cur} && docker rm ${cur}`
+      }, ''))
     }
   }
 }

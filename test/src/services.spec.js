@@ -58,7 +58,7 @@ describe('services', () => {
     it('calls proc.runDetached with stop and rm commands for running services', () => {
       services.running = [ 'foo', 'bar' ]
       services.stop()
-      expect(procRunDetachedStub).to.be.calledWith([ 'docker', 'stop', 'foo', '&&', 'docker', 'rm', 'foo', '&&', 'docker', 'stop', 'bar', '&&', 'docker', 'rm', 'bar' ])
+      expect(procRunDetachedStub).to.be.calledWith('docker stop foo && docker rm foo && docker stop bar && docker rm bar')
     })
   })
 })
