@@ -21,7 +21,7 @@ const services = {
    * @returns {object} promise
    */
   run: (svc) => Promise.all(svc.reduce((acc, cur) =>
-    acc.concat([proc.run(cur.args).then(() => {
+    acc.concat([proc.run(cur.args, true).then(() => {
       services.running.push(`dl_${cur.name}`)
     })]), [])),
   /**
@@ -29,8 +29,8 @@ const services = {
    * @returns {object} promise
    */
   stop: () => Promise.all(services.running.map(cur =>
-    proc.run(['stop', cur]).then(() => {
-      return proc.run([ 'rm', cur ]).then(() => {
+    proc.run(['stop', cur], true).then(() => {
+      return proc.run([ 'rm', cur ], true).then(() => {
         const i = services.running.indexOf(cur)
         services.running.splice(i, 1)
       })

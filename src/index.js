@@ -4,7 +4,7 @@ const config = require('./config')
 const command = require('./command')
 const services = require('./services')
 const proc = require('./proc')
-// const output = require('./output')
+const output = require('./output')
 
 const instance = {
   /**
@@ -21,45 +21,56 @@ const instance = {
     return { services: services.get(cfg), primary: command.get(cfg, 'primary', true) }
   },
   /**
-   * Initializes instance from config and args
+   * Starts services and resolves or rejects
+   * @param {object} cfg Instance config object
+   * @returns {object} promise
    */
-  start: () => Promise.resolve().then(() => {
-    // let servicesSpinner
-    const cfg = instance.getConfig()
-    // const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
-    // if (svcNames.length) {
-    //   servicesSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
-    // }
+  startServices: (cfg) => {
+    // No services, resolve
+    if (!cfg.services.length) return Promise.resolve(cfg)
+    // Start services
+    const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
+    const servicesStartSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
     return services.run(cfg.services)
       .then(() => {
-        console.log('services started')
-        return proc.run(cfg.primary)
+        servicesStartSpinner.succeed()
+        return cfg
       })
+      .catch(() => {
+        servicesStartSpinner.fail()
+        throw new Error('Failed to start services')
+      })
+  },
+  /**
+   * Stops services and resolves or rejects
+   * @returns {object} promise
+   */
+  stopServices: () => {
+    if (!services.running.length) return Promise.resolve()
+    const servicesStopSpinner = output.spinner('Stopping services')
+    return services.stop()
       .then(() => {
-        console.log('stopping services')
-        return services.stop()
+        servicesStopSpinner.succeed()
+        return true
       })
-      .catch((e) => {
-        console.log('e', e)
-        return services.stop()
+      .catch(() => {
+        servicesStopSpinner.fail()
+        throw new Error('Failed to stop all services')
       })
-      // .then(() => {
-      //   servicesSpinner.succeed()
-      //   console.log('PRIMARY', cfg.primary)
-      //   output.success(`Starting command ${_.last(cfg.primary)}`)
-      //   return proc.run(cfg.primary)
-      // })
-      // .then(() => {
-      //   output.success(`Completed in ${(Date.now() - instance.startTS) / 1000} seconds`)
-      // })
-  })
-  // .then(() => {
-  //   return services.stop()
-  // })
-  // .catch((e) => {
-  //   services.stop()
-  //   output.error(e.message || 'Process failed')
-  // })
+  },
+  /**
+   * Initializes instance from config and args
+   */
+  start: () => instance.startServices(instance.getConfig())
+    .then((cfg) => {
+      output.success(`Running command ${_.last(cfg.primary)}`)
+      return proc.run(cfg.primary)
+    })
+    .then(instance.stopServices)
+    .catch((e) => {
+      console.log('e', e)
+      return instance.stopServices()
+    })
 }
 
 module.exports = instance
