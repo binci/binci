@@ -40,7 +40,7 @@ describe('index', () => {
       return expect(instance.startServices(cfg)).to.be.fulfilled()
     })
     it('resolves after services are successfully started', () => {
-      const cfg = { services: [ 'foo' ] }
+      const cfg = { services: [ 'foo', 'bar' ] }
       servicesRunStub = sinon.stub(services, 'run', () => Promise.resolve())
       return expect(instance.startServices(cfg)).to.be.fulfilled()
     })
