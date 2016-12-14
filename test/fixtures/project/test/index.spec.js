@@ -10,7 +10,7 @@ mongo.collection = 'test'
 describe('MongoTest', () => {
   describe('execute', () => {
     before(() => mongo.createCollection())
-    it('executes a method with args supplied', () =>  mongo.execute('stats')
+    it('executes a method with args supplied', () => mongo.execute('stats')
       .then((res) => {
         expect(res).to.be.an.object
       })
