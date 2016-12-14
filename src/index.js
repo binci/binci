@@ -59,18 +59,34 @@ const instance = {
       })
   },
   /**
+   * Runs primary command
+   * @param {object} config The instance config object
+   * @returns {object} promise
+   */
+  runCommand: (cfg) => {
+    output.success(`Running command: ${_.last(cfg.primary)}`)
+    return proc.run(cfg.primary)
+      .then(() => {
+        output.success(`Command closed after ${(Date.now() - instance.startTS) / 1000}s`)
+        return instance.stopServices()
+      })
+      .catch((e) => {
+        output.error(`Command failed with code ${e}`)
+        return instance.stopServices()
+      })
+  },
+  /**
    * Initializes instance from config and args
    */
-  start: () => instance.startServices(instance.getConfig())
-    .then((cfg) => {
-      output.success(`Running command ${_.last(cfg.primary)}`)
-      return proc.run(cfg.primary)
-    })
-    .then(instance.stopServices)
-    .catch((e) => {
-      console.log('e', e)
-      return instance.stopServices()
-    })
+  start: () => Promise.resolve().then(() => {
+    // Get config (or throw)
+    const cfg = instance.getConfig()
+    // Start services, then run command
+    return instance.startServices(cfg).then(instance.runCommand)
+  }).catch((e) => {
+    output.error(e.message || 'Process failed')
+    return instance.stopServices()
+  })
 }
 
 module.exports = instance
