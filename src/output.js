@@ -21,7 +21,11 @@ const output = {
    * Output error message
    * @param {string} m Output message
    */
-  error: m => console.log(`${chalk.red(logSymbols.error)} ${m}`)
+  error: m => console.log(`${chalk.red(logSymbols.error)} ${m}`),
+  /**
+   * Output line, break
+   */
+  line: () => console.log(chalk.gray('‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧'))
 }
 
 module.exports = output

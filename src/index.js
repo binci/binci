@@ -51,6 +51,7 @@ const instance = {
     return services.stop()
       .then(() => {
         servicesStopSpinner.succeed()
+        output.success(`Total time: ${(Date.now() - instance.startTS) / 1000}s`)
         return true
       })
       .catch(() => {
@@ -65,8 +66,10 @@ const instance = {
    */
   runCommand: (cfg) => {
     output.success(`Running command: ${_.last(cfg.primary)}`)
+    output.line()
     return proc.run(cfg.primary)
       .then(() => {
+        output.line()
         output.success(`Command closed after ${(Date.now() - instance.startTS) / 1000}s`)
         return instance.stopServices()
       })

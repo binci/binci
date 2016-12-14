@@ -26,4 +26,10 @@ describe('output', () => {
       expect(logSpy).to.be.called()
     })
   })
+  describe('line', () => {
+    it('outputs a break line', () => {
+      output.line()
+      expect(logSpy).to.be.called()
+    })
+  })
 })

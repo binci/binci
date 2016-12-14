@@ -29,7 +29,7 @@ describe('command', () => {
   })
   describe('formatTask', () => {
     it('returns single line format task', () => {
-      expect(command.formatTask('foo\nbar')).to.equal('foo; bar')
+      expect(command.formatTask('foo\nbar')).to.equal('foo && bar')
     })
   })
   describe('getExec', () => {
@@ -44,7 +44,7 @@ describe('command', () => {
     })
     it('returns exec task array when all criteria are met', () => {
       const actual = command.getExec({ task: 'foo', before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
-      expect(actual).to.deep.equal([ 'sh', '-c', 'bar; echo "foo"; echo "bar"; bizz' ])
+      expect(actual).to.deep.equal([ 'sh', '-c', 'bar && echo "foo" && echo "bar" && bizz' ])
     })
   })
   describe('getLinks', () => {

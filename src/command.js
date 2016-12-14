@@ -46,7 +46,7 @@ const command = {
    * @param {string} task The task command(s)
    * @returns {string} Formatted task
    */
-  formatTask: (task) => task.replace('\n', '; '),
+  formatTask: (task) => task.replace(/(?:\r\n|\r|\n)/g, ' && '),
   /**
    * Returns array of execution commands
    * @param {object} cfg Config object for instance
@@ -54,16 +54,16 @@ const command = {
    */
   getExec: (cfg) => {
     // Set `before` command
-    const before = cfg.before ? `${command.formatTask(cfg.before)}; ` : ''
+    const before = cfg.before ? `${cfg.before} && ` : ''
     // Set `after` command
-    const after = cfg.after ? `; ${command.formatTask(cfg.after)}` : ''
+    const after = cfg.after ? ` && ${cfg.after}` : ''
     // Custom exec, just run native task
-    if (cfg.exec) return [ 'sh', '-c', `${before}${cfg.exec}${after}` ]
+    if (cfg.exec) return [ 'sh', '-c', command.formatTask(before + cfg.exec + after) ]
     // Use predefined task
     if (!cfg.tasks || !cfg.tasks[cfg.task]) {
       throw new Error(`Task '${cfg.task}' does not exist`)
     } else {
-      return [ 'sh', '-c', `${before}${command.formatTask(cfg.tasks[cfg.task])}${after}` ]
+      return [ 'sh', '-c', command.formatTask(before + cfg.tasks[cfg.task] + after) ]
     }
   },
   /**
