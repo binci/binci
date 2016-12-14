@@ -42,32 +42,23 @@ describe('services', () => {
     })
   })
   describe('stop', () => {
-    let procRunStub
+    let procRunDetachedStub
+    beforeEach(() => {
+      procRunDetachedStub = sinon.stub(proc, 'runDetached')
+    })
     afterEach(() => {
-      if (procRunStub) procRunStub.restore()
+      procRunDetachedStub.restore()
       services.running = []
     })
-    it('resolves if no services are running', () => {
+    it('does nothing if no services are running', () => {
       services.running = []
-      return expect(services.stop()).to.be.fulfilled()
+      services.stop()
+      expect(procRunDetachedStub).to.not.be.called()
     })
-    it('resolves when services all stop', () => {
-      procRunStub = sinon.stub(proc, 'run', () => Promise.resolve())
+    it('calls proc.runDetached with stop and rm commands for running services', () => {
       services.running = [ 'foo', 'bar' ]
-      return services.stop().then(() => {
-        expect(services.running.length).to.equal(0)
-      })
-    })
-    it('rejects when a service fails to stop', () => {
-      procRunStub = sinon.stub(proc, 'run', (args) => Promise.reject())
-      services.running = [ 'foo', 'bar' ]
-      return services.stop()
-        .then(() => {
-          throw new Error('Should have failed')
-        })
-        .catch(() => {
-          expect(services.running).to.deep.equal([ 'foo', 'bar' ])
-        })
+      services.stop()
+      expect(procRunDetachedStub).to.be.calledWith([ 'docker', 'stop', 'foo', '&&', 'docker', 'rm', 'foo', '&&', 'docker', 'stop', 'bar', '&&', 'docker', 'rm', 'bar' ])
     })
   })
 })

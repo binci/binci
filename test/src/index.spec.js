@@ -50,38 +50,9 @@ describe('index', () => {
       return expect(instance.startServices(cfg)).to.be.rejected()
     })
   })
-  describe('stopServices', () => {
-    let servicesStopStub
-    afterEach(() => {
-      if (servicesStopStub) servicesStopStub.restore()
-      services.running = []
-    })
-    it('imediately resolves if there are no running services', () => {
-      services.running = []
-      return expect(instance.stopServices()).to.be.fulfilled()
-    })
-    it('resolves after stopping services succeeds', () => {
-      services.running = [ 'foo' ]
-      servicesStopStub = sinon.stub(services, 'stop', () => Promise.resolve())
-      return instance.stopServices()
-        .then(() => {
-          expect(outputSuccessStub).to.be.called()
-        })
-    })
-    it('rejects after stopping services fails', () => {
-      services.running = [ 'foo' ]
-      servicesStopStub = sinon.stub(services, 'stop', () => Promise.reject())
-      return expect(instance.stopServices()).to.be.rejectedWith('Failed to stop all services')
-    })
-  })
   describe('runCommand', () => {
     let procRunStub
-    let instanceStopServicesStub
-    beforeEach(() => {
-      instanceStopServicesStub = sinon.stub(instance, 'stopServices')
-    })
     afterEach(() => {
-      instanceStopServicesStub.restore()
       procRunStub.restore()
     })
     it('starts command, succeeds, and resolves with stopServices', () => {
@@ -92,15 +63,9 @@ describe('index', () => {
           expect(outputSuccessStub).to.be.called()
         })
     })
-    it('starts command, fails, and catches with stopServices', () => {
+    it('starts command, fails, and throws', () => {
       procRunStub = sinon.stub(proc, 'run', () => Promise.reject(1))
-      return instance.runCommand({ primary: [ 'foo' ] })
-        .then(() => new Error('Should have failed'))
-        .catch((e) => {
-          expect(outputLineStub).to.be.called()
-          expect(outputSuccessStub).to.be.called()
-          expect(outputErrorStub).to.be.called()
-        })
+      return expect(instance.runCommand({ primary: [ 'foo' ] })).to.be.rejectedWith('Command failed with code 1')
     })
   })
   describe('getConfig', () => {

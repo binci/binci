@@ -28,13 +28,14 @@ const services = {
    * Kills all running services
    * @returns {object} promise
    */
-  stop: () => Promise.all(services.running.map(cur =>
-    proc.run(['stop', cur], true).then(() => {
-      return proc.run([ 'rm', cur ], true).then(() => {
-        const i = services.running.indexOf(cur)
-        services.running.splice(i, 1)
-      })
-    })))
+  stop: () => {
+    if (services.running.length) {
+      proc.runDetached(services.running.reduce((acc, cur, i) => {
+        if (i > 0) acc.push('&&')
+        return acc.concat([ 'docker', 'stop', cur, '&&', 'docker', 'rm', cur ])
+      }, []))
+    }
+  }
 }
 
 module.exports = services

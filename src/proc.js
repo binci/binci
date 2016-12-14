@@ -3,7 +3,6 @@ const spawn = require('child_process').spawn
 const proc = {
   /**
    * Runs a process and returns promise which reolves or rejects based on process exit
-   * @param {string} cmd Command to run
    * @param {array} args Arguments to pass to command
    * @param {boolean} silent Silences output
    * @returns {object} promise
@@ -17,7 +16,18 @@ const proc = {
     p.on('close', (code) => {
       code === 0 || code === 130 ? resolve() : reject(code)
     })
-  })
+  }),
+  /**
+   * Creates a detached process for shutting down services
+   * @param {array} args
+   */
+  runDetached: (args) => {
+    const child = spawn('sh', [ '-c', ...args ], {
+      detached: true,
+      stdio: 'ignore'
+    })
+    child.unref()
+  }
 }
 
 module.exports = proc

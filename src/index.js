@@ -42,24 +42,6 @@ const instance = {
       })
   },
   /**
-   * Stops services and resolves or rejects
-   * @returns {object} promise
-   */
-  stopServices: () => {
-    if (!services.running.length) return Promise.resolve()
-    const servicesStopSpinner = output.spinner('Stopping services')
-    return services.stop()
-      .then(() => {
-        servicesStopSpinner.succeed()
-        output.success(`Total time: ${(Date.now() - instance.startTS) / 1000}s`)
-        return true
-      })
-      .catch(() => {
-        servicesStopSpinner.fail()
-        throw new Error('Failed to stop all services')
-      })
-  },
-  /**
    * Runs primary command
    * @param {object} config The instance config object
    * @returns {object} promise
@@ -71,15 +53,16 @@ const instance = {
       .then(() => {
         output.line()
         output.success(`Command closed after ${(Date.now() - instance.startTS) / 1000}s`)
-        return instance.stopServices()
+        services.stop()
+        return true
       })
       .catch((e) => {
-        output.error(`Command failed with code ${e}`)
-        return instance.stopServices()
+        throw new Error(`Command failed with code ${e}`)
       })
   },
   /**
    * Initializes instance from config and args
+   * @returns {object} promise
    */
   start: () => Promise.resolve().then(() => {
     // Get config (or throw)
@@ -88,7 +71,8 @@ const instance = {
     return instance.startServices(cfg).then(instance.runCommand)
   }).catch((e) => {
     output.error(e.message || 'Process failed')
-    return instance.stopServices()
+    services.stop()
+    return 0
   })
 }
 
