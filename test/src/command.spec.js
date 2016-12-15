@@ -63,6 +63,9 @@ describe('command', () => {
     it('returns formatted link arguments if services are present', () => {
       expect(command.getLinks({ services: [ { foo: {} }, { bar: {} } ] })).to.deep.equal([ '--link', 'dl_foo_test:foo', '--link', 'dl_bar_test:bar' ])
     })
+    it('returns formatted lin arguments if services are present and contain a persistent service', () => {
+      expect(command.getLinks({ services: [ { foo: {} }, { bar: { persist: true } } ] })).to.deep.equal([ '--link', 'dl_foo_test:foo', '--link', 'bar:bar' ])
+    })
   })
   describe('get', () => {
     let processCwdStub

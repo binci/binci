@@ -83,7 +83,9 @@ const command = {
    */
   getLinks: (cfg) => {
     if (!cfg.services) return []
-    return cfg.services.reduce((acc, svc) => acc.concat([ '--link', `${command.getName(_.keys(svc)[0], svc)}:${_.keys(svc)[0]}` ]), [])
+    return cfg.services.reduce((acc, svc) => {
+      return acc.concat([ '--link', `${command.getName(_.keys(svc)[0], svc[_.keys(svc)[0]])}:${_.keys(svc)[0]}` ])
+    }, [])
   },
   /**
    * Returns full command
