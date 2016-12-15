@@ -1,4 +1,5 @@
 const cp = require('child_process')
+const Promise = require('bluebird')
 
 const proc = {
   /**
@@ -27,7 +28,11 @@ const proc = {
       stdio: 'ignore'
     })
     p.unref()
-  }
+  },
+  /**
+   * @property {function} exec, promisified
+   */
+  exec: Promise.promisify(cp.exec)
 }
 
 module.exports = proc

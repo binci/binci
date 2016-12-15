@@ -19,12 +19,19 @@ describe('services', () => {
     })
   })
   describe('run', () => {
+    let procExexStub /* eslint no-unused-vars: 0 */
     let procRunStub
     afterEach(() => {
       procRunStub.restore()
+      procExecStub.restore() /* eslint no-undef: 0 */
       services.running = []
     })
-    it('resloves promise(s) for all service starts', () => {
+    it('starts all non-running services', () => {
+      global.instanceId = 'test'
+      procExecStub = sinon.stub(proc, 'exec', (cmd) => { /* eslint no-undef: 0 */
+        if (cmd === 'docker ps -f name=dl_redis_test -q') return Promise.resolve('123456')
+        return Promise.resolve(undefined)
+      })
       procRunStub = sinon.stub(proc, 'run', () => Promise.resolve())
       return services.run(fixture).then(() => {
         expect(services.running).to.deep.equal([ 'dl_mongodb_test' ])
