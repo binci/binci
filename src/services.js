@@ -24,16 +24,13 @@ const services = {
    * @param {array} svc Array of service command arrays
    * @returns {object} promise
    */
-  run: (svc) => {
-    const instances = svc.reduce((acc, cur) => {
-      let curName = command.getName(cur.name, { persist: cur.persist })
-      return acc.concat([proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
-        if (res && res.toString().length) return Promise.resolve() // Already running, resolve
-        return proc.run(cur.args, true).then(() => services.running.push(curName))
-      })])
-    }, [])
-    return Promise.all(instances)
-  },
+  run: (svc) => Promise.all(svc.reduce((acc, cur) => {
+    let curName = command.getName(cur.name, { persist: cur.persist })
+    return acc.concat([proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
+      if (res && res.toString().length) return Promise.resolve() // Already running, resolve
+      return proc.run(cur.args, true).then(() => services.running.push(curName))
+    })])
+  }, [])),
   /**
    * Kills all running services
    * @returns {object} promise
