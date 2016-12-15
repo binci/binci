@@ -11,5 +11,7 @@ chai.use(pchai)
 chai.use(dchai)
 chai.use(schai)
 
+global.instanceId = 'test'
+
 process.env.NODE_PATH = path.join(__dirname, '..') + path.delimiter + (process.env.NODE_PATH || '')
 mod._initPaths()

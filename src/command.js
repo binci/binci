@@ -27,6 +27,15 @@ const command = {
     return acc.concat([ command.args[type], command.parseHostEnvVars(item) ])
   }, []),
   /**
+   * Parses config object and returns conatiner name
+   * @param {object} cfg Config object
+   * @returns {string}
+   */
+  getName: (name, cfg) => {
+    if (cfg.persist) return name
+    return `dl_${name}_${global.instanceId}`
+  },
+  /**
    * Parses config object and returns array of command arguments
    * @param {object} cfg Config object of instance or service
    * @returns {array} Command arguments
@@ -73,7 +82,7 @@ const command = {
    */
   getLinks: (cfg) => {
     if (!cfg.services) return []
-    return cfg.services.reduce((acc, svc) => acc.concat([ '--link', `dl_${_.keys(svc)[0]}:${_.keys(svc)[0]}` ]), [])
+    return cfg.services.reduce((acc, svc) => acc.concat([ '--link', `${command.getName(_.keys(svc)[0], svc)}:${_.keys(svc)[0]}` ]), [])
   },
   /**
    * Returns full command
@@ -88,7 +97,7 @@ const command = {
     let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
     args = args.concat(command.getArgs(cfg))
     args = args.concat(command.getLinks(cfg))
-    args = args.concat([ '--name', `dl_${name}` ])
+    args = args.concat([ '--name', command.getName(name, cfg) ])
     args = args.concat([ cfg.from ])
     args = primary ? args.concat(command.getExec(cfg)) : args
     return args

@@ -6,6 +6,8 @@ const services = require('./services')
 const proc = require('./proc')
 const output = require('./output')
 
+global.instanceId = require('shortid').generate()
+
 const instance = {
   /**
    * @property {number} Timestamp of instance start

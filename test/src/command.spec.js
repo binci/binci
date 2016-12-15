@@ -19,6 +19,15 @@ describe('command', () => {
       expect(command.parseArgs('expose', [ '8080:8080', '9090:9090' ])).to.deep.equal([ '-p', '8080:8080', '-p', '9090:9090' ])
     })
   })
+  describe('getName', () => {
+    it('returns original name if container should be persisted', () => {
+      expect(command.getName('foo', { persist: true })).to.equal('foo')
+    })
+    it('returns formatted name if container is not persisted', () => {
+      global.instanceId = 'test'
+      expect(command.getName('foo', { persist: false })).to.equal('dl_foo_test')
+    })
+  })
   describe('getArgs', () => {
     it('returns array of all args to run with command based off config', () => {
       expect(command.getArgs({ expose: [ '8080:8080' ], volumes: [ '/tmp:/tmp' ] })).to.deep.equal([ '-p', '8080:8080', '-v', '/tmp:/tmp' ])
@@ -52,7 +61,7 @@ describe('command', () => {
       expect(command.getLinks({})).to.deep.equal([])
     })
     it('returns formatted link arguments if services are present', () => {
-      expect(command.getLinks({ services: [ { foo: {} }, { bar: {} } ] })).to.deep.equal([ '--link', 'dl_foo:foo', '--link', 'dl_bar:bar' ])
+      expect(command.getLinks({ services: [ { foo: {} }, { bar: {} } ] })).to.deep.equal([ '--link', 'dl_foo_test:foo', '--link', 'dl_bar_test:bar' ])
     })
   })
   describe('get', () => {
@@ -68,14 +77,14 @@ describe('command', () => {
     })
     it('returns array of arguments for a service config', () => {
       process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080', '9090:9090' ] }, 'mongo_test') // eslint-disable-line no-template-curly-in-string
+      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080', '9090:9090' ] }, 'mongo') // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal([ 'run', '-d', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'dl_mongo_test', 'mongo' ])
       delete process.env.DL_TEST_EV
     })
     it('returns array of arguments for a primary container config', () => {
       process.env.DL_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], task: 'foo', tasks: { foo: 'echo "foo"' } }, 'primary', true) // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal([ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary', 'mongo', 'sh', '-c', 'echo "foo"' ])
+      expect(actual).to.deep.equal([ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '-c', 'echo "foo"' ])
       delete process.env.DL_TEST_EV
     })
   })

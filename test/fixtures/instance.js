@@ -10,7 +10,7 @@ const instance = {
           '-p',
           '27017:27017',
           '--name',
-          'dl_mongodb',
+          'dl_mongodb_test',
           'mongo:3.0'
         ]
       }
@@ -27,9 +27,9 @@ const instance = {
       '-p',
       '8080:8080',
       '--link',
-      'dl_mongodb:mongodb',
+      'dl_mongodb_test:mongodb',
       '--name',
-      'dl_primary',
+      'dl_primary_test',
       'node:6',
       'sh',
       '-c',
@@ -47,7 +47,7 @@ const instance = {
           '-p',
           '27017:27017',
           '--name',
-          'dl_mongodb',
+          'dl_mongodb_test',
           'mongo:3.0'
         ]
       }
@@ -64,9 +64,9 @@ const instance = {
       '-p',
       '8080:8080',
       '--link',
-      'dl_mongodb:mongodb',
+      'dl_mongodb_test:mongodb',
       '--name',
-      'dl_primary',
+      'dl_primary_test',
       'node:6',
       'sh',
       '-c',
