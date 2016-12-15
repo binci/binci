@@ -4,10 +4,6 @@ const logSymbols = require('log-symbols')
 
 const output = {
   /**
-   * @property {boolean} enable/disable application messaging
-   */
-  quiet: false,
-  /**
    * Starts a spinner
    * @param {string} m Spinner message
    */

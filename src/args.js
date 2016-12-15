@@ -22,8 +22,7 @@ const args = {
     v: { action: 'showVersion', help: 'Displays the current installed version' },
     e: { prop: 'exec', help: 'Run a custom command instead of defined task' },
     f: { prop: 'from', help: 'Run with specified docker image' },
-    c: { prop: 'configPath', help: 'Run with custom config file path' },
-    q: { prop: 'quietMode', help: 'Run in quiet-mode, execution only output' }
+    c: { prop: 'configPath', help: 'Run with custom config file path' }
   },
   /**
    * Displays the help and usage message

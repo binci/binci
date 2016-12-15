@@ -32,27 +32,33 @@ services:
       expose:
         - 27017:27017
 env:
-  - TMP=${TMP}
+  - TMP:${TMP}
 expose:
   - 8080:8080
 volumes:
   - ${HOME}/.ssh:/root/.ssh
+hosts:
+  - google.com:127.0.0.1
 before: npm install
 after: rm -rf /node_modules
 task: node index.js
 ```
 
-The above can then be executed by running the `lab` command from within the same directory as your project and `devlab.yml`. Execution would do the following:
+The above can then be executed by running the `lab` (or `devlab`) command from within the same directory as your project and `devlab.yml`. Execution would do the following:
 
 - Pull and start `mongo` with `DB_ROOT_PASSWORD` environment variable and port `27017` exposed
-- Set the primary container environment variable `TMP` to the same as the host machine, expose port `8080` and mount the host machine's `.ssh` directory in the container.
-- Run `npm install` inside the container before running the tasj
+- Sets the following on the container:
+  - Set the primary container environment variable `TMP` to the same as the host machine
+  - Expose port `8080` to the host system
+  - Mount the host machine's `.ssh` directory in the container
+  - Set a host entry for `google.com` to `127.0.0.1`
+- Run `npm install` inside the container before running the task
 - Run `node index.js` task inside the container
-- After execution run `rm -rf /node_modules` to cleanup
+- Run `rm -rf /node_modules` to cleanup after the task has completed
 
 ### Multiple Tasks
 
-The example shows a single-command execution configuration, however, Devlab supports named tasks as well. Replace the `task` entry with a (plural, object) `tasks`:
+The example shows a single-command execution configuration, however, Devlab supports named tasks as well. Replace the `task` entry with configuration object `tasks`:
 
 ```yaml
 tasks:
@@ -79,9 +85,19 @@ The `from` configuration object instructs the image to be used on both the prima
 
 For testing different images easily, the `-f <alternate-image>` argument can be called during execution.
 
+## Services
+
+Services add links into the primary container, exposing the services for utilitzation. For the most part services utilize the same format for definition as the primary container.
+
+### Persisting Services
+
+Services which need to persist between runs can be set by providing `persist: true` in their configurations.
+
+Persisted services will not stop after the primary container finishes it's task and can be used by the same project, other projects, or independently.
+
 ## Environment Variables (`env <array>`)
 
-Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>=<VALUE>`
+Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>:<VALUE>`
 
 ## Expose (`expose <array>`)
 
@@ -90,6 +106,10 @@ Setting `expose` array items will expose ports to the host machine from the prim
 ## Volumes (`volumes <array>`)
 
 Setting `volumes` will mount volumes on the host machine to designated paths on the primary or service containers. Entries should use the format `<HOST_PATH>:<CONTAINER_PATH>`
+
+## Hosts (`hosts <array>`)
+
+Setting `hosts` will update the hosts configuration for the container. Entries should use the format `<HOST_NAME>:<ADDRESS>`
 
 ## License
 

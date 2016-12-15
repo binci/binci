@@ -74,7 +74,6 @@ const instance = {
   }).catch((e) => {
     services.stop()
     output.error(e.message || 'Process failed')
-    console.log('ERR', e)
     throw new Error(1)
   })
 }
