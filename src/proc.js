@@ -1,4 +1,4 @@
-const spawn = require('child_process').spawn
+const cp = require('child_process')
 
 const proc = {
   /**
@@ -11,7 +11,7 @@ const proc = {
     const opts = { env: process.env, cwd: process.env.HOME }
     opts.stdio = silent ? [ null, null, null ] : [ 'inherit', process.stdout, process.stdout ]
     // Start
-    const p = spawn('docker', args, opts)
+    const p = cp.spawn('docker', args, opts)
     // Handle close
     p.on('close', (code) => {
       code === 0 || code === 130 ? resolve() : reject(code)
@@ -22,11 +22,11 @@ const proc = {
    * @param {string} cmd Command to execute
    */
   runDetached: (cmd) => {
-    const child = spawn('sh', [ '-c', cmd ], {
+    const p = cp.spawn('sh', [ '-c', cmd ], {
       detached: true,
       stdio: 'ignore'
     })
-    child.unref()
+    p.unref()
   }
 }
 

@@ -1,10 +1,8 @@
 const proc = require('src/proc')
+const cp = require('child_process')
 
 describe('proc', () => {
   describe('run', () => {
-    beforeEach(() => {
-      proc.log = '' // Reset logs
-    })
     it('rejects after a process exits with non-0 code', () => {
       return expect(proc.run([ 'foo' ])).to.be.rejected()
     })
@@ -13,6 +11,17 @@ describe('proc', () => {
     })
     it('runs silently if `silent` flag is passed', () => {
       return expect(proc.run([ 'ps' ], true)).to.be.fulfilled()
+    })
+  })
+  describe('runDetached', () => {
+    let cpSpawnStub
+    beforeEach(() => {
+      cpSpawnStub = sinon.stub(cp, 'spawn', function () { return { unref: () => null } })
+    })
+    afterEach(() => cpSpawnStub.restore())
+    it('runs a detached process', () => {
+      proc.runDetached('echo "foo"')
+      expect(cpSpawnStub).to.be.calledWith('sh', [ '-c', 'echo "foo"' ])
     })
   })
 })
