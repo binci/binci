@@ -52,12 +52,12 @@ const instance = {
     return proc.run(cfg.primary)
       .then(() => {
         output.line()
-        output.success(`Command closed after ${(Date.now() - instance.startTS) / 1000}s`)
+        output.success(`Command exited after ${(Date.now() - instance.startTS) / 1000}s`)
         services.stop()
         return true
       })
-      .catch((e) => {
-        throw new Error(`Command failed with code ${e}`)
+      .catch((code) => {
+        throw new Error('Command failed')
       })
   },
   /**
@@ -70,9 +70,9 @@ const instance = {
     // Start services, then run command
     return instance.startServices(cfg).then(instance.runCommand)
   }).catch((e) => {
-    output.error(e.message || 'Process failed')
     services.stop()
-    return 0
+    output.error(e.message || 'Process failed')
+    throw new Error(1)
   })
 }
 

@@ -65,7 +65,7 @@ describe('index', () => {
     })
     it('starts command, fails, and throws', () => {
       procRunStub = sinon.stub(proc, 'run', () => Promise.reject(1))
-      return expect(instance.runCommand({ primary: [ 'foo' ] })).to.be.rejectedWith('Command failed with code 1')
+      return expect(instance.runCommand({ primary: [ 'foo' ] })).to.be.rejectedWith('Command failed')
     })
   })
   describe('getConfig', () => {
