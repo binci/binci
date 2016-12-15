@@ -5,7 +5,7 @@ const proc = {
   /**
    * Runs a process and returns promise which reolves or rejects based on process exit
    * @param {array} args Arguments to pass to command
-   * @param {boolean} silent Silences output
+   * @param {boolean} silent Silences output, used primarily for services
    * @returns {object} promise
    */
   run: (args, silent = false) => new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ const proc = {
     p.unref()
   },
   /**
-   * @property {function} exec, promisified
+   * @property {function} Node child_process.exec, promisified
    */
   exec: Promise.promisify(cp.exec)
 }

@@ -4,8 +4,9 @@ const logSymbols = require('log-symbols')
 
 const output = {
   /**
-   * Starts a spinner
+   * Starts a spinner and returns object
    * @param {string} m Spinner message
+   * @returns {object} Spinner instance
    */
   spinner: m => ora(m).start(),
   /**

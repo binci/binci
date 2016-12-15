@@ -63,9 +63,7 @@ const command = {
    * @returns {array} Array of execution tasks
    */
   getExec: (cfg) => {
-    // Set `before` command
     const before = cfg.before ? `${cfg.before} && ` : ''
-    // Set `after` command
     const after = cfg.after ? ` && ${cfg.after}` : ''
     // Custom exec, just run native task
     if (cfg.exec) return [ 'sh', '-c', command.formatTask(before + cfg.exec + after) ]
@@ -88,7 +86,7 @@ const command = {
     }, [])
   },
   /**
-   * Returns full command
+   * Returns full command arguments array
    * @param {object} cfg Config object for instance
    * @param {string} name Container name
    * @param {boolean} primary If this is primary (not service container)

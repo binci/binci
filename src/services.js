@@ -4,7 +4,7 @@ const proc = require('./proc')
 
 const services = {
   /**
-   * @property {array} All running services
+   * @property {array} All running services for this instance
    */
   running: [],
   /**
@@ -32,8 +32,7 @@ const services = {
     })])
   }, [])),
   /**
-   * Kills all running services
-   * @returns {object} promise
+   * Kills all running services with detached process
    */
   stop: () => {
     if (services.running.length) {

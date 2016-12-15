@@ -1,7 +1,4 @@
-build/
+coverage/
 node_modules/
 test/fixtures/project/node_modules/
 **/*.log
-.c9
-coverage/
-
