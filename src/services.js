@@ -13,9 +13,10 @@ const services = {
    * @returns {array} Array of services names and run args
    */
   get: (cfg) => !cfg.services ? false : cfg.services.reduce((acc, item) => {
-    return acc.concat([{ 
+    return acc.concat([{
       name: _.keys(item)[0],
-      args: command.get(item[_.keys(item)[0]], _.keys(item)[0]) 
+      persist: item[_.keys(item)[0]].persist || false,
+      args: command.get(item[_.keys(item)[0]], _.keys(item)[0])
     }])
   }, []),
   /**
@@ -25,7 +26,7 @@ const services = {
    */
   run: (svc) => Promise.all(svc.reduce((acc, cur) =>
     acc.concat([proc.run(cur.args, true).then(() => {
-      services.running.push(`dl_${cur.name}`)
+      services.running.push(command.getName(cur.name, { persist: cur.persist}))
     })]), [])),
   /**
    * Kills all running services
@@ -34,6 +35,7 @@ const services = {
   stop: () => {
     if (services.running.length) {
       proc.runDetached(services.running.reduce((acc, cur, i) => {
+        if (cur.indexOf('dl_') !== 0) return acc // Don't stop persisted services
         return `${acc}${i > 0 ? ' && ' : ''}docker stop ${cur} && docker rm ${cur}`
       }, ''))
     }

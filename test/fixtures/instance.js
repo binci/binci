@@ -3,6 +3,7 @@ const instance = {
     services: [
       {
         name: 'mongodb',
+        persist: false,
         args: [
           'run',
           '-d',
@@ -40,6 +41,7 @@ const instance = {
     services: [
       {
         name: 'mongodb',
+        persist: false,
         args: [
           'run',
           '-d',

@@ -27,7 +27,7 @@ describe('services', () => {
     it('resloves promise(s) for all service starts', () => {
       procRunStub = sinon.stub(proc, 'run', () => Promise.resolve())
       return services.run(fixture).then(() => {
-        expect(services.running).to.deep.equal([ 'dl_mongodb' ])
+        expect(services.running).to.deep.equal([ 'dl_mongodb_test' ])
       })
     })
     it('rejects when a service fails to start', () => {
@@ -56,9 +56,14 @@ describe('services', () => {
       expect(procRunDetachedStub).to.not.be.called()
     })
     it('calls proc.runDetached with stop and rm commands for running services', () => {
-      services.running = [ 'foo', 'bar' ]
+      services.running = [ 'dl_foo_test', 'dl_bar_test' ]
       services.stop()
-      expect(procRunDetachedStub).to.be.calledWith('docker stop foo && docker rm foo && docker stop bar && docker rm bar')
+      expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test && docker stop dl_bar_test && docker rm dl_bar_test')
+    })
+    it('calls proc.runDetached with stop and rm only for non-persistent services', () => {
+      services.running = [ 'dl_foo_test', 'bar' ]
+      services.stop()
+      expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test')
     })
   })
 })
