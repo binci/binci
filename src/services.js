@@ -26,7 +26,7 @@ const services = {
    */
   run: (svc) => Promise.all(svc.reduce((acc, cur) =>
     acc.concat([proc.run(cur.args, true).then(() => {
-      services.running.push(command.getName(cur.name, { persist: cur.persist}))
+      services.running.push(command.getName(cur.name, { persist: cur.persist }))
     })]), [])),
   /**
    * Kills all running services
