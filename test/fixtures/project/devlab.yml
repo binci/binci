@@ -2,6 +2,12 @@ from: mhart/alpine-node:6
 services:
   - mongodb:
       from: mongo:3.0
+env:
+  - TEST_ENV=foo
+hosts:
+  - google.com:127.0.0.1
+volumes:
+  - ${HOME}/:/root
 tasks:
   env: env
   clean: rm -rf node_modules

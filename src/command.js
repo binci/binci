@@ -7,7 +7,8 @@ const command = {
   args: {
     expose: '-p',
     volumes: '-v',
-    env: '-e'
+    env: '-e',
+    hosts: '--add-host'
   },
   /**
    * Parses host environment variables specified with ${VAR}
