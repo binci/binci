@@ -32,7 +32,7 @@ const args = {
     help += `  ${pkg.name} v.${pkg.version}\n`
     help += `  Usage: [${_.keys(pkg.bin).join('|')}] task [options]\n`
     help += _.keys(args.available).reduce((p, c) => `${p}\n    -${c}  ${args.available[c].help}`, '')
-    console.log(help)
+    console.log(`${help}\n`)
     process.exit(0)
   },
   /**
