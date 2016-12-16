@@ -1,0 +1,17 @@
+{
+  "basic": {
+    "description": "Runs the 'env' task",
+    "args": [ "env" ],
+    "should": "pass"
+  },
+  "from": {
+    "description": "Runs the 'env' task with custom from",
+    "args": [ "env", "-f", "mhart/alpine-node:4" ],
+    "should": "pass"
+  },
+  "invalid arg": {
+    "description": "Fails when invalid argument is passed",
+    "args": [ "env", "-w" ],
+    "should": "fail"
+  }
+}
