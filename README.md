@@ -8,6 +8,8 @@ workflow using Docker. Simply put; it's like having a cleanroom for all of your
 development processes which contains services (like databases) without needing
 to setup and maintain these environments manually.
 
+![example](/demo.gif)
+
 ## Installation
 
 ```
@@ -79,15 +81,28 @@ lab -e "/bin/sh"
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an exit command is sent by the user.
 
-### Container Image (`from <string>`)
+## Container Image (`from <string>`)
 
-The `from` configuration object instructs the image to be used on both the primary instance and any services.
+The `from` configuration property instructs the image to be used on the primary instance and services.
 
 For testing different images easily, the `-f <alternate-image>` argument can be called during execution.
 
 ## Services
 
-Services add links into the primary container, exposing the services for utilitzation. For the most part services utilize the same format for definition as the primary container.
+Services add links into the primary container, exposing the services for utilitzation. For the most part, services utilize the same format for definition as the primary container.
+
+### Container Naming
+
+During execution, service containers are named in 2 ways:
+
+1. Ephemeral (non-persisted): `dl_<NAME>_<INSTANCE-ID>`
+2. Persisted: `<NAME>`
+
+The above naming convention allows for persisted services to be shared with other Devlab instances, or manually run docker containers, via the `--link` argument.
+
+At startup Devlab will ensure any persisted, or already running containers are not started again.
+
+After completion, Devlab will run a detached process which will execute `docker stop` and `docker rm` on any non-persisted services. 
 
 ### Persisting Services
 
@@ -111,10 +126,14 @@ Setting `volumes` will mount volumes on the host machine to designated paths on 
 
 Setting `hosts` will update the hosts configuration for the container. Entries should use the format `<HOST_NAME>:<ADDRESS>`
 
+## Development
+
+To run tests, fork & clone the reposity then run `npm install && npm test`.
+
 ## License
 
-DevLab is licensed under the MIT license. Please see `LICENSE.txt` for full details.
+DevLab is licensed under the MIT license. Please see [`LICENSE.txt`](/license.txt) for full details.
 
 ## Credits
 
-DevLab was designed and created at [TechnologyAdvice](http://www.technologyadvice.com).
+DevLab was created, and is maintained by  [TechnologyAdvice](http://www.technologyadvice.com).
