@@ -5,6 +5,9 @@ const config = require('src/config')
 const fixture = require('test/fixtures/service')
 
 describe('services', () => {
+  afterEach(() => {
+    services.running = []
+  })
   describe('get', () => {
     before(() => {
       config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')

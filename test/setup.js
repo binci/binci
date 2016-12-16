@@ -13,5 +13,7 @@ chai.use(schai)
 
 global.instanceId = 'test'
 
+process.env.DL_TEST_RUN = true
+
 process.env.NODE_PATH = path.join(__dirname, '..') + path.delimiter + (process.env.NODE_PATH || '')
 mod._initPaths()

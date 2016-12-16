@@ -71,10 +71,11 @@ const instance = {
     const cfg = instance.getConfig()
     // Start services, then run command
     return instance.startServices(cfg).then(instance.runCommand)
-  }).catch((e) => {
+  })
+  .catch((e) => {
     services.stop()
     output.error(e.message || 'Process failed')
-    throw new Error(1)
+    throw new Error('Process failed')
   })
 }
 

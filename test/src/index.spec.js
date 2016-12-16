@@ -9,6 +9,7 @@ const services = require('src/services')
 const configPath = path.resolve(__dirname, '../fixtures/devlab.yml')
 
 describe('index', () => {
+  global.instanceId = 'test'
   let processCwdStub
   let outputSuccessStub
   let outputSpinnerStub
@@ -79,10 +80,41 @@ describe('index', () => {
     })
   })
   describe('start', () => {
-    it('starts the instance using config and args', () => {
+    afterEach(() => {
+      if (instance.startServices.restore) instance.startServices.restore()
+      if (instance.runCommand.restore) instance.runCommand.restore()
+      if (instance.getConfig.restore) instance.getConfig.restore()
+    })
+    it('outputs default failure message if rejected without error message', () => {
+      sinon.stub(instance, 'getConfig', () => {
+        const err = new Error()
+        err.message = undefined
+        throw err
+      })
+      return expect(instance.start()).to.be.rejectedWith('Process failed')
+    })
+    it('throws and outputs error when config throws', () => {
+      args.raw = { 'not-a-flag': true, _: [ 'env' ], c: configPath }
+      return instance.start().then(() => new Error('Should have failed'))
+        .catch(() => {
+          expect(outputErrorStub).to.be.calledWith('Invalid argument \'not-a-flag\', please see documentation')
+        })
+    })
+    it('throws when unable to start services', () => {
+      sinon.stub(instance, 'startServices', () => Promise.reject())
       args.raw = { _: [ 'env' ], c: configPath }
-      // instance.start()
-      expect(true).to.be.true
+      return expect(instance.start()).to.be.rejected()
+    })
+    it('throws when unable to start primary container', () => {
+      sinon.stub(instance, 'runCommand', () => Promise.reject())
+      args.raw = { 'f': 'notactuallyanimage', _: [ 'env' ], c: configPath }
+      return expect(instance.start()).to.be.rejected()
+    })
+    it('resolves when config, services and primary container run successfully', () => {
+      sinon.stub(instance, 'startServices', () => Promise.resolve())
+      sinon.stub(instance, 'runCommand', () => Promise.resolve())
+      args.raw = { _: [ 'env' ], c: configPath }
+      return expect(instance.start()).to.be.fulfilled()
     })
   })
 })
