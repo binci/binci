@@ -106,6 +106,7 @@ describe('index', () => {
       return expect(instance.start()).to.be.rejected()
     })
     it('throws when unable to start primary container', () => {
+      sinon.stub(instance, 'startServices', () => Promise.resolve())
       sinon.stub(instance, 'runCommand', () => Promise.reject())
       args.raw = { 'f': 'notactuallyanimage', _: [ 'env' ], c: configPath }
       return expect(instance.start()).to.be.rejected()
