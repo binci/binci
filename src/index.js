@@ -31,7 +31,7 @@ const instance = {
     // No services, resolve
     if (!cfg.services.length) return Promise.resolve(cfg)
     // Start services
-    const svcNames = cfg.services.reduce((acc, svc) => acc.concat([ svc.name ]), []).join(', ')
+    const svcNames = _.map(_.prop('name'), cfg.services).join(', ')
     const servicesStartSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
     return services.run(cfg.services)
       .then(() => {

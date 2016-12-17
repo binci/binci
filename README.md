@@ -100,15 +100,15 @@ During execution, service containers are named in 2 ways:
 
 The above naming convention allows for persisted services to be shared with other Devlab instances, or manually run docker containers, via the `--link` argument.
 
-At startup Devlab will ensure any persisted, or already running containers are not started again.
+At startup Devlab will ensure any persisted or already running containers are not started again.
 
-After completion, Devlab will run a detached process which will execute `docker stop` and `docker rm` on any non-persisted, ephemeral services. 
+After completion, Devlab will run a detached process which will execute `docker stop` and `docker rm` on any non-persisted, ephemeral services.
 
 ### Persisting Services
 
 Services which need to persist between runs can be set by providing `persist: true` in their configurations.
 
-Persisted services will not stop after the primary container finishes it's task and can be used by the same project, other projects, or independently.
+Persisted services will not stop after the primary container finishes its task and can be used by the same project, other projects, or independently.
 
 ## Environment Variables (`env <array>`)
 
@@ -138,4 +138,4 @@ DevLab is licensed under the MIT license. Please see [`LICENSE.txt`](/license.tx
 
 ## Credits
 
-DevLab was created, and is maintained by  [TechnologyAdvice](http://www.technologyadvice.com).
+DevLab was created and is maintained by  [TechnologyAdvice](http://www.technologyadvice.com).

@@ -25,9 +25,7 @@ const command = {
    * @param {array} args Array of values
    * @returns {array}
    */
-  parseArgs: (type, args) => args.reduce((acc, item) => {
-    return acc.concat([ command.args[type], command.parseHostEnvVars(item) ])
-  }, []),
+  parseArgs: (type, args) => _.chain((item) => ([ command.args[type], command.parseHostEnvVars(item) ]), args),
   /**
    * Parses config object and returns conatiner name. Will have dl_ prefix and
    * InstanceID suffix if ephemeral, unaltered name for persisted containers
@@ -98,11 +96,13 @@ const command = {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
     let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
-    args = args.concat(command.getArgs(cfg))
-    args = args.concat(command.getLinks(cfg))
-    args = args.concat([ '--name', command.getName(name, cfg) ])
-    args = args.concat([ cfg.from ])
-    args = primary ? args.concat(command.getExec(cfg)) : args
+    args = args.concat(_.flatten([
+      command.getArgs(cfg),
+      command.getLinks(cfg),
+      [ '--name', command.getName(name, cfg) ],
+      cfg.from,
+      primary ? command.getExec(cfg) : []
+    ]))
     return args
   }
 }
