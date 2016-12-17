@@ -14,6 +14,11 @@
     "args": [ "env" ],
     "should": "pass"
   },
+  "config": {
+    "description": "Specifies the devlab.yml using command arg",
+    "args": [ "env", "-c", "devlab.yml" ],
+    "should": "pass"
+  },
   "from": {
     "description": "Runs the 'env' task with custom from",
     "args": [ "env", "-f", "mhart/alpine-node:4" ],
