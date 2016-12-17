@@ -1,4 +1,14 @@
 {
+  "help": {
+    "description": "Displays the help message",
+    "args": [ "-h" ],
+    "should": "pass"
+  },
+  "version": {
+    "description": "Shows the current version",
+    "args": [ "-v" ],
+    "should": "pass"
+  },
   "basic": {
     "description": "Runs the 'env' task",
     "args": [ "env" ],

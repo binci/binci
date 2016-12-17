@@ -1,3 +1,4 @@
+'use strict'
 /* eslint no-unused-vars: 0 */
 /**
  * #######################################################################
@@ -6,11 +7,10 @@
  * This script will run all tests in `./tests.json` and report back their
  * output and pass/fail status
  */
+let tests
 const _ = require('redash')
 const path = require('path')
 const Promise = require('bluebird')
-// Test definitions
-const tests = require('./tests.json')
 // Test project
 const testProject = path.resolve(__dirname, '../project')
 // Devlab executable file
@@ -32,6 +32,14 @@ const spawn = (args) => new Promise((resolve, reject) => {
  * Runner
  */
 const runner = (() => {
+  // Ensure valid JSON test file
+  try {
+    // Test definitions
+    tests = require('./tests.json')
+  } catch (e) {
+    console.log('Invalid tests.json file')
+    process.exit(1)
+  }
   let testFails = 0
   Promise.mapSeries(_.keys(tests), (name) => {
     const testObj = tests[name]

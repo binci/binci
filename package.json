@@ -29,7 +29,7 @@
     "test": "npm run lint -s && npm run cover -s",
     "e2e": "node test/system/run.js",
     "mocha": "mocha test/src/**/*.spec.js",
-    "mocha:watch": "nodemon --exec mocha test/src/**/*.spec.js",
+    "mocha:watch": "nodemon --exec \"mocha test/src/**/*.spec.js || exit 1\"",
     "cover": "istanbul cover _mocha test/src/**/*.spec.js",
     "lint": "standard --fix --verbose"
   },
