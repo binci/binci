@@ -19,6 +19,11 @@
     "args": [ "env", "-c", "devlab.yml" ],
     "should": "pass"
   },
+  "config fail": {
+    "description": "Specifies an invalid config and fails",
+    "args": [ "env", "-c", "not-a-config.yml" ],
+    "should": "fail"
+  },
   "from": {
     "description": "Runs the 'env' task with custom from",
     "args": [ "env", "-f", "mhart/alpine-node:4" ],
