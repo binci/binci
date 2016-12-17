@@ -48,7 +48,7 @@ const command = {
       [(key) => !_.isType('Array', cfg[key]), (key) => {
         throw new Error(`Config error: '${key}' should be an array`)
       }],
-      [_.always(true), (key) => command.parseArgs(key, cfg[key])]
+      [_.T, (key) => command.parseArgs(key, cfg[key])]
     ]))
   )(cfg),
   /**
