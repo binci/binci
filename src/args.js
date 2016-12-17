@@ -57,8 +57,7 @@ const args = {
    */
   getTask: () => _.has('_', args.raw) ? _.join(' ', args.raw._) : '',
   /**
-   * Parse arguments
-   * @param {object} argObj Arguments from invocation
+   * Parse arguments and call (action) or append to config (prop)
    * @returns {object}
    */
   parse: () => _.pipe(

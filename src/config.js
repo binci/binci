@@ -3,7 +3,7 @@ const fs = require('fs')
 
 const config = {
   /**
-   * @property {string} Sefault location of devlab.yml config file
+   * @property {string} Default location of devlab.yml config file
    */
   defaultPath: `${process.cwd()}/devlab.yml`,
   /**

@@ -8,9 +8,9 @@ const services = {
    */
   running: [],
   /**
-   * Gets all services and returns name and arguments
+   * Gets all services and returns name, persistence, and arguments
    * @param {array} cfg Instance config object
-   * @returns {array} Array of services names and run args
+   * @returns {array} Array of services names, persistence and run args
    */
   get: (cfg) => !cfg.services ? false : cfg.services.reduce((acc, item) => {
     return acc.concat([{

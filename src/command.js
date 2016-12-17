@@ -2,7 +2,8 @@ const _ = require('redash')
 
 const command = {
   /**
-   * @property {object} available args parsing instructions
+   * @property {object} available args parsing instructions, matches config name
+   * with command argument
    */
   args: {
     expose: '-p',
@@ -15,7 +16,7 @@ const command = {
    * @param {String} str The string to parse
    * @returns {String}
    */
-  parseHostEnvVars: str => str.toString().replace(/\$\{([^}]+)\}/g, (i, match) => {
+  parseHostEnvVars: (str) => str.toString().replace(/\$\{([^}]+)\}/g, (i, match) => {
     return process.env.hasOwnProperty(match) ? process.env[match] : null
   }),
   /**
@@ -28,7 +29,8 @@ const command = {
     return acc.concat([ command.args[type], command.parseHostEnvVars(item) ])
   }, []),
   /**
-   * Parses config object and returns conatiner name
+   * Parses config object and returns conatiner name. Will have dl_ prefix and 
+   * InstanceID suffix if ephemeral, unaltered name for persisted containers
    * @param {object} cfg Config object
    * @returns {string}
    */
@@ -52,7 +54,7 @@ const command = {
     ]))
   )(cfg),
   /**
-   * Formats task by replacing line breaks with semicolons
+   * Formats task by replacing line breaks with double-ampersands
    * @param {string} task The task command(s)
    * @returns {string} Formatted task
    */
@@ -75,9 +77,9 @@ const command = {
     }
   },
   /**
-   * Returns concatted array of link arguments
-   * @param {object} cfg The config object for the primary container
-   * @returns {array} Concatted link arguments
+   * Returns array of link arguments
+   * @param {object} cfg Config object for the container
+   * @returns {array} Link arguments
    */
   getLinks: (cfg) => {
     if (!cfg.services) return []
@@ -89,7 +91,7 @@ const command = {
    * Returns full command arguments array
    * @param {object} cfg Config object for instance
    * @param {string} name Container name
-   * @param {boolean} primary If this is primary (not service container)
+   * @param {boolean} primary If this is primary, i.e. not a service container
    * @returns {array} Arguments for docker command
    */
   get: (cfg, name, primary = false) => {

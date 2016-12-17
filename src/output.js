@@ -8,17 +8,17 @@ const output = {
    * @param {string} m Spinner message
    * @returns {object} Spinner instance
    */
-  spinner: m => ora(m).start(),
+  spinner: (m) => ora(m).start(),
   /**
-   * Output success message
+   * Outputs success message
    * @param {string} m Output message
    */
-  success: m => console.log(`${chalk.green(logSymbols.success)} ${m}`),
+  success: (m) => console.log(`${chalk.green(logSymbols.success)} ${m}`),
   /**
-   * Output error message
+   * Outputs error message
    * @param {string} m Output message
    */
-  error: m => console.log(`${chalk.red(logSymbols.error)} ${m}`),
+  error: (m) => console.log(`${chalk.red(logSymbols.error)} ${m}`),
   /**
    * Output line, break
    */

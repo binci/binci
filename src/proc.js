@@ -19,7 +19,7 @@ const proc = {
     })
   }),
   /**
-   * Creates a detached process for shutting down services
+   * Creates a detached process which will run outside of parent process
    * @param {string} cmd Command to execute
    */
   runDetached: (cmd) => {

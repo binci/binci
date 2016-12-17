@@ -15,7 +15,7 @@ const instance = {
   startTS: Date.now(),
   /**
    * Gets config by merging parsed arguments with config object and returns command
-   * instructions for instance
+   * instructions for primaary instance and services
    * @returns {object} Command instructions
    */
   getConfig: () => {
