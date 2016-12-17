@@ -29,7 +29,7 @@ const command = {
     return acc.concat([ command.args[type], command.parseHostEnvVars(item) ])
   }, []),
   /**
-   * Parses config object and returns conatiner name. Will have dl_ prefix and 
+   * Parses config object and returns conatiner name. Will have dl_ prefix and
    * InstanceID suffix if ephemeral, unaltered name for persisted containers
    * @param {object} cfg Config object
    * @returns {string}
