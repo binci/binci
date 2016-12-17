@@ -12,13 +12,14 @@ const services = {
    * @param {array} cfg Instance config object
    * @returns {array} Array of services names, persistence and run args
    */
-  get: (cfg) => !cfg.services ? false : cfg.services.reduce((acc, item) => {
-    return acc.concat([{
-      name: _.keys(item)[0],
-      persist: item[_.keys(item)[0]].persist || false,
-      args: command.get(item[_.keys(item)[0]], _.keys(item)[0])
-    }])
-  }, []),
+  get: (cfg) => !cfg.services ? false : _.map(_.pipe(
+    _.toPairs,
+    _.head,
+    ([name, value]) => ({
+      name,
+      persist: value.persist || false,
+      args: command.get(value, name)
+    })), cfg.services),
   /**
    * Runs services and resolves or rejects
    * @param {array} svc Array of service command arrays
