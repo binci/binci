@@ -59,6 +59,7 @@ const instance = {
         return true
       })
       .catch((code) => {
+        output.line()
         throw new Error('Command failed')
       })
   },

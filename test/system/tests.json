@@ -19,6 +19,16 @@
     "args": [ "env", "-f", "mhart/alpine-node:4" ],
     "should": "pass"
   },
+  "exec": {
+    "description": "Runs with custom execution task and passes",
+    "args": [ "-e", "echo 'foo'" ],
+    "should": "pass"
+  },
+  "exec fail": {
+    "description": "Runs with custom execution task and fails",
+    "args": [ "-e", "not-a-command" ],
+    "should": "fail"
+  },
   "invalid arg": {
     "description": "Fails when invalid argument is passed",
     "args": [ "env", "-w" ],
