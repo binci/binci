@@ -79,13 +79,9 @@ const command = {
    * @param {object} cfg Config object for the container
    * @returns {array} Link arguments
    */
-  getLinks: (cfg) => {
-    if (!cfg.services) return []
-    return cfg.services.reduce((acc, svc) => {
-      //return acc.concat([ '--link', `${command.getName(_.keys(svc)[0], svc[_.keys(svc)[0]])}:${_.keys(svc)[0]}` ])
-      return acc.concat([ '--link', `${command.getName(_.head(_.keys(svc)), svc[_.head(_.keys(svc))])}:${_.head(_.keys(svc))}` ])
-    }, [])
-  },
+  getLinks: (cfg) => _.chain(_.pipe(_.toPairs, _.head, ([key, value]) => {
+    return ['--link', `${command.getName(key, value)}:${key}`]
+  }))(cfg.services || []),
   /**
    * Returns full command arguments array
    * @param {object} cfg Config object for instance
