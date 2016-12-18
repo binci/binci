@@ -43,10 +43,11 @@ hosts:
   - google.com:127.0.0.1
 before: npm install
 after: rm -rf /node_modules
-task: node index.js
+tasks: 
+  run: node index.js
 ```
 
-The above can then be executed by running the `devlab` (or `lab`) command from within the same directory as your project and `devlab.yml`. Execution would do the following:
+The above can then be execute the `run` task by via the `devlab run` (or `lab run`) command from within the same directory as your project and `devlab.yml`. Execution would do the following:
 
 - Pull and start `mongo` with `DB_ROOT_PASSWORD` environment variable and port `27017` exposed
 - Sets the following on the container:
