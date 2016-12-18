@@ -25,24 +25,24 @@ const services = {
    * @param {array} svc Array of service command arrays
    * @returns {object} promise
    */
-  run: (svc) => Promise.all(svc.reduce((acc, cur) => {
+  run: (svc) => Promise.all(_.map((cur) => {
     let curName = command.getName(cur.name, { persist: cur.persist })
-    return acc.concat([proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
+    return proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
       if (res && res.toString().length) return Promise.resolve() // Already running, resolve
       return proc.run(cur.args, true).then(() => services.running.push(curName))
-    })])
-  }, [])),
+    })
+  }, svc)),
   /**
    * Kills all running services with detached process
    */
-  stop: () => {
-    if (services.running.length) {
-      proc.runDetached(services.running.reduce((acc, cur, i) => {
-        if (cur.indexOf('dl_') !== 0) return acc // Don't stop persisted services
-        return `${acc}${i > 0 ? ' && ' : ''}docker stop ${cur} && docker rm ${cur}`
-      }, ''))
-    }
-  }
+  stop: () => _.unless(
+    _.isEmpty,
+    _.pipe(
+      _.filter(_.test(/dl_/)),
+      _.map(svc => `docker stop ${svc} && docker rm ${svc}`),
+      _.join(' && '),
+      proc.runDetached
+  ))(services.running)
 }
 
 module.exports = services
