@@ -63,23 +63,26 @@ const command = {
    * @returns {array} Array of execution tasks
    */
   getExec: (cfg) => {
+    const cmd = [ 'sh', '-c' ]
     const before = cfg.before ? `${cfg.before} && ` : ''
     const after = cfg.after ? ` && ${cfg.after}` : ''
     // Custom exec, just run native task
-    if (cfg.exec) return [ 'sh', '-c', command.formatTask(before + cfg.exec + after) ]
+    if (cfg.exec) return cmd.concat([command.formatTask(before + cfg.exec + after)])
     // Ensure tasks exist
     if (!cfg.tasks) throw new Error('No tasks are defined')
     // Ensure a task is passed
-    if (!cfg.task) throw new Error('No task has been specified')
+    if (!cfg.run) throw new Error('No task has been specified')
     // Use predefined task(s)
-    const tasks = _.pipe(
-      _.reduce((acc, task) => {
-        if (!cfg.tasks[task]) throw new Error(`Task '${task}' does not exist`)
-        return acc.concat([cfg.tasks[task]])
-      }, []),
+    const run = _.pipe(
+      tasks => _.pick(tasks, cfg.tasks),
+      _.toPairs,
+      _.map(([name, command]) => {
+        if (!command) throw new Error(`Task '${name}' does not exist.`)
+        return command
+      }),
       _.join(' && ')
-    )(cfg.task)
-    return [ 'sh', '-c', command.formatTask(before + tasks + after) ]
+    )(cfg.run)
+    return cmd.concat([command.formatTask(before + run + after)])
   },
   /**
    * Returns array of link arguments

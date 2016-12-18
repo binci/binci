@@ -55,7 +55,7 @@ describe('args', () => {
       const actual = args.parse()
       expect(actual).to.deep.equal({
         exec: true,
-        task: [ '/bin/bash' ]
+        run: [ '/bin/bash' ]
       })
     })
     it('parses args and calls an action when passed', () => {

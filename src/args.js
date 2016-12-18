@@ -72,7 +72,7 @@ const args = {
       if (arg.action) args[arg.action].call(null, args.raw[key])
       return acc
     }, {}),
-    _.merge({ task: args.getTask() })
+    _.merge({ run: args.getTask() })
   )(args.raw)
 }
 

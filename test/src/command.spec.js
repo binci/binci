@@ -46,20 +46,20 @@ describe('command', () => {
       expect(command.getExec({ exec: 'echo "foo"' })).to.deep.equal([ 'sh', '-c', 'echo "foo"' ])
     })
     it('throws if no tasks are defined', () => {
-      expect(() => command.getExec({ task: 'foo' })).to.throw('No tasks are defined')
+      expect(() => command.getExec({ run: 'foo' })).to.throw('No tasks are defined')
     })
     it('throws if no task has been specified', () => {
       expect(() => command.getExec({ tasks: { foo: 'echo \'bar\'' } })).to.throw('No task has been specified')
     })
     it('throws error if invalid task is specified', () => {
-      expect(() => command.getExec({ task: [ 'foo' ], tasks: { bar: 'echo "foo"' } })).to.throw('Task \'foo\' does not exist')
+      expect(() => command.getExec({ run: [ 'foo' ], tasks: { bar: 'echo "foo"' } })).to.throw('Task \'foo\' does not exist')
     })
     it('returns exec task array when all criteria are met', () => {
-      const actual = command.getExec({ task: [ 'foo' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
+      const actual = command.getExec({ run: [ 'foo' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
       expect(actual).to.deep.equal([ 'sh', '-c', 'bar && echo "foo" && echo "bar" && bizz' ])
     })
     it('returns exec task array when multiple tasks are called', () => {
-      const actual = command.getExec({ task: [ 'foo', 'fizz' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"', fizz: 'buzz' } })
+      const actual = command.getExec({ run: [ 'foo', 'fizz' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"', fizz: 'buzz' } })
       expect(actual).to.deep.equal([ 'sh', '-c', 'bar && echo "foo" && echo "bar" && buzz && bizz' ])
     })
   })
@@ -93,7 +93,7 @@ describe('command', () => {
     })
     it('returns array of arguments for a primary container config', () => {
       process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], task: [ 'foo' ], tasks: { foo: 'echo "foo"' } }, 'primary', true) // eslint-disable-line no-template-curly-in-string
+      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], run: [ 'foo' ], tasks: { foo: 'echo "foo"' } }, 'primary', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal([ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '-c', 'echo "foo"' ])
       delete process.env.DL_TEST_EV
     })
