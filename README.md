@@ -30,11 +30,11 @@ services:
   - mongo:
       from: mongo:3.0
       env:
-        - DB_ROOT_PASSWORD:foo
+        - DB_ROOT_PASSWORD=foo
       expose:
         - 27017:27017
 env:
-  - TMP:${TMP}
+  - TMP=${TMP}
 expose:
   - 8080:8080
 volumes:
@@ -112,7 +112,7 @@ Persisted services will not stop after the primary container finishes its task a
 
 ## Environment Variables (`env <array>`)
 
-Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>:<VALUE>`
+Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>=<VALUE>`
 
 ## Expose (`expose <array>`)
 
