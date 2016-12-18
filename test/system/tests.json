@@ -14,6 +14,11 @@
     "args": [ "env" ],
     "should": "pass"
   },
+  "basic multiple": {
+    "description": "Runs multiple tasks",
+    "args": [ "env", "test" ],
+    "should": "pass"
+  },
   "config": {
     "description": "Specifies the devlab.yml using command arg",
     "args": [ "env", "-c", "devlab.yml" ],

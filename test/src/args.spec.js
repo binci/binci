@@ -42,7 +42,7 @@ describe('args', () => {
   describe('getTask', () => {
     it('returns string with task', () => {
       args.raw = { _: [ 'foo', 'bar' ] }
-      expect(args.getTask()).to.equal('foo bar')
+      expect(args.getTask()).to.deep.equal([ 'foo', 'bar' ])
     })
     it('returns empty string if no task specified', () => {
       args.raw = {}
@@ -55,7 +55,7 @@ describe('args', () => {
       const actual = args.parse()
       expect(actual).to.deep.equal({
         exec: true,
-        task: '/bin/bash'
+        task: [ '/bin/bash' ]
       })
     })
     it('parses args and calls an action when passed', () => {

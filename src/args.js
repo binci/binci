@@ -55,7 +55,7 @@ const args = {
    * Gets the task elements and returns joined string
    * @returns {string}
    */
-  getTask: () => _.has('_', args.raw) ? _.join(' ', args.raw._) : '',
+  getTask: () => _.has('_', args.raw) ? args.raw._ : '',
   /**
    * Parse arguments and call (action) or append to config (prop)
    * @returns {object}

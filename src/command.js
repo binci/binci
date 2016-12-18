@@ -67,12 +67,19 @@ const command = {
     const after = cfg.after ? ` && ${cfg.after}` : ''
     // Custom exec, just run native task
     if (cfg.exec) return [ 'sh', '-c', command.formatTask(before + cfg.exec + after) ]
-    // Use predefined task
-    if (!cfg.tasks || !cfg.tasks[cfg.task]) {
-      throw new Error(`Task '${cfg.task}' does not exist`)
-    } else {
-      return [ 'sh', '-c', command.formatTask(before + cfg.tasks[cfg.task] + after) ]
-    }
+    // Ensure tasks exist
+    if (!cfg.tasks) throw new Error('No tasks are defined')
+    // Ensure a task is passed
+    if (!cfg.task) throw new Error('No task has been specified')
+    // Use predefined task(s)
+    const tasks = _.pipe(
+      _.reduce((acc, task) => {
+        if (!cfg.tasks[task]) throw new Error(`Task '${task}' does not exist`)
+        return acc.concat([cfg.tasks[task]])
+      }, []),
+      _.join(' && ')
+    )(cfg.task)
+    return [ 'sh', '-c', command.formatTask(before + tasks + after) ]
   },
   /**
    * Returns array of link arguments
