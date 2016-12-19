@@ -1,28 +1,19 @@
-import MongoTest from './../src/index';
-import chai from 'chai'
-global.expect = chai.expect
+const expect = require('chai').expect
+const MongoTest = require('./../src/index')
 
-const mongoAddr = process.env.MONGODB_PORT_27017_TCP_ADDR;
-const mongoPort = process.env.MONGODB_PORT_27017_TCP_PORT;
+const mongoAddr = process.env.MONGODB_PORT_27017_TCP_ADDR
+const mongoPort = process.env.MONGODB_PORT_27017_TCP_PORT
 
-const mongo = new MongoTest(`mongodb://${mongoAddr}:${mongoPort}/test`);
-mongo.collection = 'test';
+const mongo = new MongoTest(`mongodb://${mongoAddr}:${mongoPort}/test`)
+mongo.collection = 'test'
 
-describe('MongoTest', () => {
+describe('database', () => {
   describe('execute', () => {
-    before(done => {
-      mongo.createCollection()
-        .then(() => done())
-        .catch(done);
-    });
-
-    it('executes a method with args supplied', done => {
-      mongo.execute('stats')
-        .then(res => {
-          expect(res).to.be.an.object;
-          done();
-        })
-        .catch(done);
-    });
-  });
-});
+    before(() => mongo.createCollection())
+    it('executes a command with args supplied', () => mongo.execute('stats')
+      .then((res) => {
+        expect(res).to.be.an.object
+      })
+    )
+  })
+})

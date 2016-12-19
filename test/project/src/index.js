@@ -1,13 +1,12 @@
-import Promise from 'bluebird';
-import { EventEmitter } from 'events';
-import { MongoClient } from 'mongodb';
-
-const event = new EventEmitter();
+'use strict'
+const EventEmitter = require('events').EventEmitter
+const MongoClient = require('mongodb').MongoClient
+const event = new EventEmitter()
 
 /**
  * @class mongo
  */
-export default class {
+module.exports = class {
 
   /**
    * Handles setup of connection
@@ -19,20 +18,28 @@ export default class {
    * @property {String} config.password
    */
   constructor (config) {
-    this.db = false;
-    const connStr = typeof config === 'string' ? config :
-      `mongodb://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`;
-
+    let connStr
+    this.db = false
+    if (typeof config === 'string') {
+      // If full conn string is passed
+      connStr = config
+    } else {
+      // Build from object
+      connStr = `mongodb://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
+    }
     // Create connection
     MongoClient.connect(connStr, (err, db) => {
       /* istanbul ignore if */
-      if (err) throw new Error(err);
-      // Set instance db
-      this.db = db;
-      // Emit when conn established
-      event.emit('dbInit');
-      return db;
-    });
+      if (err) {
+        throw new Error(err)
+      } else {
+        // Set instance db
+        this.db = db
+        // Emit when conn established
+        event.emit('dbInit')
+        return db
+      }
+    })
   }
 
   /**
@@ -40,11 +47,16 @@ export default class {
    * @returns {Object} promise
    */
   checkConn () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       /* istanbul ignore if */
-      if (!this.db) return event.on('dbInit', resolve);
-      resolve();
-    });
+      if (!this.db) {
+        event.on('dbInit', () => {
+          resolve()
+        })
+      } else {
+        resolve()
+      }
+    })
   }
 
   /**
@@ -60,27 +72,29 @@ export default class {
         .then(() => {
           // Execute
           try {
-            const coll = this.db.collection(this.collection);
+            const coll = this.db.collection(this.collection)
             if (command === 'find') {
               // Find needs `toArray`
-              resolve(coll.find(params[0]).toArray());
+              resolve(coll.find(params[0]).toArray())
             } else {
               // All other commands
-              resolve(coll[command](...params));
+              resolve(coll[command](...params))
             }
           } catch (e) {
-            reject(e);
+            reject(e)
           }
-        });
-    });
+        })
+    })
   }
-  
+
   createCollection (options) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // Ensure (or wait for) connection
       this.checkConn()
-        .then(() => resolve(this.db.createCollection(this.collection, options)));
-    });
+        .then(() => {
+          resolve(this.db.createCollection(this.collection, options))
+        })
+    })
   }
-  
+
 }

@@ -26,12 +26,12 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "test": "npm run lint && npm run mocha",
-    "mocha": "mocha test/src/*.spec.js test/src/**/*.spec.js",
-    "cover": "istanbul cover _mocha",
-    "lint": "eslint . --fix",
-    "local-install": "npm install -g .",
-    "changelog": "changelog devlab all -m > CHANGELOG.md"
+    "test": "npm run lint -s && npm run cover -s",
+    "e2e": "node test/system/run.js",
+    "mocha": "mocha test/src/**/*.spec.js",
+    "mocha:watch": "nodemon --exec \"mocha test/src/**/*.spec.js || exit 1\"",
+    "cover": "istanbul cover _mocha test/src/**/*.spec.js",
+    "lint": "standard --fix --verbose"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
@@ -45,23 +45,40 @@
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.3.0",
-    "changelog": "^1.0.7",
+    "chai-as-promised": "^6.0.0",
+    "dirty-chai": "^1.2.2",
     "eslint": "^2.10.2",
     "istanbul": "^0.4.3",
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
-    "proxyquire": "^1.7.3",
+    "nodemon": "^1.11.0",
     "sinon": "^1.17.0",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "standard": "^8.5.0"
   },
   "dependencies": {
-    "bluebird": "^2.10.1",
+    "bluebird": "^3.4.6",
     "chalk": "^1.1.1",
-    "fs-eventbridge-js": "^0.2.0",
     "js-yaml": "^3.4.2",
-    "lodash": "^3.10.1",
+    "log-symbols": "^1.0.2",
     "minimist": "^1.2.0",
-    "shelljs": "^0.5.3",
-    "username": "^1.0.1"
+    "ora": "^0.3.0",
+    "redash": "^0.16.0",
+    "shortid": "^2.2.6"
+  },
+  "standard": {
+    "ignore": [
+      "coverage"
+    ],
+    "globals": [
+      "describe",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach",
+      "it",
+      "expect",
+      "sinon"
+    ]
   }
 }

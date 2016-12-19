@@ -1,4 +1,7 @@
 #!/usr/bin/env node
-'use strict'
 const devlab = require('./src/index')
-devlab.run()
+devlab.start().then(() => {
+  process.exit(0)
+}).catch(() => {
+  process.exit(1)
+})

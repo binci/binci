@@ -1,156 +1,84 @@
-/*
- * Copyright (c) 2015 TechnologyAdvice
- */
-'use strict'
-const Promise = require('bluebird')
-const username = require('username')
-const FSEventBridgeClient = require('fs-eventbridge-js')
-const config = require('./lib/config')
-const services = require('./lib/services')
-const proc = require('./lib/process')
-const output = require('./lib/output')
-const parsers = require('./lib/parsers')
-const forwarders = require('./lib/forwarders')
-const url = require('url')
+const _ = require('redash')
+const args = require('./args')
+const config = require('./config')
+const command = require('./command')
+const services = require('./services')
+const proc = require('./proc')
+const output = require('./output')
 
-// run-time manifest (from config)
-let manifest
-// Service links placeholder
-let serviceLinks = []
-// FS-EventBridge client
-let bridge = { stop: () => {} }
-// Remote docker host, if applicable
-let dockerHost
+global.instanceId = require('shortid').generate()
 
-/**
- * Check for and starts services
- * @param {Array} svc Array of services from manifest
- * @returns {Object} promise
- */
-const startServices = svc =>
-  !svc ? Promise.resolve() :
-    services.run(svc)
-      .then(sLinks => {
-        // Create links array for insert into run
-        serviceLinks = sLinks.reduce((links, l) => {
-          return links.concat([ '--link', l ])
-        }, serviceLinks)
-      })
-      .catch(e => {
-        output.error(e)
-        throw 1 // eslint-disable-line no-throw-literal
-      })
-
-const getDockerHost = () => {
-  if (!dockerHost) {
-    dockerHost = url.parse(process.env.DOCKER_HOST).hostname
-    if (!dockerHost) throw new Error('DOCKER_HOST is malformed. Correct it and try again.')
-  }
-  return dockerHost
-}
-
-const startEventBridge = () => {
-  if (process.env.DOCKER_HOST && process.env.FS_EVENTBRIDGE_PORT) {
-    bridge = new FSEventBridgeClient({
-      host: getDockerHost(),
-      port: process.env.FS_EVENTBRIDGE_PORT
-    })
-    return bridge.start().then(() => {
-      output.success(`Bridging filesystem events on ${process.cwd()}`)
-    }).catch(e => {
-      output.warn(`Filesystem event bridge failed: ${e.message}`)
-    })
-  }
-}
-
-/**
- * Forward any host-exposed ports that haven't explicitly disabled forwarding from localhost to the remote machine,
- * if docker is configured to connect to a remote daemon.
- * @returns {Promise} Resolves after forwarding is complete.
- */
-const startForwarders = () => {
-  const ports = parsers.parseForwardedPorts(manifest)
-  // Pass; nothing to do
-  if (!ports || !ports.length || !process.env.DOCKER_HOST) return Promise.resolve()
-  return forwarders.startForwarders(getDockerHost(), ports)
-}
-
-/**
- * Builds command arguments for executing task
- * @returns {Array} The command to execute the task
- */
-const buildArgs = () => {
-  const env = manifest.env ? parsers.parseEnvVars(manifest.env) : []
-  const ports = manifest.expose ? parsers.parseExpose(manifest.expose) : []
-  const volumes = manifest.volumes ? parsers.parseVolumes(manifest.volumes) : []
-  const hosts = manifest.hosts ? parsers.parseHostMap(manifest.hosts) : []
-  // Spawn arguments
-  const mode = manifest.interactive || process.stdout.isTTY  ? '-it' : '-t'
-  const args = [ 'run', '--privileged', mode ]
-  // Check for no-rm
-  if (!process.env.DEVLAB_NO_RM || process.env.DEVLAB_NO_RM === 'false') args.push('--rm')
-  // Workdir config
-  const workdir = [ '-v', `${manifest.workdir}:${manifest.workdir}`, '-w', manifest.workdir ]
-  // Set name
-  const name = [ '--name', `devlab_${manifest.workdir.split('/').pop()}_${config.manifest.username}_${config.instance}`.toLowerCase() ]
-  // From (image) config
-  const from = [ manifest.from ]
-  // Split command into (space delimited) parts
-  const cmd = [ 'sh', '-c', manifest.run ]
-  // Build full args array
-  return args
-    .concat(serviceLinks.length && serviceLinks || [])
-    .concat(env.length && env || [])
-    .concat(ports.length && ports || [])
-    .concat(volumes.length && volumes || [])
-    .concat(hosts.length && hosts || [])
-    .concat(workdir).concat(name).concat(from).concat(cmd)
-}
-
-/**
- * Executes the task with arguments
- * @param {Array} args Array of arguments
- * @returns {Object} promise
- */
-const execTask = args => {
-  output.success(`Running container {{${manifest.from}}}, task {{${manifest.run}}}`)
-  return proc('docker', args)
-}
-
-const tearDown = () => forwarders.stopForwarders()
-  .then(services.stopServices)
-  .then(() => bridge.stop())
-
-const core = {
-
+const instance = {
   /**
-   * Runs the execution chain to carry out task
+   * @property {number} Timestamp of instance start
    */
-  run: () => {
-    // Process timer
-    const start = Date.now()
-    // Get manifest from config
-    manifest = config.get()
-    // Set user
-    manifest.username = username.sync() || 'unknown'
-    // Start
-    return startServices(manifest.services)
-      .then(startEventBridge)
-      .then(startForwarders)
-      .then(buildArgs)
-      .then(execTask)
-      .then(tearDown)
+  startTS: Date.now(),
+  /**
+   * Gets config by merging parsed arguments with config object and returns command
+   * instructions for primaary instance and services
+   * @returns {object} Command instructions
+   */
+  getConfig: () => {
+    const cfg = _.merge(config.load(args.parse().configPath), args.parse())
+    return { services: services.get(cfg), primary: command.get(cfg, 'primary', true) }
+  },
+  /**
+   * Starts services and resolves or rejects
+   * @param {object} cfg Instance config object
+   * @returns {object} promise
+   */
+  startServices: (cfg) => {
+    // No services, resolve
+    if (!cfg.services.length) return Promise.resolve(cfg)
+    // Start services
+    const svcNames = _.map(_.prop('name'), cfg.services).join(', ')
+    const servicesStartSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
+    return services.run(cfg.services)
       .then(() => {
-        const closed = (Date.now() - start) / 1000
-        output.success(`Completed in {{${closed}}} seconds`)
-        process.exit(0)
+        servicesStartSpinner.succeed()
+        return cfg
       })
-      .catch(code => {
-        output.error(`Error running {{${manifest.run}}}, exited with code {{${code}}}`)
-        tearDown().then(() => process.exit(code))
+      .catch(() => {
+        servicesStartSpinner.fail()
+        /* istanbul ignore next */
+        throw new Error(`Failed to start service${cfg.services.length > 1 ? 's' : ''}`)
       })
-  }
-
+  },
+  /**
+   * Runs primary command
+   * @param {object} config The instance config object
+   * @returns {object} promise
+   */
+  runCommand: (cfg) => {
+    output.success(`Running command: ${_.last(cfg.primary)}`)
+    output.line()
+    return proc.run(cfg.primary)
+      .then(() => {
+        output.line()
+        output.success(`Command exited after ${(Date.now() - instance.startTS) / 1000}s`)
+        services.stop()
+        return true
+      })
+      .catch((code) => {
+        output.line()
+        throw new Error('Command failed')
+      })
+  },
+  /**
+   * Initializes instance from config and args
+   * @returns {object} promise
+   */
+  start: () => Promise.resolve().then(() => {
+    // Get config (or throw)
+    const cfg = instance.getConfig()
+    // Start services, then run command
+    return instance.startServices(cfg).then(instance.runCommand)
+  })
+  .catch((e) => {
+    services.stop()
+    output.error(e.message || 'Process failed')
+    throw new Error('Process failed')
+  })
 }
 
-module.exports = core
+module.exports = instance

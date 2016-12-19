@@ -1,30 +1,20 @@
-from: node:0.10
-quiet: false
+from: mhart/alpine-node:6
 services:
-  - mongo:3.0:
-      name: mongodb
-      env:
-        - DB_ROOT_PASSWORD=foo
-      expose:
-        - 27017:27017
-      persist: false
+  - mongodb:
+      from: mongo:latest
+  - redis:
+      from: redis:latest
+      persist: true
 env:
-  - LOCAL_HOME=${HOME}
-expose:
-  - 8080:8080
+  - TEST_ENV=foo
 hosts:
-  foo: 127.0.0.1
-  bar: 127.0.0.1
+  - google.com:127.0.0.1
 volumes:
-  - ${HOME}/.ssh:/root/.ssh
+  - ${HOME}/:/root
 tasks:
-  env: |
-    export FOO=$MONGODB_ENV_MONGO_VERSION
-    env
-    echo hello
+  env: env
   clean: rm -rf node_modules
   install: npm install
   test: npm run test
   lint: npm run lint
-  build: npm run build
-  all: .env .test .build
+  shell: /bin/sh
