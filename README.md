@@ -1,5 +1,5 @@
 [![CircleCI branch](https://img.shields.io/circleci/project/TechnologyAdvice/DevLab/master.svg?maxAge=2592000)]()
-[![Code Climate](https://img.shields.io/codeclimate/github/TechnologyAdvice/DevLab.svg?maxAge=2592000)]()
+[![Code Climate](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/gpa.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab)
 [![Test Coverage](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/coverage.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab/coverage)
 
 **Updgrading from 2.x to 3.x: Please see [Release Notes](https://github.com/TechnologyAdvice/DevLab/releases/tag/v3.0.0)**
