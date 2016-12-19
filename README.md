@@ -129,7 +129,7 @@ Setting `hosts` will update the hosts configuration for the container. Entries s
 
 ## Development
 
-To run tests, fork & clone the reposity then run `npm install && npm test`.
+To run tests, fork & clone the repository then run `npm install && npm test`.
 
 To run end-to-end tests run `npm run e2e`. This works by fully emulating a run inside the `/test/project` directory and executing `/test/system/run.js` with the `/test/system/tests.json` definitions file.
 
