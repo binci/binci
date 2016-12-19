@@ -40,6 +40,9 @@ describe('command', () => {
     it('returns single line format task', () => {
       expect(command.formatTask('foo\nbar')).to.equal('foo && bar')
     })
+    it('removes any trailing && from the string if ends with newline', () => {
+      expect(command.formatTask('foo\nbar\n')).to.equal('foo && bar')
+    })
   })
   describe('getExec', () => {
     it('returns custom task if exec (-e) was called in arguments', () => {

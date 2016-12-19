@@ -56,7 +56,10 @@ const command = {
    * @param {string} task The task command(s)
    * @returns {string} Formatted task
    */
-  formatTask: (task) => task.replace(/(?:\r\n|\r|\n)/g, ' && ').replace(' &&  && ', ' && '),
+  formatTask: (task) => task
+    .replace(/(?:\r\n|\r|\n)/g, ' && ')
+    .replace(' &&  && ', ' && ')
+    .replace(/ &&\s*$/m, ''),
   /**
    * Returns array of execution commands
    * @param {object} cfg Config object for instance
