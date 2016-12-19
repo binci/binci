@@ -1,7 +1,7 @@
 from: mhart/alpine-node:6
 services:
   - mongodb:
-      from: mongo:3.0
+      from: mongo:latest
   - redis:
       from: redis:latest
       persist: true
