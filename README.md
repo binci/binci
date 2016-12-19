@@ -2,6 +2,8 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/TechnologyAdvice/DevLab.svg?maxAge=2592000)]()
 [![Test Coverage](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/coverage.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab/coverage)
 
+**Updgrading from 2.x to 3.x: Please see [Release Notes](https://github.com/TechnologyAdvice/DevLab/releases/tag/v3.0.0)**
+
 # DevLab
 
 DevLab is a utility that allows you to easily containerize your development
