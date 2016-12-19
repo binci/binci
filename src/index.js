@@ -40,7 +40,8 @@ const instance = {
       })
       .catch(() => {
         servicesStartSpinner.fail()
-        throw new Error('Failed to start services')
+        /* istanbul ignore next */
+        throw new Error(`Failed to start service${cfg.services.length > 1 ? 's' : ''}`)
       })
   },
   /**
