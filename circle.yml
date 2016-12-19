@@ -3,13 +3,17 @@ machine:
     - docker
   node:
     version: 6.2.0
+general:
+  artifacts:
+    - "coverage/lcov.info"
 dependencies:
+  override:
+    - npm install -g codeclimate-test-reporter
   cache_directories:
     - node_modules
 test:
   override:
     - npm install
     - npm test
-general:
-  artifacts:
-    - coverage
+  post:
+    - codeclimate-test-reporter < coverage/lcov.info

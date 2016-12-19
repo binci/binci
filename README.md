@@ -1,5 +1,6 @@
 [![CircleCI branch](https://img.shields.io/circleci/project/TechnologyAdvice/DevLab/master.svg?maxAge=2592000)]()
 [![Code Climate](https://img.shields.io/codeclimate/github/TechnologyAdvice/DevLab.svg?maxAge=2592000)]()
+[![Test Coverage](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/coverage.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab/coverage)
 
 # DevLab
 
