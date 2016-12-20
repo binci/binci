@@ -32,7 +32,7 @@ describe('utils', () => {
     it('resolves after warning of identified orphans', () => {
       sinon.stub(proc, 'exec', () => Promise.resolve(fixture.full))
       return utils.checkOrphans().then(() => {
-        expect(outputWarnStub).to.be.calledWith('The following containers may not have shut down correctly: dl_orphan3_JKLod93dS, dl_orphan4_MNJ9ie00d')
+        expect(outputWarnStub).to.be.calledWith('Theses containers may not have exited correctly: dl_orphan3_JKLod93dS, dl_orphan4_MNJ9ie00d')
       })
     })
   })

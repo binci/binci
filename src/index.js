@@ -5,6 +5,7 @@ const command = require('./command')
 const services = require('./services')
 const proc = require('./proc')
 const output = require('./output')
+const utils = require('./utils')
 
 global.instanceId = require('shortid').generate()
 
@@ -71,8 +72,10 @@ const instance = {
   start: () => Promise.resolve().then(() => {
     // Get config (or throw)
     const cfg = instance.getConfig()
-    // Start services, then run command
-    return instance.startServices(cfg).then(instance.runCommand)
+    // Check orphans, start services, then run command
+    return utils.checkOrphans()
+      .then(() => instance.startServices(cfg))
+      .then(instance.runCommand)
   })
   .catch((e) => {
     services.stop()

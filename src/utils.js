@@ -56,9 +56,12 @@ const utils = {
    * @returns {object} promise
    */
   checkOrphans: () => proc.exec('docker ps').then((ps) => {
-    const orphans = utils.findOrphans(ps)
+    const orphans = utils.parseOrphans(ps)
     if (orphans.length) {
-      output.warn(`The following containers may not have shut down correctly: ${orphans.join(', ')}`)
+      output.line()
+      output.warn(`These containers may not have exited correctly: ${orphans.join(', ')}`)
+      output.warn('You can attempt to remove these by running `devlab --cleanup`')
+      output.line()
     }
     return true
   })
