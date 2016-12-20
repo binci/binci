@@ -26,6 +26,12 @@ describe('output', () => {
       expect(logSpy).to.be.called()
     })
   })
+  describe('warn', () => {
+    it('outputs a warning message', () => {
+      output.warn('test-warn')
+      expect(logSpy).to.be.called()
+    })
+  })
   describe('line', () => {
     it('outputs a break line', () => {
       output.line()
