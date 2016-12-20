@@ -146,9 +146,10 @@ Compose takes the approach of spinning up containers that run, almost like a vir
 
 Some more comparisons:
 
-* With Devlab you don't need a Dockerfile for local development, thus you can include one in the root of your project purely for deploying to production, or without a Dockerfile at all.
+* With Devlab you don't need a Dockerfile for local development, thus you can use it whether or not your project will be deployed in Docker or to bare metal.
 * Devlab doesn't build docker images, ever. It uses the images you specify for both the primary container and any services.
-* With Devlab you don't need to run tasks in a containerized shell, you simply define the tasks and run them.
+* When you install local dependencies in your project folder, run a build, execute your coverage tool, or write any local files, that just happens on your hard disk, not locked away in some container. They'll be available to every other task you run.
+* With Devlab you don't need to run tasks in a containerized shell, you simply define the tasks and run them. You can kick tasks off with any local script, build tool, or IDE run configuration without building a container first.
 * Tasks don't need to be defined at runtime via arguments or flags, you just tell Devlab which predefined task to run.
 
 ## License
