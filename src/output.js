@@ -20,6 +20,11 @@ const output = {
    */
   error: (m) => console.log(`${chalk.red(logSymbols.error)} ${m}`),
   /**
+   * Output warning message
+   * @param {string} m Output message
+   */
+  warn: (m) => console.log(`${chalk.yellow(logSymbols.warning)} ${m}`),
+  /**
    * Output line, break
    */
   line: () => console.log(chalk.gray('‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧‧'))

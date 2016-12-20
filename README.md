@@ -116,6 +116,26 @@ Services which need to persist between runs can be set by providing `persist: tr
 
 Persisted services will not stop after the primary container finishes its task and can be used by the same project, other projects, or independently.
 
+## Container Management
+
+Since container shutdown is a detached, unattended process it is _possible_ for services to fail to shutdown. On each run, before starting services or executing tasks, Devlab will run a check and attempt to identify any orphaned services.
+
+If orphaned services are identified a warning message will appear at the beginning of the process to indicate the orphaned service(s) and commands to remedy/exit these containers.
+
+Additionally, the following commands can be run to cleanup any running containers:
+
+**Stop and Remove Devlab Containers:**
+
+```
+devlab --cleanup
+```
+
+**Stop and Remove ALL Containers:**
+
+```
+devlab --cleanup-all
+```
+
 ## Environment Variables (`env <array>`)
 
 Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>=<VALUE>`
