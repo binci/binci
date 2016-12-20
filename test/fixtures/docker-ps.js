@@ -7,5 +7,5 @@ ce21175a53bd        mhart/alpine-node:6   "sh -c /bin/sh"          8 seconds ago
 839837sd9d98        mongo:3.0             "/entrypoint.sh mongo"   7 minutes ago       Up 7 seconds        27017/tcp           dl_orphan3_JKLod93dS
 90488yex73x8        mongo:3.0             "/entrypoint.sh mongo"   12 eons ago         Up 7 seconds        27017/tcp           dl_orphan4_MNJ9ie00d
 0207375303aa        redis:latest          "/entrypoint.sh redis"   5 hours ago         Up 5 hours          6379/tcp            redis`,
-  ids: `839837sd9d98\n90488yex73x8`
+  ids: `839837sd9d98\n90488yex73x8\n`
 }

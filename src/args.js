@@ -2,6 +2,7 @@
 const _ = require('redash')
 const min = require('minimist')
 const pkg = require('../package.json')
+const utils = require('./utils')
 
 /* istanbul ignore next */
 const processArgs = process.argv[0] === 'node' ? 1 : 2
@@ -18,11 +19,13 @@ const args = {
    * - @property {string} help - the help text to display to the user
    */
   available: {
-    h: { action: 'showHelp', help: 'Displays help and usage' },
-    v: { action: 'showVersion', help: 'Displays the current installed version' },
-    e: { prop: 'exec', help: 'Run a custom command instead of defined task' },
-    f: { prop: 'from', help: 'Run with specified docker image' },
-    c: { prop: 'configPath', help: 'Run with custom config file path' }
+    'h': { action: 'showHelp', help: 'Displays help and usage' },
+    'v': { action: 'showVersion', help: 'Displays the current installed version' },
+    'e': { prop: 'exec', help: 'Run a custom command instead of defined task' },
+    'f': { prop: 'from', help: 'Run with specified docker image' },
+    'c': { prop: 'configPath', help: 'Run with custom config file path' },
+    'cleanup': { action: 'cleanupDL', help: 'Stops and removes any non-persisted Devlab containers' },
+    'cleanup-all': { action: 'cleanupAll', help: 'Stops and removes ALL docker containers' }
   },
   /**
    * Displays the help and usage message
@@ -31,7 +34,7 @@ const args = {
     let help = ''
     help += `  ${pkg.name} v.${pkg.version}\n\n`
     help += `  Usage: [${_.keys(pkg.bin).join('|')}] task [options]\n\n`
-    help += _.pipe(_.toPairs, _.map(([k, v]) => `  -${k} ${v.help}`), _.join('\n'))(args.available)
+    help += _.pipe(_.toPairs, _.map(([k, v]) => `  -${k} -- ${v.help}`), _.join('\n'))(args.available)
     console.log(`${help}\n`)
     process.exit(0)
   },
@@ -40,6 +43,20 @@ const args = {
    */
   showVersion: () => {
     console.log(pkg.version)
+    process.exit(0)
+  },
+  /**
+   * Calls the cleanup process for Devlab containers and exits
+   */
+  cleanupDL: () => {
+    utils.cleanup()
+    process.exit(0)
+  },
+  /**
+   * Calls the cleanup process for ALL containers and exits
+   */
+  cleanupAll: () => {
+    utils.cleanup(true)
     process.exit(0)
   },
   /**

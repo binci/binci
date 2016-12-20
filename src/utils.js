@@ -1,6 +1,7 @@
 const _ = require('redash')
 const proc = require('./proc')
 const output = require('./output')
+const cp = require('child_process')
 
 const utils = {
   /**
@@ -8,21 +9,21 @@ const utils = {
    * @param {boolean} all If the run should include non-devlab containers
    * @returns {object} promise
    */
-  cleanup: (all = false) => Promise.resolve().then(() => {
+  cleanup: (all = false) => {
     const findCmd = all ? 'docker ps -q' : 'docker ps --filter="name=dl_" -q'
-    proc.exec(findCmd)
-      .then((ids) => {
-        return ids.length
-          ? proc.exec(_.pipe(
-              _.split(/(?:\r\n|\r|\n)/g),
-              _.map((id) => {
-                return `docker stop ${id} && docker rm ${id}`
-              }),
-              _.join(' && ')
-            )(ids))
-          : true
-      })
-  }),
+    const ids = cp.execSync(findCmd).toString()
+    /* istanbul ignore else */
+    if (ids.length) {
+      cp.execSync(_.pipe(
+        _.split(/\r?\n/),
+        _.filter((id) => id.length > 0),
+        _.map((id) => {
+          return `docker stop ${id} && docker rm ${id}`
+        }),
+        _.join(' && ')
+      )(ids))
+    }
+  },
   /**
    * Identifies and reports any (possible) orphan containers, i.e. containers
    * which 1) have the dl_ prefix, 2) are NOT primary containers and 3) have

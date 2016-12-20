@@ -1,6 +1,7 @@
 'use strict'
 const pkg = require('package.json')
 const args = require('src/args')
+const utils = require('src/utils')
 
 const fixtures = {
   args: { e: true, _: [ '/bin/bash' ] }
@@ -29,6 +30,28 @@ describe('args', () => {
       args.showVersion()
       expect(logSpy).to.be.calledWith(pkg.version)
       expect(processExitStub).to.be.calledWith(0)
+    })
+  })
+  describe('cleanupDL', () => {
+    let utilsCleanupStub
+    beforeEach(() => {
+      utilsCleanupStub = sinon.stub(utils, 'cleanup')
+    })
+    afterEach(() => utilsCleanupStub.restore())
+    it('call utils.cleanup with no arguments', () => {
+      args.cleanupDL()
+      expect(utilsCleanupStub).to.be.calledOnce()
+    })
+  })
+  describe('cleanupAll', () => {
+    let utilsCleanupStub
+    beforeEach(() => {
+      utilsCleanupStub = sinon.stub(utils, 'cleanup')
+    })
+    afterEach(() => utilsCleanupStub.restore())
+    it('call utils.cleanup with no arguments', () => {
+      args.cleanupAll()
+      expect(utilsCleanupStub).to.be.calledWith(true)
     })
   })
   describe('isArg', () => {
