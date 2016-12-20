@@ -45,7 +45,7 @@ volumes:
 hosts:
   - google.com:127.0.0.1
 before: npm install
-after: rm -rf /node_modules
+after: echo "done"
 tasks:
   run: node index.js
 ```
@@ -60,7 +60,7 @@ The above can then be executed via the `devlab run` (or `lab run`) command from 
   - Set a host entry for `google.com` to `127.0.0.1`
 - Run `npm install` inside the container before running the task
 - Run `node index.js` task inside the container
-- Run `rm -rf /node_modules` to cleanup after the task has completed
+- Echo `done` after the task has completed
 
 ### Multiple Tasks
 
@@ -135,6 +135,19 @@ Setting `hosts` will update the hosts configuration for the container. Entries s
 To run tests, fork & clone the repository then run `npm install && npm test`.
 
 To run end-to-end tests run `npm run e2e`. This works by fully emulating a run inside the `/test/project` directory and executing `/test/system/run.js` with the `/test/system/tests.json` definitions file.
+
+## Why Devlab Over Docker Compose?
+
+First off, we like [Docker Compose](https://docs.docker.com/compose/), and definitely think it's a powerful tool. However, Devlab was built because Compose is more about long-running, containerized environment and what we set out to build was a way to run ephemeral, limited-lifespan tasks without having to manage cleanup between each run.
+
+Compose takes the approach of spinning up containers that run, almost like a virtual machine, while you need them. Devlab looks at things from a point of view of abstracting `docker run` command chains to create a single-run instance only for that task, then shutting down and doing cleanup so each run is clean and running off a consistent base.
+
+Some more comparisons:
+
+* With Devlab you don't need a Dockerfile for local development, thus you can include one in the root of your project purely for deploying to production, or without a Dockerfile at all.
+* Devlab doesn't build docker images, ever. It uses the images you specify for both the primary container and any services.
+* With Devlab you don't need to run tasks in a containerized shell, you simply define the tasks and run them.
+* Tasks don't need to be defined at runtime via arguments or flags, you just tell Devlab which predefined task to run.
 
 ## License
 
