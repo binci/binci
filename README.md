@@ -13,6 +13,8 @@ to setup and maintain these environments manually.
 
 ![example](/demo.gif)
 
+**FAQ: [Why Devlab over Docker-Compose?](#why-devlab-over-docker-compose)**
+
 ## Installation
 
 ```
