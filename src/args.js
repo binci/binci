@@ -34,7 +34,7 @@ const args = {
     let help = ''
     help += `  ${pkg.name} v.${pkg.version}\n\n`
     help += `  Usage: [${_.keys(pkg.bin).join('|')}] task [options]\n\n`
-    help += _.pipe(_.toPairs, _.map(([k, v]) => `  -${k} -- ${v.help}`), _.join('\n'))(args.available)
+    help += _.pipe([_.toPairs, _.map(([k, v]) => `  -${k} -- ${v.help}`), _.join('\n')])(args.available)
     console.log(`${help}\n`)
     process.exit(0)
   },
@@ -77,7 +77,7 @@ const args = {
    * Parse arguments and call (action) or append to config (prop)
    * @returns {object}
    */
-  parse: () => _.pipe(
+  parse: () => _.pipe([
     _.omit(['_']),
     _.keys,
     _.filter(args.isArg),
@@ -90,7 +90,7 @@ const args = {
       return acc
     }, {}),
     _.merge({ run: args.getTask() })
-  )(args.raw)
+  ])(args.raw)
 }
 
 module.exports = args

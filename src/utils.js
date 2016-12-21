@@ -14,14 +14,14 @@ const utils = {
     const ids = cp.execSync(findCmd).toString()
     /* istanbul ignore else */
     if (ids.length) {
-      cp.execSync(_.pipe(
+      cp.execSync(_.pipe([
         _.split(/\r?\n/),
         _.filter((id) => id.length > 0),
         _.map((id) => {
           return `docker stop ${id} && docker rm ${id}`
         }),
         _.join(' && ')
-      )(ids))
+      ])(ids))
     }
   },
   /**
@@ -30,7 +30,7 @@ const utils = {
    * no primary container running - deteremined by InstanceId suffix
    * @returns {array} Names of orphaned containers
    */
-  parseOrphans: (ps) => _.pipe(
+  parseOrphans: (ps) => _.pipe([
     _.split(/\r?\n/),
     _.drop(1),
     _.map((row) => {
@@ -51,7 +51,7 @@ const utils = {
       return true
     }),
     _.map(_.prop('name'))
-  )(ps),
+  ])(ps),
   /**
    * Outputs warning if any orphaned containers are found
    * @returns {object} promise

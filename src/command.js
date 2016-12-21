@@ -41,7 +41,7 @@ const command = {
    * @param {object} cfg Config object of instance or service
    * @returns {array} Command arguments
    */
-  getArgs: (cfg) => _.pipe(
+  getArgs: (cfg) => _.pipe([
     _.keys,
     _.filter((key) => !!command.args[key]),
     _.chain(_.cond([
@@ -50,7 +50,7 @@ const command = {
       }],
       [_.T, (key) => command.parseArgs(key, cfg[key])]
     ]))
-  )(cfg),
+  ])(cfg),
   /**
    * Formats task by replacing line breaks with double-ampersands
    * @param {string} task The task command(s)
@@ -76,7 +76,7 @@ const command = {
     // Ensure a task is passed
     if (!cfg.run) throw new Error('No task has been specified')
     // Use predefined task(s)
-    const run = _.pipe(
+    const run = _.pipe([
       tasks => _.pick(tasks, cfg.tasks),
       _.toPairs,
       _.map(([name, command]) => {
@@ -84,7 +84,7 @@ const command = {
         return command
       }),
       _.join(' && ')
-    )(cfg.run)
+    ])(cfg.run)
     return cmd.concat([command.formatTask(before + run + after)])
   },
   /**
@@ -92,9 +92,9 @@ const command = {
    * @param {object} cfg Config object for the container
    * @returns {array} Link arguments
    */
-  getLinks: (cfg) => _.chain(_.pipe(_.toPairs, _.head, ([key, value]) => {
+  getLinks: (cfg) => _.chain(_.pipe([_.toPairs, _.head, ([key, value]) => {
     return ['--link', `${command.getName(key, value)}:${key}`]
-  }))(cfg.services || []),
+  }]))(cfg.services || []),
   /**
    * Returns full command arguments array
    * @param {object} cfg Config object for instance

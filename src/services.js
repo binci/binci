@@ -12,14 +12,14 @@ const services = {
    * @param {array} cfg Instance config object
    * @returns {array} Array of services names, persistence and run args
    */
-  get: (cfg) => !cfg.services ? false : _.map(_.pipe(
+  get: (cfg) => !cfg.services ? false : _.map(_.pipe([
     _.toPairs,
     _.head,
     ([name, value]) => ({
       name,
       persist: value.persist || false,
       args: command.get(value, name)
-    })), cfg.services),
+  })]), cfg.services),
   /**
    * Runs services and resolves or rejects
    * @param {array} svc Array of service command arrays
@@ -37,12 +37,13 @@ const services = {
    */
   stop: () => _.unless(
     _.isEmpty,
-    _.pipe(
+    _.pipe([
       _.filter(_.test(/dl_/)),
       _.map(svc => `docker stop ${svc} && docker rm ${svc}`),
       _.join(' && '),
       proc.runDetached
-  ))(services.running)
+    ])
+  )(services.running)
 }
 
 module.exports = services
