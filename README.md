@@ -174,7 +174,7 @@ Some more comparisons:
 
 ## License
 
-DevLab is licensed under the MIT license. Please see [`LICENSE.txt`](/license.txt) for full details.
+DevLab is licensed under the MIT license. Please see [`LICENSE.txt`](/LICENSE.txt) for full details.
 
 ## Credits
 
