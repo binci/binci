@@ -17,14 +17,19 @@ const services = {
    * @returns {Object} formatted config object
    */
   checkDisabled: (cfg) => {
-    // TODO: chained command edge cases--for now, assume only 1 task has a disable key,
-    // therefore any others will require all services
+    // TODO: chained command edge cases:
+    //  - only one disables a service (don't disable)
+    //  - both/all ignore the same service (disable)
+    //  - both/all ignore the same service, but one or
+    //    more disable others (disable shared service, ignore others)
+    // For now, assume only 1 task has a disable key,
+    // therefore any others will require all services.
     if (!cfg.run.length || cfg.run.length > 1) return cfg
     // Filter tasks that are being run, and are objects
     const disableList = _.filter(_.isType('object'), _.values(_.pick(cfg.run, cfg.tasks)))
     services.disabled = _.chain(t => t.disable, disableList) // TODO: only want unique values
     if (!services.disabled.length) return cfg
-    // TODO: there's obviously a more efficient way to do this, just not seeing it...
+    // TODO: there's OBVIOUSLY a more efficient way to do this, just not seeing it...
     const svcs = []
     _.forEach(svc => {
       _.forEach(dis => {
