@@ -26,7 +26,6 @@ describe('services', () => {
     afterEach(() => {
       if (proc.exec.restore) proc.exec.restore()
       procRunStub.restore()
-      services.running = []
     })
     it('starts all non-running services', () => {
       global.instanceId = 'test'
@@ -57,7 +56,6 @@ describe('services', () => {
     })
     afterEach(() => {
       procRunDetachedStub.restore()
-      services.running = []
     })
     it('does nothing if no services are running', () => {
       services.running = []
@@ -73,6 +71,32 @@ describe('services', () => {
       services.running = [ 'dl_foo_test', 'bar' ]
       services.stop()
       expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test')
+    })
+  })
+  describe('checkDisabled', () => {
+    afterEach(() => {
+      services.disabled = []
+    })
+    it('does nothing if no task is supplied', () => {
+      const cfg = { run: [] }
+      expect(services.checkDisabled(cfg)).to.deep.equal(cfg)
+    })
+    it('does nothing if multiple tasks are supplied', () => {
+      const cfg = { run: [ 'one', 'two' ] }
+      expect(services.checkDisabled(cfg)).to.deep.equal(cfg)
+    })
+    it('does nothing if task config is not an object', () => {
+      const cfg = { run: [ 'test' ], tasks: { test: 'echo "not an obj"' } }
+      expect(services.checkDisabled(cfg)).to.deep.equal(cfg)
+    })
+    it('returns config with filtered services array', () => {
+      const cfg = {
+        services: [{ keep: { from: 'test' } }, { disable: { from: 'disable' } }],
+        tasks: { test: { disable: [ 'disable' ], cmd: 'echo hello' } },
+        run: [ 'test' ]
+      }
+      expect(services.checkDisabled(cfg).services).to.deep.equal([{ keep: { from: 'test' } }])
+      expect(services.disabled[0]).to.equal('disable')
     })
   })
 })
