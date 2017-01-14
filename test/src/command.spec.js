@@ -57,12 +57,15 @@ describe('command', () => {
     it('throws error if invalid task is specified', () => {
       expect(() => command.getExec({ run: [ 'foo' ], tasks: { bar: 'echo "foo"' } })).to.throw('Task \'foo\' does not exist')
     })
+    it('throws error if no cmd is specified in task object definition', () => {
+      expect(() => command.getExec({ run: [ 'foo' ], tasks: { foo: { disable: 'testService' } } })).to.throw('Task \'foo\' has no command defined.')
+    })
     it('returns exec task array when all criteria are met', () => {
       const actual = command.getExec({ run: [ 'foo' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
       expect(actual).to.deep.equal([ 'sh', '-c', 'bar && echo "foo" && echo "bar" && bizz' ])
     })
     it('returns exec task array when multiple tasks are called', () => {
-      const actual = command.getExec({ run: [ 'foo', 'fizz' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"', fizz: 'buzz' } })
+      const actual = command.getExec({ run: [ 'foo', 'fizz' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"', fizz: { cmd: 'buzz' } } })
       expect(actual).to.deep.equal([ 'sh', '-c', 'bar && echo "foo" && echo "bar" && buzz && bizz' ])
     })
   })
