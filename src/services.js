@@ -26,10 +26,11 @@ const services = {
     // For now, assume only 1 task has a disable key,
     // therefore any others will require all services.
     if (!cfg.run.length || cfg.run.length > 1) return cfg
-    // Filter tasks that are being run, and are objects
-    const objTasks = _.filter(_.isType('object'), _.values(_.pick(cfg.run, cfg.tasks)))
-    // Flatten `disable` arrays
-    services.disabled = _.chain(t => t.disable, objTasks) // @TODO: only want unique values
+    // Filter tasks that are being run, and are objects and flatten to `disable` arrays
+    services.disabled = _.chain(t => t.disable, _.filter( // @TODO: only want unique values
+      _.isType('object'),
+      _.values(_.pick(cfg.run, cfg.tasks))
+    ))
     if (!services.disabled.length) return cfg
     // Keep service if name is not in disabled list
     cfg.services = _.filter((s) => !_.contains(_.head(_.keys(s)), services.disabled), cfg.services)
