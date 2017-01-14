@@ -8,8 +8,35 @@ const services = {
    */
   running: [],
   /**
+   * @property {array} All services disabled by instance task
+   */
+  disabled: [],
+  /**
+   * Checks if given task has a 'disable' key, and removes services accordingly
+   * @param {Object} cfg Instance config object
+   * @returns {Object} formatted config object
+   */
+  checkDisabled: (cfg) => {
+    // TODO: chained command edge cases--for now, assume only 1 task has a disable key,
+    // therefore any others will require all services
+    if (!cfg.run.length || cfg.run.length > 1) return cfg
+    // Filter tasks that are being run, and are objects
+    const disableList = _.filter(_.isType('object'), _.values(_.pick(cfg.run, cfg.tasks)))
+    if (!disableList.length) return cfg
+    services.disabled = _.chain(t => t.disable, disableList) // TODO: only unique values
+    // TODO: fp-ify this
+    const svcs = []
+    _.forEach(svc => {
+      _.forEach(dis => {
+        if (!_.has(dis, svc)) svcs.push(svc)
+      }, services.disabled)
+    }, cfg.services)
+    cfg.services = svcs
+    return cfg
+  },
+  /**
    * Gets all services and returns name, persistence, and arguments
-   * @param {array} cfg Instance config object
+   * @param {Object} cfg Instance config object
    * @returns {array} Array of services names, persistence and run args
    */
   get: (cfg) => !cfg.services ? false : _.map(_.pipe([
