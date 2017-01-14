@@ -16,28 +16,23 @@ const services = {
    * @param {Object} cfg Instance config object
    * @returns {Object} formatted config object
    */
-  checkDisabled: (cfg) => {
-    // TODO: chained command edge cases:
+  filterEnabled: (cfg) => {
+    // @TODO: add `disable: *` support
+    // @TODO: chained command edge cases:
     //  - only one disables a service (don't disable)
-    //  - both/all ignore the same service (disable)
-    //  - both/all ignore the same service, but one or
+    //  - both/all disable the same service (disable)
+    //  - both/all disable the same service, but one or
     //    more disable others (disable shared service, ignore others)
     // For now, assume only 1 task has a disable key,
     // therefore any others will require all services.
     if (!cfg.run.length || cfg.run.length > 1) return cfg
     // Filter tasks that are being run, and are objects
-    const disableList = _.filter(_.isType('object'), _.values(_.pick(cfg.run, cfg.tasks)))
-    services.disabled = _.chain(t => t.disable, disableList) // TODO: only want unique values
+    const objTasks = _.filter(_.isType('object'), _.values(_.pick(cfg.run, cfg.tasks)))
+    // Flatten `disable` arrays
+    services.disabled = _.chain(t => t.disable, objTasks) // @TODO: only want unique values
     if (!services.disabled.length) return cfg
-    // TODO: there's OBVIOUSLY a more efficient way to do this, just not seeing it...
-    const svcs = []
-    _.forEach(svc => {
-      _.forEach(dis => {
-        // Keep service if name is not in disabled list
-        if (!_.has(dis, svc)) svcs.push(svc)
-      }, services.disabled)
-    }, cfg.services)
-    cfg.services = svcs
+    // Keep service if name is not in disabled list
+    cfg.services = _.filter((s) => !_.contains(_.head(_.keys(s)), services.disabled), cfg.services)
     return cfg
   },
   /**
