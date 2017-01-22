@@ -129,6 +129,15 @@ tasks:
     cmd: npm run lint
   start: npm start
 ```
+Alternatively, you can disable all services for a task with `'*'`:
+
+```yaml
+tasks:
+  lint:
+    disable: '*'
+    cmd: npm run lint
+  start: npm start
+```
 
 ## Container Management
 

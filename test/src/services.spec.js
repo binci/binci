@@ -93,7 +93,7 @@ describe('services', () => {
     it('disables all services when \'*\' is supplied', () => {
       const cfg = {
         services: [{ disabledOne: { from: 'test' } }, { disabledTwo: { from: 'disable' } }],
-        tasks: { test: { disable: '*' , cmd: 'echo hello' } },
+        tasks: { test: { disable: '*', cmd: 'echo hello' } },
         run: [ 'test' ]
       }
       expect(services.filterEnabled(cfg).services).to.deep.equal([])
@@ -110,8 +110,8 @@ describe('services', () => {
     })
     it('disables services shared between chained tasks', () => {
       const cfg = {
-        services: [ { shared: { from: 'test' } }, { onlyTest: { from: 'onlyTest' } }],
-        tasks: { test: { disable: '*' , cmd: 'echo hello' }, lint: { disable: [ 'shared' ], cmd: 'lint' } },
+        services: [{ shared: { from: 'test' } }, { onlyTest: { from: 'onlyTest' } }],
+        tasks: { test: { disable: '*', cmd: 'echo hello' }, lint: { disable: [ 'shared' ], cmd: 'lint' } },
         run: [ 'test', 'lint' ]
       }
       expect(services.filterEnabled(cfg).services).to.deep.equal([{ onlyTest: { from: 'onlyTest' } }])

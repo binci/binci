@@ -12,7 +12,7 @@ const services = {
    */
   disabled: [],
   /**
-   * 
+   *
    */
   count: {},
   /**
@@ -33,7 +33,7 @@ const services = {
     }, objs))
     // @TODO: not sure about this
     services.count = svcs.reduce((obj, s) => {
-      obj[s] = !obj[s] ? 1 : obj[s] + 1 
+      obj[s] = !obj[s] ? 1 : obj[s] + 1
       return obj
     }, {})
     // @TODO: use pipe
@@ -57,7 +57,7 @@ const services = {
       name,
       persist: value.persist || false,
       args: command.get(value, name)
-  })]), cfg.services),
+    })]), cfg.services),
   /**
    * Runs services and resolves or rejects
    * @param {array} svc Array of service command arrays
