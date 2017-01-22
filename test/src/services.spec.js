@@ -73,20 +73,21 @@ describe('services', () => {
       expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test')
     })
   })
-  describe('filterEnabled', () => {
+  describe.only('filterEnabled', () => {
     afterEach(() => {
       services.disabled = []
+      services.count = {}
     })
     it('does nothing if no task is supplied', () => {
       const cfg = { run: [] }
       expect(services.filterEnabled(cfg)).to.deep.equal(cfg)
     })
-    it('does nothing if multiple tasks are supplied', () => {
-      const cfg = { run: [ 'one', 'two' ] }
+    it('does nothing if single task config is not an object', () => {
+      const cfg = { run: [ 'test' ], tasks: { test: 'echo "not an obj"' } }
       expect(services.filterEnabled(cfg)).to.deep.equal(cfg)
     })
-    it('does nothing if task config is not an object', () => {
-      const cfg = { run: [ 'test' ], tasks: { test: 'echo "not an obj"' } }
+    it('does nothing if any task config is not an object', () => {
+      const cfg = { run: [ 'string', 'obj' ], tasks: { string: 'echo "not an obj"', obj: { disable: '*' } } }
       expect(services.filterEnabled(cfg)).to.deep.equal(cfg)
     })
     it('returns config with filtered services array', () => {

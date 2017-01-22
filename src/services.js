@@ -12,25 +12,39 @@ const services = {
    */
   disabled: [],
   /**
+   * 
+   */
+  count: {},
+  /**
    * Checks if given task has a 'disable' key, and removes services accordingly
    * @param {Object} cfg Instance config object
    * @returns {Object} formatted config object
    */
   filterEnabled: (cfg) => {
-    // @TODO: add `disable: *` support
     // @TODO: chained command edge cases:
     //  - only one disables a service (don't disable)
     //  - both/all disable the same service (disable)
     //  - both/all disable the same service, but one or
     //    more disable others (disable shared service, ignore others)
-    // For now, assume only 1 task has a disable key,
-    // therefore any others will require all services.
-    if (!cfg.run.length || cfg.run.length > 1) return cfg
-    // Filter tasks that are being run, and are objects and flatten to `disable` arrays
-    services.disabled = _.chain(t => t.disable, _.filter( // @TODO: only want unique values
-      _.isType('object'),
-      _.values(_.pick(cfg.run, cfg.tasks))
-    ))
+    if (!cfg.run.length) return cfg
+    const tasks = _.values(_.pick(cfg.run, cfg.tasks))
+    const objs = _.filter(_.isType('object'), tasks)
+    // If any running task doesn't have object config, keep all services
+    if (objs.length !== tasks.length) return cfg
+    const svcs = _.flattenDeep(_.map(t => {
+      if (t.disable === '*') return _.map(_.keys, cfg.services)
+      return t.disable
+    }, objs))
+    services.count = svcs.reduce((obj, s) => {
+      if (!obj[s]) obj[s] = 1
+      else obj[s]++
+      return obj
+    }, {})
+    // Filter running tasks with object configs and flatten to `disable` arrays
+    // @TODO: use pipe
+    services.disabled = _.map(n => _.head(n),
+      _.filter(s => _.equals(_.last(s), objs.length), _.toPairs(services.count))
+    )
     if (!services.disabled.length) return cfg
     // Keep service if name is not in disabled list
     cfg.services = _.filter((s) => !_.contains(_.head(_.keys(s)), services.disabled), cfg.services)
