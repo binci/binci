@@ -21,11 +21,6 @@ const services = {
    * @returns {Object} formatted config object
    */
   filterEnabled: (cfg) => {
-    // @TODO: chained command edge cases:
-    //  - only one disables a service (don't disable)
-    //  - both/all disable the same service (disable)
-    //  - both/all disable the same service, but one or
-    //    more disable others (disable shared service, ignore others)
     if (!cfg.run.length) return cfg
     const tasks = _.values(_.pick(cfg.run, cfg.tasks))
     const objs = _.filter(_.isType('object'), tasks)
