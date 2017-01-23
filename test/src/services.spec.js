@@ -76,7 +76,6 @@ describe('services', () => {
   describe('filterEnabled', () => {
     afterEach(() => {
       services.disabled = []
-      services.count = {}
     })
     it('does nothing if no task is supplied', () => {
       const cfg = { run: [] }
