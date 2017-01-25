@@ -24,10 +24,10 @@ const services = {
     if (objs.length !== tasks.length) return cfg
     const svcs = _.chain(t => t.disable === '*' ? _.map(_.keys, cfg.services) : t.disable, objs)
     // Track which services are disabled by running tasks
-    const counts = svcs.reduce((obj, s) => {
-      obj[s] = !obj[s] ? 1 : obj[s] + 1
-      return obj
-    }, {})
+    const counts = _.pipe([
+      _.groupBy(_.identity),
+      _.mapValues(_.length),
+    ])(svcs)
     // Add service to list if disabled by all running tasks 
     services.disabled = _.pipe([
       _.toPairs,
