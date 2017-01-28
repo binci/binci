@@ -11,13 +11,17 @@ hosts:
   - google.com:127.0.0.1
 volumes:
   - ${HOME}/:/root
+before: |
+  export REDIS_HOST=$REDIS_PORT_6379_TCP_ADDR
+  export REDIS_PORT=$REDIS_PORT_6379_TCP_PORT
 tasks:
-  env:
-    disable:
-      - mongodb
-    cmd: env
+  env: env
   clean: rm -rf node_modules
   install: npm install
   test: npm run test
   lint: npm run lint
   shell: /bin/sh
+  redis:disable:
+    disable:
+      - redis
+    cmd: node scripts/connect

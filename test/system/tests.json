@@ -48,5 +48,15 @@
     "description": "Fails when invalid argument is passed",
     "args": [ "env", "-w" ],
     "should": "fail"
+  },
+  "disabled service": {
+    "description": "Fails because required service is disabled",
+    "args": [ "redis:disable" ],
+    "should": "fail"
+  },
+  "ignore disable": {
+    "description": "Passes because service is not disabled for all tasks",
+    "args": [ "env", "redis:disable" ],
+    "should": "pass"
   }
 }
