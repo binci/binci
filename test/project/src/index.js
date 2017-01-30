@@ -10,7 +10,7 @@ module.exports = class {
 
   /**
    * Handles setup of connection
-   * @param {Object|String} config The db config obejct or connection string
+   * @param {Object|String} config The db config object or connection string
    * @property {String} config.host
    * @property {Number} config.port
    * @property {String} config.database

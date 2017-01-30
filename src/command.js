@@ -81,6 +81,10 @@ const command = {
       _.toPairs,
       _.map(([name, command]) => {
         if (!command) throw new Error(`Task '${name}' does not exist.`)
+        if (_.isType('object', command)) {
+          if (!command.cmd) throw new Error(`Task '${name}' has no command defined.`)
+          return command.cmd
+        }
         return command
       }),
       _.join(' && ')

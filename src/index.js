@@ -20,7 +20,7 @@ const instance = {
    * @returns {object} Command instructions
    */
   getConfig: () => {
-    const cfg = _.merge(config.load(args.parse().configPath), args.parse())
+    const cfg = services.filterEnabled(_.merge(config.load(args.parse().configPath), args.parse()))
     return { services: services.get(cfg), primary: command.get(cfg, 'primary', true) }
   },
   /**

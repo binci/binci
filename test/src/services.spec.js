@@ -26,7 +26,6 @@ describe('services', () => {
     afterEach(() => {
       if (proc.exec.restore) proc.exec.restore()
       procRunStub.restore()
-      services.running = []
     })
     it('starts all non-running services', () => {
       global.instanceId = 'test'
@@ -57,7 +56,6 @@ describe('services', () => {
     })
     afterEach(() => {
       procRunDetachedStub.restore()
-      services.running = []
     })
     it('does nothing if no services are running', () => {
       services.running = []
@@ -73,6 +71,50 @@ describe('services', () => {
       services.running = [ 'dl_foo_test', 'bar' ]
       services.stop()
       expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test')
+    })
+  })
+  describe('filterEnabled', () => {
+    afterEach(() => {
+      services.disabled = []
+    })
+    it('does nothing if no task is supplied', () => {
+      const cfg = { run: [] }
+      expect(services.filterEnabled(cfg)).to.deep.equal(cfg)
+    })
+    it('does nothing if single task config is not an object', () => {
+      const cfg = { run: [ 'test' ], tasks: { test: 'echo "not an obj"' } }
+      expect(services.filterEnabled(cfg)).to.deep.equal(cfg)
+    })
+    it('does nothing if any task config is not an object', () => {
+      const cfg = { run: [ 'string', 'obj' ], tasks: { string: 'echo "not an obj"', obj: { disable: '*' } } }
+      expect(services.filterEnabled(cfg)).to.deep.equal(cfg)
+    })
+    it('disables all services when \'*\' is supplied', () => {
+      const cfg = {
+        services: [{ disabledOne: { from: 'test' } }, { disabledTwo: { from: 'disable' } }],
+        tasks: { test: { disable: '*', cmd: 'echo hello' } },
+        run: [ 'test' ]
+      }
+      expect(services.filterEnabled(cfg).services).to.deep.equal([])
+      expect(services.disabled).to.deep.equal([ 'disabledOne', 'disabledTwo' ])
+    })
+    it('returns config with filtered services array', () => {
+      const cfg = {
+        services: [{ keep: { from: 'test' } }, { disable: { from: 'disable' } }],
+        tasks: { test: { disable: [ 'disable' ], cmd: 'echo hello' } },
+        run: [ 'test' ]
+      }
+      expect(services.filterEnabled(cfg).services).to.deep.equal([{ keep: { from: 'test' } }])
+      expect(services.disabled[0]).to.equal('disable')
+    })
+    it('disables services shared between chained tasks', () => {
+      const cfg = {
+        services: [{ shared: { from: 'test' } }, { onlyTest: { from: 'onlyTest' } }],
+        tasks: { test: { disable: '*', cmd: 'echo hello' }, lint: { disable: [ 'shared' ], cmd: 'lint' } },
+        run: [ 'test', 'lint' ]
+      }
+      expect(services.filterEnabled(cfg).services).to.deep.equal([{ onlyTest: { from: 'onlyTest' } }])
+      expect(services.disabled[0]).to.equal('shared')
     })
   })
 })

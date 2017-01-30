@@ -72,6 +72,7 @@ The example shows a single-command execution configuration, however, Devlab supp
 tasks:
   env: env | sort
   start: node index.js
+  lint: npm run lint
   test: npm test
 ```
 
@@ -115,6 +116,28 @@ After completion, Devlab will run a detached process which will execute `docker 
 Services which need to persist between runs can be set by providing `persist: true` in their configurations.
 
 Persisted services will not stop after the primary container finishes its task and can be used by the same project, other projects, or independently.
+
+### Disabling Services
+
+By default, all services in the configuration will be linked on any run. To disable services for specific tasks, you can define them like this:
+
+```yaml
+tasks:
+  lint:
+    disable:
+      - mongo
+    cmd: npm run lint
+  start: npm start
+```
+Alternatively, you can disable all services for a task with `'*'`:
+
+```yaml
+tasks:
+  lint:
+    disable: '*'
+    cmd: npm run lint
+  start: npm start
+```
 
 ## Container Management
 
