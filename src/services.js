@@ -26,9 +26,9 @@ const services = {
     // Track which services are disabled by running tasks
     const counts = _.pipe([
       _.groupBy(_.identity),
-      _.mapValues(_.length),
+      _.mapValues(_.length)
     ])(svcs)
-    // Add service to list if disabled by all running tasks 
+    // Add service to list if disabled by all running tasks
     services.disabled = _.pipe([
       _.toPairs,
       _.filter(([key, count]) => _.equals(count, objs.length)),
