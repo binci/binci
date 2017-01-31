@@ -27,7 +27,7 @@ const command = {
    */
   parseArgs: (type, args) => _.chain((item) => ([ command.args[type], command.parseHostEnvVars(item) ]), args),
   /**
-   * Parses config object and returns conatiner name. Will have dl_ prefix and
+   * Parses config object and returns container name. Will have dl_ prefix and
    * InstanceID suffix if ephemeral, unaltered name for persisted containers
    * @param {object} cfg Config object
    * @returns {string}
