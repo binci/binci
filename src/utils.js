@@ -3,7 +3,22 @@ const proc = require('./proc')
 const output = require('./output')
 const cp = require('child_process')
 
+const pad = (len, str) => str.length < len ? str + ' '.repeat(len - str.length) : str
+
 const utils = {
+  tasks: () => {
+    const cfg = require('./config').load()
+    const tasks = _.keys(cfg.tasks)
+    const maxTaskLen = _.pipe([
+      _.map(_.prop('length')),
+      _.max
+    ])(tasks)
+    console.log([
+      '',
+      'Tasks:',
+      ..._.map(task => `  ${pad(maxTaskLen + 4, task)}${cfg.tasks[task]}`, tasks)
+    ].join('\n'))
+  },
   /**
    * Runs docker stop && docker rm on containers currently running
    * @param {boolean} all If the run should include non-devlab containers

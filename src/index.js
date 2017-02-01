@@ -77,11 +77,11 @@ const instance = {
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
   })
-  .catch((e) => {
-    services.stop()
-    output.error(e.message || 'Process failed')
-    throw new Error('Process failed')
-  })
+    .catch((e) => {
+      services.stop()
+      output.error(e.message || 'Process failed')
+      throw new Error('Process failed')
+    })
 }
 
 module.exports = instance

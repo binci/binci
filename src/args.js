@@ -24,8 +24,16 @@ const args = {
     'e': { prop: 'exec', help: 'Run a custom command instead of defined task' },
     'f': { prop: 'from', help: 'Run with specified docker image' },
     'c': { prop: 'configPath', help: 'Run with custom config file path' },
+    'tasks': { action: 'tasks', help: 'List all available tasks' },
     'cleanup': { action: 'cleanupDL', help: 'Stops and removes any non-persisted Devlab containers' },
     'cleanup-all': { action: 'cleanupAll', help: 'Stops and removes ALL docker containers' }
+  },
+  /**
+   * List all available tasks
+   */
+  tasks: () => {
+    utils.tasks()
+    process.exit(0)
   },
   /**
    * Displays the help and usage message
