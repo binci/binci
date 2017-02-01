@@ -2,7 +2,6 @@ const _ = require('redash')
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
-const commands = require('./commands')
 const services = require('./services')
 const proc = require('./proc')
 const output = require('./output')
@@ -71,9 +70,6 @@ const instance = {
    * @returns {object} promise
    */
   start: () => Promise.resolve().then(() => {
-    // CLI command, execute and return early
-    const cliCommand = commands[args.raw._[0]]
-    if (cliCommand) return cliCommand()
     // Get config (or throw)
     const cfg = instance.getConfig()
     // Check orphans, start services, then run command

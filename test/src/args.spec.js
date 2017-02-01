@@ -1,4 +1,5 @@
 'use strict'
+const fs = require('fs')
 const pkg = require('package.json')
 const args = require('src/args')
 const utils = require('src/utils')
@@ -17,6 +18,34 @@ describe('args', () => {
   afterEach(() => {
     process.exit.restore()
     logSpy.restore()
+  })
+  describe('tasks', () => {
+    const confPath = `${process.cwd()}/devlab.yml`
+
+    before(() => {
+      fs.writeFileAsync(confPath, [
+        'tasks:',
+        '  stuff: echo "stuff" > /dev/null',
+        '  lint: eslint .',
+        '  ci: stuff test'
+      ].join('\n'))
+    })
+
+    after(() => {
+      fs.unlinkAsync(confPath)
+    })
+
+    it('pretty prints all tasks in the config', () => {
+      args.tasks()
+      expect(console.log).to.have.been.calledWithExactly([
+        '',
+        'Tasks:',
+        '  stuff    echo "stuff" > /dev/null',
+        '  lint     eslint .',
+        '  ci       stuff test'
+      ].join('\n'))
+      expect(processExitStub).to.be.calledWith(0)
+    })
   })
   describe('showHelp', () => {
     it('shows the help message and exits', () => {
