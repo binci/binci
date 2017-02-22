@@ -11,6 +11,8 @@ chai.use(pchai)
 chai.use(dchai)
 chai.use(schai)
 
+global.cwd = process.cwd()
+
 global.instanceId = 'test'
 
 process.env.DL_TEST_RUN = true

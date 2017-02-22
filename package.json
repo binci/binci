@@ -77,7 +77,8 @@
       "afterEach",
       "it",
       "expect",
-      "sinon"
+      "sinon",
+      "cwd"
     ]
   }
 }
