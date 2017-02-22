@@ -52,25 +52,16 @@ const command = {
     ]))
   ])(cfg),
   /**
-   * Formats task by replacing line breaks with double-ampersands
-   * @param {string} task The task command(s)
-   * @returns {string} Formatted task
-   */
-  formatTask: (task) => task
-    .replace(/(?:\r\n|\r|\n)/g, ' && ')
-    .replace(' &&  && ', ' && ')
-    .replace(/ &&\s*$/m, ''),
-  /**
    * Returns array of execution commands
    * @param {object} cfg Config object for instance
-   * @returns {array} Array of execution tasks
+   * @returns {string} Execution script
    */
   getExec: (cfg) => {
-    const cmd = [ 'sh', '-c' ]
-    const before = cfg.before ? `${cfg.before} && ` : ''
-    const after = cfg.after ? ` && ${cfg.after}` : ''
+    const sh = '#!/bin/sh\nset -e;\n'
+    const before = cfg.before ? `${cfg.before}\n` : ''
+    const after = cfg.after ? `\n${cfg.after}` : ''
     // Custom exec, just run native task
-    if (cfg.exec) return cmd.concat([command.formatTask(before + cfg.exec + after)])
+    if (cfg.exec) return sh + before + cfg.exec + after
     // Ensure tasks exist
     if (!cfg.tasks) throw new Error('No tasks are defined')
     // Ensure a task is passed
@@ -87,9 +78,9 @@ const command = {
         }
         return command
       }),
-      _.join(' && ')
+      _.join('\n')
     ])(cfg.run)
-    return cmd.concat([command.formatTask(before + run + after)])
+    return sh + before + run + after
   },
   /**
    * Returns array of link arguments
@@ -104,20 +95,20 @@ const command = {
    * @param {object} cfg Config object for instance
    * @param {string} name Container name
    * @param {boolean} primary If this is primary, i.e. not a service container
-   * @returns {array} Arguments for docker command
+   * @returns {object|array} Arguments for docker command
    */
   get: (cfg, name, primary = false) => {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
-    let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
+    let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-v', '/tmp/devlab.sh:/devlabExec', '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),
       [ '--name', command.getName(name, cfg) ],
       cfg.from,
-      primary ? command.getExec(cfg) : []
+      primary ? [ 'sh', '/devlabExec' ] : []
     ]))
-    return args
+    return primary ? { args, cmd: command.getExec(cfg) } : args
   }
 }
 

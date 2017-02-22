@@ -40,7 +40,7 @@ const runner = (() => {
     console.log('Invalid tests.json file')
     process.exit(1)
   }
-  let testFails = 0
+  let testFails = []
   Promise.mapSeries(_.keys(tests), (name) => {
     const testObj = tests[name]
     console.log('\n\n#----------------------------------------------')
@@ -48,12 +48,15 @@ const runner = (() => {
     console.log(`# devlab ${testObj.args.join(' ')}`)
     console.log('#----------------------------------------------\n\n')
     return spawn(testObj.args).catch((c) => {
-      if (testObj.should === 'pass') testFails++
+      if (testObj.should === 'pass') testFails.push(name)
     })
   }).then(() => {
     // Results
     console.log('\n\n#----------------------------------------------')
-    console.log(`# TEST RESULTS: ${testFails} failures`)
+    console.log(`# TEST RESULTS: ${testFails.length} failures`)
+    if (testFails.length > 0) {
+      console.log('#', testFails.join(', '))
+    }
     console.log('#----------------------------------------------\n\n')
     // Exit code
     if (testFails > 0) {

@@ -28,7 +28,7 @@
   "scripts": {
     "test": "npm run lint -s && npm run test:cover -s",
     "test:cover": "istanbul cover _mocha test/src/**/*.spec.js",
-    "test:watch": "nodemon --exec \"npm run test:cover || exit 1\"",
+    "test:watch": "nodemon --exec \"mocha test/src/**/*.spec.js || exit 1\"",
     "e2e": "node test/system/run.js",
     "lint": "standard --fix --verbose"
   },
