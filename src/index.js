@@ -77,7 +77,7 @@ const instance = {
     // Get config (or throw)
     const cfg = instance.getConfig()
     // Write the primary command to tmp script
-    return fs.writeFileAsync(`${process.cwd()}/devlab.sh`, cfg.primary.cmd, { mode: '0o777' })
+    return fs.writeFileAsync(`${process.cwd()}/devlab.sh`, cfg.primary.cmd)
       .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
