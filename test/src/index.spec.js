@@ -1,10 +1,14 @@
 const path = require('path')
+const fs = require('fs')
+const Promise = require('bluebird')
 const instance = require('src/index')
 const args = require('src/args')
 const fixtures = require('test/fixtures/instance')
 const output = require('src/output')
 const proc = require('src/proc')
 const services = require('src/services')
+
+Promise.promisifyAll(fs)
 
 const configPath = path.resolve(__dirname, '../fixtures/devlab.yml')
 
@@ -81,6 +85,7 @@ describe('index', () => {
   })
   describe('start', () => {
     afterEach(() => {
+      if (fs.writeFileAsync.restore) fs.writeFileAsync.restore()
       if (instance.startServices.restore) instance.startServices.restore()
       if (instance.runCommand.restore) instance.runCommand.restore()
       if (instance.getConfig.restore) instance.getConfig.restore()
@@ -105,13 +110,22 @@ describe('index', () => {
       args.raw = { _: [ 'env' ], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
+    it('throws when unable to write exec file to tmp', () => {
+      sinon.stub(fs, 'writeFileAsync', () => Promise.reject())
+      sinon.stub(instance, 'startServices', () => Promise.resolve())
+      sinon.stub(instance, 'runCommand', () => Promise.resolve())
+      args.raw = { 'f': 'notactuallyanimage', _: [ 'env' ], c: configPath }
+      return expect(instance.start()).to.be.rejected()
+    })
     it('throws when unable to start primary container', () => {
+      sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
       sinon.stub(instance, 'startServices', () => Promise.resolve())
       sinon.stub(instance, 'runCommand', () => Promise.reject())
       args.raw = { 'f': 'notactuallyanimage', _: [ 'env' ], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
     it('resolves when config, services and primary container run successfully', () => {
+      sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
       sinon.stub(instance, 'startServices', () => Promise.resolve())
       sinon.stub(instance, 'runCommand', () => Promise.resolve())
       args.raw = { _: [ 'env' ], c: configPath }
