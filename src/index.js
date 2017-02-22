@@ -1,4 +1,6 @@
 const _ = require('redash')
+const Promise = require('bluebird')
+const fs = require('fs')
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
@@ -6,6 +8,8 @@ const services = require('./services')
 const proc = require('./proc')
 const output = require('./output')
 const utils = require('./utils')
+
+Promise.promisifyAll(fs)
 
 global.instanceId = require('shortid').generate()
 
@@ -16,7 +20,7 @@ const instance = {
   startTS: Date.now(),
   /**
    * Gets config by merging parsed arguments with config object and returns command
-   * instructions for primaary instance and services
+   * instructions for primaary instance and services.
    * @returns {object} Command instructions
    */
   getConfig: () => {
@@ -51,9 +55,9 @@ const instance = {
    * @returns {object} promise
    */
   runCommand: (cfg) => {
-    output.success(`Running command: ${_.last(cfg.primary)}`)
+    output.success('Running Task')
     output.line()
-    return proc.run(cfg.primary)
+    return proc.run(cfg.primary.args)
       .then(() => {
         output.line()
         output.success(`Command exited after ${(Date.now() - instance.startTS) / 1000}s`)
@@ -72,8 +76,9 @@ const instance = {
   start: () => Promise.resolve().then(() => {
     // Get config (or throw)
     const cfg = instance.getConfig()
-    // Check orphans, start services, then run command
-    return utils.checkOrphans()
+    // Write the primary command to tmp script
+    return fs.writeFileAsync('/tmp/devlab.sh', cfg.primary.cmd, { mode: '0o777' })
+      .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
   })

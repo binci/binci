@@ -16,26 +16,30 @@ const instance = {
         ]
       }
     ],
-    primary: [
-      'run',
-      '--rm',
-      '-it',
-      '-v',
-      '/tmp:/tmp',
-      '-w',
-      '/tmp',
-      '--privileged',
-      '-p',
-      '8080:8080',
-      '--link',
-      'dl_mongodb_test:mongodb',
-      '--name',
-      'dl_primary_test',
-      'node:6',
-      'sh',
-      '-c',
-      'echo "foo"'
-    ]
+    primary: {
+      args: [
+        'run',
+        '--rm',
+        '-it',
+        '-v',
+        '/tmp:/tmp',
+        '-v',
+        '/tmp/devlab.sh:/devlabExec',
+        '-w',
+        '/tmp',
+        '--privileged',
+        '-p',
+        '8080:8080',
+        '--link',
+        'dl_mongodb_test:mongodb',
+        '--name',
+        'dl_primary_test',
+        'node:6',
+        'sh',
+        '/devlabExec'
+      ],
+      cmd: '#!/bin/sh\nset -e;\necho "foo"'
+    }
   },
   task: {
     services: [
@@ -54,26 +58,30 @@ const instance = {
         ]
       }
     ],
-    primary: [
-      'run',
-      '--rm',
-      '-it',
-      '-v',
-      '/tmp:/tmp',
-      '-w',
-      '/tmp',
-      '--privileged',
-      '-p',
-      '8080:8080',
-      '--link',
-      'dl_mongodb_test:mongodb',
-      '--name',
-      'dl_primary_test',
-      'node:6',
-      'sh',
-      '-c',
-      'env | sort'
-    ]
+    primary: {
+      args: [
+        'run',
+        '--rm',
+        '-it',
+        '-v',
+        '/tmp:/tmp',
+        '-v',
+        '/tmp/devlab.sh:/devlabExec',
+        '-w',
+        '/tmp',
+        '--privileged',
+        '-p',
+        '8080:8080',
+        '--link',
+        'dl_mongodb_test:mongodb',
+        '--name',
+        'dl_primary_test',
+        'node:6',
+        'sh',
+        '/devlabExec'
+      ],
+      cmd: '#!/bin/sh\nset -e;\nenv | sort'
+    }
   }
 }
 
