@@ -89,6 +89,7 @@ describe('index', () => {
       if (instance.startServices.restore) instance.startServices.restore()
       if (instance.runCommand.restore) instance.runCommand.restore()
       if (instance.getConfig.restore) instance.getConfig.restore()
+      if (fs.unlinkAsync.restore) fs.unlinkAsync.restore()
     })
     it('outputs default failure message if rejected without error message', () => {
       sinon.stub(instance, 'getConfig', () => {
@@ -114,6 +115,7 @@ describe('index', () => {
       sinon.stub(fs, 'writeFileAsync', () => Promise.reject())
       sinon.stub(instance, 'startServices', () => Promise.resolve())
       sinon.stub(instance, 'runCommand', () => Promise.resolve())
+      sinon.stub(fs, 'unlinkAsync', () => Promise.resolve())
       args.raw = { 'f': 'notactuallyanimage', _: [ 'env' ], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
@@ -121,6 +123,7 @@ describe('index', () => {
       sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
       sinon.stub(instance, 'startServices', () => Promise.resolve())
       sinon.stub(instance, 'runCommand', () => Promise.reject())
+      sinon.stub(fs, 'unlinkAsync', () => Promise.resolve())
       args.raw = { 'f': 'notactuallyanimage', _: [ 'env' ], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
@@ -128,6 +131,7 @@ describe('index', () => {
       sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
       sinon.stub(instance, 'startServices', () => Promise.resolve())
       sinon.stub(instance, 'runCommand', () => Promise.resolve())
+      sinon.stub(fs, 'unlinkAsync', () => Promise.resolve())
       args.raw = { _: [ 'env' ], c: configPath }
       return expect(instance.start()).to.be.fulfilled()
     })

@@ -93,7 +93,7 @@ describe('command', () => {
       process.env.DL_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], run: [ 'foo' ], tasks: { foo: 'echo "foo"' } }, 'primary', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal({
-        args: [ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp/.devlab.sh:/devlabExec', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '/devlabExec' ],
+        args: [ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', 'devlab.sh' ],
         cmd: '#!/bin/sh\nset -e;\necho "foo"'
       })
       delete process.env.DL_TEST_EV

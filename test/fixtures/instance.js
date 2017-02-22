@@ -23,8 +23,6 @@ const instance = {
         '-it',
         '-v',
         '/tmp:/tmp',
-        '-v',
-        '/tmp/.devlab.sh:/devlabExec',
         '-w',
         '/tmp',
         '--privileged',
@@ -36,7 +34,7 @@ const instance = {
         'dl_primary_test',
         'node:6',
         'sh',
-        '/devlabExec'
+        'devlab.sh'
       ],
       cmd: '#!/bin/sh\nset -e;\necho "foo"'
     }
@@ -65,8 +63,6 @@ const instance = {
         '-it',
         '-v',
         '/tmp:/tmp',
-        '-v',
-        '/tmp/.devlab.sh:/devlabExec',
         '-w',
         '/tmp',
         '--privileged',
@@ -78,7 +74,7 @@ const instance = {
         'dl_primary_test',
         'node:6',
         'sh',
-        '/devlabExec'
+        'devlab.sh'
       ],
       cmd: '#!/bin/sh\nset -e;\nenv | sort'
     }
