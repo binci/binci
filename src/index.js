@@ -1,3 +1,5 @@
+'use strict'
+
 const _ = require('redash')
 const Promise = require('bluebird')
 const fs = require('fs')

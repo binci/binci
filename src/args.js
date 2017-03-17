@@ -1,4 +1,5 @@
 'use strict'
+
 const _ = require('redash')
 const min = require('minimist')
 const pkg = require('../package.json')
