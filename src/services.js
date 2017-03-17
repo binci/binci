@@ -1,3 +1,5 @@
+'use strict'
+
 const _ = require('redash')
 const command = require('./command')
 const proc = require('./proc')
