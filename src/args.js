@@ -1,6 +1,6 @@
 'use strict'
 
-const _ = require('redash')
+const _ = require('halcyon')
 const min = require('minimist')
 const pkg = require('../package.json')
 const utils = require('./utils')

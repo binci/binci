@@ -8,7 +8,7 @@
  * output and pass/fail status
  */
 let tests
-const _ = require('redash')
+const _ = require('halcyon')
 const path = require('path')
 const Promise = require('bluebird')
 // Test project

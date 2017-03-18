@@ -1,6 +1,6 @@
 'use strict'
 
-const _ = require('redash')
+const _ = require('halcyon')
 const command = require('./command')
 const proc = require('./proc')
 
@@ -28,14 +28,10 @@ const services = {
     // Track which services are disabled by running tasks
     const counts = _.pipe([
       _.groupBy(_.identity),
-      _.mapValues(_.length)
+      _.map(_.length)
     ])(svcs)
     // Add service to list if disabled by all running tasks
-    services.disabled = _.pipe([
-      _.toPairs,
-      _.filter(([key, count]) => _.equals(count, objs.length)),
-      _.map(_.head)
-    ])(counts)
+    services.disabled = _.keys(_.filter(_.equals(objs.length), counts))
     if (!services.disabled.length) return cfg
     // Keep service if name is not in disabled list
     cfg.services = _.filter((s) => !_.contains(_.head(_.keys(s)), services.disabled), cfg.services)
