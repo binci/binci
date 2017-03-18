@@ -3,7 +3,6 @@
 const _ = require('halcyon')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
-const tmpdir = process.env.DEVLAB_TMP || require('os-tmpdir')()
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
@@ -11,6 +10,13 @@ const services = require('./services')
 const proc = require('./proc')
 const output = require('./output')
 const utils = require('./utils')
+
+/* istanbul ignore next: very os-specific crap */
+const tmpdir = process.env.DEVLAB_TMP
+      // If override set, use that
+      ? process.env.DEVLAB_TMP
+      // If MacOS TEMPDIR, use /tmp, else try to find using os-tmpdir
+      : process.env.TEMPDIR ? '/tmp' : require('os-tmpdir')()
 
 global.instanceId = require('shortid').generate()
 
