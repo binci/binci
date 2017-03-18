@@ -2,7 +2,7 @@
 
 const _ = require('halcyon')
 const Promise = require('bluebird')
-const fs = require('fs')
+const fs = Promise.promisifyAll(require('fs'))
 const tmpdir = process.env.TMPDIR || process.env.TMP || process.env.TEMP || '/tmp'
 const args = require('./args')
 const config = require('./config')
@@ -11,8 +11,6 @@ const services = require('./services')
 const proc = require('./proc')
 const output = require('./output')
 const utils = require('./utils')
-
-Promise.promisifyAll(fs)
 
 global.instanceId = require('shortid').generate()
 
@@ -80,17 +78,15 @@ const instance = {
     // Get config (or throw)
     const cfg = instance.getConfig()
     // Write the primary command to tmp script
-    console.log('writing', tmpdir)
     return fs.writeFileAsync(`${tmpdir}/devlab.sh`, cfg.primary.cmd)
       .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
+  }).catch((e) => {
+    services.stop()
+    output.error(e.message || 'Process failed')
+    throw new Error('Process failed')
   })
-    .catch((e) => {
-      services.stop()
-      output.error(e.message || 'Process failed')
-      throw new Error('Process failed')
-    })
 }
 
 module.exports = instance
