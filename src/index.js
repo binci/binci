@@ -3,7 +3,7 @@
 const _ = require('halcyon')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
-const tmpdir = require('os-tmpdir')()
+const tmpdir = process.env.DEVLAB_TMP || require('os-tmpdir')()
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
