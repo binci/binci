@@ -1,6 +1,6 @@
 'use strict'
 
-const _ = require('redash')
+const _ = require('halcyon')
 const Promise = require('bluebird')
 const fs = require('fs')
 const args = require('./args')

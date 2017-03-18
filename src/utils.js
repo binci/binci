@@ -1,6 +1,6 @@
 'use strict'
 
-const _ = require('redash')
+const _ = require('halcyon')
 const proc = require('./proc')
 const output = require('./output')
 const cp = require('child_process')
