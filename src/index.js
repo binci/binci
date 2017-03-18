@@ -3,6 +3,7 @@
 const _ = require('halcyon')
 const Promise = require('bluebird')
 const fs = require('fs')
+const tmpdir = process.env.TMPDIR || process.env.TMP || process.env.TEMP || '/tmp'
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
@@ -27,7 +28,7 @@ const instance = {
    */
   getConfig: () => {
     const cfg = services.filterEnabled(_.merge(config.load(args.parse().configPath), args.parse()))
-    return { services: services.get(cfg), primary: command.get(cfg, 'primary', true) }
+    return { services: services.get(cfg), primary: command.get(cfg, 'primary', tmpdir, true) }
   },
   /**
    * Starts services and resolves or rejects
@@ -79,11 +80,11 @@ const instance = {
     // Get config (or throw)
     const cfg = instance.getConfig()
     // Write the primary command to tmp script
-    return fs.writeFileAsync(`${process.cwd()}/devlab.sh`, cfg.primary.cmd)
+    console.log('writing', tmpdir)
+    return fs.writeFileAsync(`${tmpdir}/devlab.sh`, cfg.primary.cmd)
       .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
-      .then(() => fs.unlinkAsync(`${process.cwd()}/devlab.sh`))
   })
     .catch((e) => {
       services.stop()
