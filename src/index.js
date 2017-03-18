@@ -88,6 +88,7 @@ const instance = {
       .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
+      .then(services.stop)
   }).catch((e) => {
     services.stop()
     output.error(e.message || 'Process failed')
