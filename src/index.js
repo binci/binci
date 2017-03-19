@@ -11,12 +11,7 @@ const proc = require('./proc')
 const output = require('./output')
 const utils = require('./utils')
 
-/* istanbul ignore next: very os-specific crap */
-const tmpdir = process.env.DEVLAB_TMP
-      // If override set, use that
-      ? process.env.DEVLAB_TMP
-      // If MacOS TEMPDIR, use /tmp, else try to find using os-tmpdir
-      : process.env.TEMPDIR ? '/tmp' : require('os-tmpdir')()
+const tmpdir = require('./tempdir')()
 
 global.instanceId = require('shortid').generate()
 
