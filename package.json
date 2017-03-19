@@ -51,6 +51,7 @@
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
     "nodemon": "^1.11.0",
+    "proxyquire": "^1.7.11",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0",
     "standard": "^8.5.0"
@@ -79,7 +80,8 @@
       "it",
       "expect",
       "sinon",
-      "cwd"
+      "cwd",
+      "proxyquire"
     ]
   }
 }

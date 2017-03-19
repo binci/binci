@@ -1,4 +1,5 @@
 const output = require('./output')
+const ostmpdir = require('os-tmpdir')
 const fs = require('fs')
 
 /**
@@ -29,7 +30,7 @@ module.exports = () => {
     return '/tmp'
   } else if (isWriteable(require('os-tmpdir')())) {
     // Use os-tmpdir's determination
-    return require('os-tmpdir')()
+    return ostmpdir()
   } else {
     // No go, inform user they need to specify manually
     output.error('Could not locate temp dir for writing, please specify DEVLAB_TMP environment variable')
