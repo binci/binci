@@ -91,9 +91,9 @@ describe('command', () => {
     })
     it('returns object with array of arguments and command for a primary container config', () => {
       process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], run: [ 'foo' ], tasks: { foo: 'echo "foo"' } }, 'primary', true) // eslint-disable-line no-template-curly-in-string
+      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], run: [ 'foo' ], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal({
-        args: [ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', 'devlab.sh' ],
+        args: [ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '/tmp/devlab.sh' ],
         cmd: '#!/bin/sh\nset -e;\necho "foo"'
       })
       delete process.env.DL_TEST_EV

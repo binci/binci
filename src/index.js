@@ -2,7 +2,7 @@
 
 const _ = require('halcyon')
 const Promise = require('bluebird')
-const fs = require('fs')
+const fs = Promise.promisifyAll(require('fs'))
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
@@ -11,7 +11,7 @@ const proc = require('./proc')
 const output = require('./output')
 const utils = require('./utils')
 
-Promise.promisifyAll(fs)
+const tmpdir = require('./tempdir')()
 
 global.instanceId = require('shortid').generate()
 
@@ -27,7 +27,7 @@ const instance = {
    */
   getConfig: () => {
     const cfg = services.filterEnabled(_.merge(config.load(args.parse().configPath), args.parse()))
-    return { services: services.get(cfg), primary: command.get(cfg, 'primary', true) }
+    return { services: services.get(cfg), primary: command.get(cfg, 'primary', tmpdir, true) }
   },
   /**
    * Starts services and resolves or rejects
@@ -79,17 +79,16 @@ const instance = {
     // Get config (or throw)
     const cfg = instance.getConfig()
     // Write the primary command to tmp script
-    return fs.writeFileAsync(`${process.cwd()}/devlab.sh`, cfg.primary.cmd)
+    return fs.writeFileAsync(`${tmpdir}/devlab.sh`, cfg.primary.cmd)
       .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
-      .then(() => fs.unlinkAsync(`${process.cwd()}/devlab.sh`))
+      .then(services.stop)
+  }).catch((e) => {
+    services.stop()
+    output.error(e.message || 'Process failed')
+    throw new Error('Process failed')
   })
-    .catch((e) => {
-      services.stop()
-      output.error(e.message || 'Process failed')
-      throw new Error('Process failed')
-    })
 }
 
 module.exports = instance

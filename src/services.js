@@ -48,7 +48,7 @@ const services = {
     ([name, value]) => ({
       name,
       persist: value.persist || false,
-      args: command.get(value, name)
+      args: command.get(value, name, null)
     })]), cfg.services),
   /**
    * Runs services and resolves or rejects

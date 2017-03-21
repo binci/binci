@@ -25,6 +25,8 @@ npm install devlab -g
 
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
 
+**Important Note**: In order to run the tasks, Devlab creates a temp file (`devlab.sh`). The tool will do its best to determine the best location (usually `/tmp`), but this can be explicitly set by specifying the environment variable `DEVLAB_TMP`.
+
 ## Usage
 
 Devlab is controlled by a `devlab.yml` file in the root of your project. A basic example is shown below:

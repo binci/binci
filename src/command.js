@@ -96,19 +96,20 @@ const command = {
    * Returns full command arguments array
    * @param {object} cfg Config object for instance
    * @param {string} name Container name
+   * @param {string} tmpdir Path to temp execution file
    * @param {boolean} primary If this is primary, i.e. not a service container
    * @returns {object|array} Arguments for docker command
    */
-  get: (cfg, name, primary = false) => {
+  get: (cfg, name, tmpdir, primary = false) => {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
-    let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
+    let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-v', `${tmpdir}:${tmpdir}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--privileged' ]
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),
       [ '--name', command.getName(name, cfg) ],
       cfg.from,
-      primary ? [ 'sh', 'devlab.sh' ] : []
+      primary ? [ 'sh', `${tmpdir}/devlab.sh` ] : []
     ]))
     return primary ? { args, cmd: command.getExec(cfg) } : args
   }
