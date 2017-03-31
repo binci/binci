@@ -1,0 +1,13 @@
+from: mhart/alpine-node:6
+services:
+  - mongodb:
+     from: mongo:3.0
+     expose:
+       - 27017:27017
+     persist: false
+expose:
+  - 8080:8080
+tasks:
+  env: env | sort
+  bad-indent: |
+  echo "ruh roh! YLM error!"
