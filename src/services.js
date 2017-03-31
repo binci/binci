@@ -59,7 +59,7 @@ const services = {
     let curName = command.getName(cur.name, { persist: cur.persist })
     return proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
       if (res && res.toString().length) return Promise.resolve() // Already running, resolve
-      return proc.run(cur.args, true).then(() => services.running.push(curName))
+      return proc.run(cur.args, false).then(() => services.running.push(curName))
     })
   }, svc)),
   /**
