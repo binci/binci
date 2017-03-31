@@ -7,6 +7,7 @@ const instance = {
         args: [
           'run',
           '-d',
+          '--rm',
           '--privileged',
           '-p',
           '27017:27017',
@@ -49,6 +50,7 @@ const instance = {
         args: [
           'run',
           '-d',
+          '--rm',
           '--privileged',
           '-p',
           '27017:27017',
