@@ -2,6 +2,7 @@
 
 const yaml = require('js-yaml')
 const fs = require('fs')
+const path = require('path')
 
 const config = {
   /**
@@ -10,14 +11,26 @@ const config = {
   defaultPath: `${process.cwd()}/devlab.yml`,
   /**
    * Loads config from yaml, attempts to parse to object
-   * @param {string} (path) Path to config file or use defaultPath
+   * @param {string} (configPath) Path to config file or use defaultPath
    * @returns {object}
    */
-  load: (path = config.defaultPath) => {
+  load: (configPath = config.defaultPath) => {
     try {
-      return yaml.safeLoad(fs.readFileSync(path, 'utf8'))
+      fs.statSync(configPath)
+    } catch (err) {
+      throw new Error([
+        `No config found at ${configPath}.`,
+        'Please create a ./devlab.yml file or specify one with the `-c` flag.'
+      ].join(' '))
+    }
+
+    try {
+      return yaml.safeLoad(fs.readFileSync(configPath, 'utf8'))
     } catch (e) {
-      throw new Error('Cannot load config file. Please ensure you have a valid ./devlab.yml file or specify one with the `-c` flag')
+      const relPath = path.relative(process.cwd(), configPath)
+      const error = new Error(`Please fix the errors in ${relPath}`)
+      error.message = error.message + `:\n\n${e.message}`
+      throw error
     }
   }
 }
