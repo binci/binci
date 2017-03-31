@@ -35,7 +35,7 @@ const utils = {
         _.split(/\r?\n/),
         _.filter((id) => id.length > 0),
         _.map((id) => {
-          return `docker stop ${id} && docker rm ${id}`
+          return `docker stop ${id}`
         }),
         _.join(' && ')
       ])(ids))

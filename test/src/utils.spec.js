@@ -13,13 +13,13 @@ describe('utils', () => {
     afterEach(() => {
       cp.execSync.restore()
     })
-    it('runs stop and rm commands on dl_ prefixed containers', () => {
+    it('runs stop commands on dl_ prefixed containers', () => {
       utils.cleanup()
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker rm 839837sd9d98 && docker stop 90488yex73x8 && docker rm 90488yex73x8')
+      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker stop 90488yex73x8')
     })
-    it('runs stop and rm commands on all containers', () => {
+    it('runs stop commands on all containers', () => {
       utils.cleanup(true)
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker rm 839837sd9d98 && docker stop 90488yex73x8 && docker rm 90488yex73x8')
+      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker stop 90488yex73x8')
     })
   })
   describe('parseOrphans', () => {
