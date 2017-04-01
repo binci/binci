@@ -15,11 +15,11 @@ describe('utils', () => {
     })
     it('runs stop commands on dl_ prefixed containers', () => {
       utils.cleanup()
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker stop 90488yex73x8')
+      expect(cpExecSyncStub).to.be.calledWith('docker stop 90488yex73x8 >&2 > /dev/null')
     })
     it('runs stop commands on all containers', () => {
       utils.cleanup(true)
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker stop 90488yex73x8')
+      expect(cpExecSyncStub).to.be.calledWith('docker stop 90488yex73x8 >&2 > /dev/null')
     })
   })
   describe('parseOrphans', () => {
