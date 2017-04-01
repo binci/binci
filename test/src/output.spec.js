@@ -32,6 +32,12 @@ describe('output', () => {
       expect(logSpy).to.be.called()
     })
   })
+  describe('info', () => {
+    it('outputs an info message', () => {
+      output.info('test-info')
+      expect(logSpy).to.be.called()
+    })
+  })
   describe('line', () => {
     it('outputs a break line', () => {
       output.line()

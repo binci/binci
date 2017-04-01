@@ -17,7 +17,9 @@ before: |
 tasks:
   env: env
   clean: rm -rf node_modules
-  install: npm install
+  install: 
+    disable: '*'
+    cmd: npm install
   test: npm run test
   lint: npm run lint
   shell: /bin/sh

@@ -18,7 +18,7 @@ describe('services', () => {
     it('returns an array of services and their command arrays', () => {
       const svc = services.get(config.load())
       expect(svc[0].name).to.equal('mongodb')
-      expect(svc[0].args).to.deep.equal([ 'run', '-d', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0' ])
+      expect(svc[0].args).to.deep.equal([ 'run', '-d', '--rm', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0' ])
     })
   })
   describe('run', () => {
@@ -50,27 +50,49 @@ describe('services', () => {
     })
   })
   describe('stop', () => {
-    let procRunDetachedStub
+    let procRunStub
     beforeEach(() => {
-      procRunDetachedStub = sinon.stub(proc, 'runDetached')
+      procRunStub = sinon.stub(proc, 'run', (svc) => Promise.resolve().then(() => {
+        if (svc === 'dl_fail_test') {
+          const testError = new Error()
+          testError.svcs = [ 'dl_fail_test' ]
+          throw testError
+        }
+        return
+      }))
     })
     afterEach(() => {
-      procRunDetachedStub.restore()
+      procRunStub.restore()
     })
     it('does nothing if no services are running', () => {
       services.running = []
-      services.stop()
-      expect(procRunDetachedStub).to.not.be.called()
+      return services.stop()
+        .then(() => {
+          expect(procRunStub).to.not.be.called()
+        })
     })
-    it('calls proc.runDetached with stop and rm commands for running services', () => {
+    it('resolves after calling proc.run with stop command for running services', () => {
       services.running = [ 'dl_foo_test', 'dl_bar_test' ]
-      services.stop()
-      expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test && docker stop dl_bar_test && docker rm dl_bar_test')
+      return services.stop()
+        .then(() => {
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal([ 'stop', 'dl_foo_test' ])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal([ 'stop', 'dl_bar_test' ])
+        })
     })
-    it('calls proc.runDetached with stop and rm only for non-persistent services', () => {
+    it('resolves after calling proc with stop and rm only for non-persistent services', () => {
       services.running = [ 'dl_foo_test', 'bar' ]
-      services.stop()
-      expect(procRunDetachedStub).to.be.calledWith('docker stop dl_foo_test && docker rm dl_foo_test')
+      return services.stop()
+        .then(() => {
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal([ 'stop', 'dl_foo_test' ])
+        })
+    })
+    it('rejects with error containing names of services that failed', () => {
+      services.running = [ 'dl_foo_test', 'dl_fail_test' ]
+      return services.stop()
+        .catch((err) => {
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal([ 'stop', 'dl_foo_test' ])
+          expect(err.svcs).to.deep.equal([ 'dl_fail_test' ])
+        })
     })
   })
   describe('filterEnabled', () => {

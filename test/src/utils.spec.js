@@ -7,19 +7,30 @@ const cp = require('child_process')
 describe('utils', () => {
   describe('cleanup', () => {
     let cpExecSyncStub
+    let outputSuccsssStub
     beforeEach(() => {
       cpExecSyncStub = sinon.stub(cp, 'execSync', (command) => command.indexOf('docker ps') === 0 ? new Buffer(fixture.ids) : '')
+      outputSuccsssStub = sinon.stub(output, 'success')
+      sinon.stub(output, 'info')
     })
     afterEach(() => {
       cp.execSync.restore()
+      output.success.restore()
+      output.info.restore()
     })
-    it('runs stop and rm commands on dl_ prefixed containers', () => {
+    it('outputs All Clean if there are no containers to cleanup', () => {
+      cpExecSyncStub.restore()
+      cpExecSyncStub = sinon.stub(cp, 'execSync', () => '')
       utils.cleanup()
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker rm 839837sd9d98 && docker stop 90488yex73x8 && docker rm 90488yex73x8')
+      expect(outputSuccsssStub).to.be.calledWith('All clean')
     })
-    it('runs stop and rm commands on all containers', () => {
+    it('runs stop commands on dl_ prefixed containers', () => {
+      utils.cleanup()
+      expect(cpExecSyncStub).to.be.calledWith('docker stop 90488yex73x8 >&2 > /dev/null')
+    })
+    it('runs stop commands on all containers', () => {
       utils.cleanup(true)
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 839837sd9d98 && docker rm 839837sd9d98 && docker stop 90488yex73x8 && docker rm 90488yex73x8')
+      expect(cpExecSyncStub).to.be.calledWith('docker stop 90488yex73x8 >&2 > /dev/null')
     })
   })
   describe('parseOrphans', () => {

@@ -19,6 +19,7 @@ describe('index', () => {
   let outputSpinnerStub
   let outputErrorStub
   let outputLineStub
+  let servicesStopStub
   before(() => {
     processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
     outputSpinnerStub = sinon.stub(output, 'spinner', () => {
@@ -53,6 +54,27 @@ describe('index', () => {
       const cfg = { services: [ 'foo' ] }
       servicesRunStub = sinon.stub(services, 'run', () => Promise.reject())
       return expect(instance.startServices(cfg)).to.be.rejected()
+    })
+  })
+  describe('stopServices', () => {
+    beforeEach(() => {
+      services.running = [ 'foo', 'bar' ]
+    })
+    afterEach(() => {
+      if (servicesStopStub) servicesStopStub.restore()
+      services.running = []
+    })
+    it('resolves early if no services are running', () => {
+      services.running = []
+      return expect(instance.stopServices()).to.be.fulfilled()
+    })
+    it('resolves after stopping all services', () => {
+      servicesStopStub = sinon.stub(services, 'stop', () => Promise.resolve())
+      return expect(instance.stopServices()).to.be.fulfilled()
+    })
+    it('rejects with failed services and outputs error', () => {
+      servicesStopStub = sinon.stub(services, 'stop', () => Promise.reject(new Error()))
+      return expect(instance.stopServices()).to.be.rejected()
     })
   })
   describe('runCommand', () => {

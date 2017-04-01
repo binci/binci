@@ -52,6 +52,20 @@ const instance = {
       })
   },
   /**
+   * Stops services and resolves or rejects
+   * @returns {object} promise
+   */
+  stopServices: () => {
+    if (!services.running.length) return Promise.resolve()
+    const servicesStopSpinner = output.spinner('Stopping services')
+    return services.stop()
+      .then(() => servicesStopSpinner.succeed())
+      .catch((err) => {
+        servicesStopSpinner.fail()
+        output.error(`The following services failed to exit: ${err.svcs.join(', ')}`)
+      })
+  },
+  /**
    * Runs primary command
    * @param {object} config The instance config object
    * @returns {object} promise
@@ -83,7 +97,7 @@ const instance = {
       .then(() => utils.checkOrphans())
       .then(() => instance.startServices(cfg))
       .then(instance.runCommand)
-      .then(services.stop)
+      .then(instance.stopServices)
   }).catch((e) => {
     services.stop()
     output.error(e.message || 'Process failed')

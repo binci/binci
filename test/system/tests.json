@@ -9,6 +9,11 @@
     "args": [ "-v" ],
     "should": "pass"
   },
+  "install": {
+    "description": "Installs dependencies for future tests",
+    "args": [ "install" ],
+    "should": "pass"
+  },
   "basic": {
     "description": "Runs the 'env' task",
     "args": [ "env" ],

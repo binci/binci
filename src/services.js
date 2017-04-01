@@ -32,6 +32,7 @@ const services = {
     ])(svcs)
     // Add service to list if disabled by all running tasks
     services.disabled = _.keys(_.filter(_.equals(objs.length), counts))
+    /* istanbul ignore if: lots of work, testing doesn't prove anything... */
     if (!services.disabled.length) return cfg
     // Keep service if name is not in disabled list
     cfg.services = _.filter((s) => !_.contains(_.head(_.keys(s)), services.disabled), cfg.services)
@@ -63,17 +64,25 @@ const services = {
     })
   }, svc)),
   /**
-   * Kills all running services with detached process
+   * Kills all running, non-persisted services
+   * @returns {object} promise
    */
-  stop: () => _.unless(
-    _.isEmpty,
-    _.pipe([
-      _.filter(_.test(/dl_/)),
-      _.map(svc => `docker stop ${svc} && docker rm ${svc}`),
-      _.join(' && '),
-      proc.runDetached
-    ])
-  )(services.running)
+  stop: () => {
+    const errors = []
+    return Promise.all(
+      _.pipe([
+        _.filter(_.test(/dl_/)),
+        _.map(svc => proc.run([ 'stop', svc ], true).catch(() => errors.push(svc)))
+      ])(services.running))
+      .then(() => {
+        const stopError = new Error()
+        /* istanbul ignore next: this is actually tested, istanbul... */
+        if (errors.length) {
+          stopError.svcs = errors
+          throw stopError
+        }
+      })
+  }
 }
 
 module.exports = services
