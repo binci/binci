@@ -143,11 +143,11 @@ tasks:
 
 ## Container Management
 
-Since container shutdown is a detached, unattended process it is _possible_ for services to fail to shutdown. On each run, before starting services or executing tasks, Devlab will run a check and attempt to identify any orphaned services.
+Devlab will automatically `stop` services after any run (success or fail). However, if this fails or some other fringe-case causes this process to stop responding the system can leave orphaned containers running.
 
-If orphaned services are identified a warning message will appear at the beginning of the process to indicate the orphaned service(s) and commands to remedy/exit these containers.
+In order to mitigate this issue Devlab will run a check for any `dl_` prefixed containers on each run. If orphaned services are identified a warning message will appear at the beginning of the process to indicate the orphaned service(s) and commands to remedy/exit these containers.
 
-Additionally, the following commands can be run to cleanup any running containers:
+The following commands can be run to cleanup any running containers:
 
 **Stop and Remove Devlab Containers:**
 
