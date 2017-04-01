@@ -69,13 +69,11 @@ const services = {
    */
   stop: () => {
     const errors = []
-    return Promise.all(_.unless(
-      _.isEmpty,
+    return Promise.all(
       _.pipe([
         _.filter(_.test(/dl_/)),
         _.map(svc => proc.run([ 'stop', svc ], true).catch(() => errors.push(svc)))
-      ])
-    )(services.running))
+      ])(services.running))
       .then(() => {
         const stopError = new Error()
         /* istanbul ignore next: this is actually tested, istanbul... */

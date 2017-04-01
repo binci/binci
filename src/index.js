@@ -56,6 +56,7 @@ const instance = {
    * @returns {object} promise
    */
   stopServices: () => {
+    if (!services.running.length) return Promise.resolve()
     const servicesStopSpinner = output.spinner('Stopping services')
     return services.stop()
       .then(() => servicesStopSpinner.succeed())

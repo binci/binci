@@ -57,8 +57,16 @@ describe('index', () => {
     })
   })
   describe('stopServices', () => {
+    beforeEach(() => {
+      services.running = [ 'foo', 'bar' ]
+    })
     afterEach(() => {
       if (servicesStopStub) servicesStopStub.restore()
+      services.running = []
+    })
+    it('resolves early if no services are running', () => {
+      services.running = []
+      return expect(instance.stopServices()).to.be.fulfilled()
     })
     it('resolves after stopping all services', () => {
       servicesStopStub = sinon.stub(services, 'stop', () => Promise.resolve())
