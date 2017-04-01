@@ -16,4 +16,4 @@ test:
     - npm install
     - npm test
   post:
-    - codeclimate-test-reporter < coverage/lcov.info
+    - bash <(curl -s https://codecov.io/bash)
