@@ -45,10 +45,11 @@ const instance = {
         servicesStartSpinner.succeed()
         return cfg
       })
-      .catch(() => {
+      .catch((e) => {
         servicesStartSpinner.fail()
+        const failed = e.svcs
         /* istanbul ignore next */
-        throw new Error(`Failed to start service${cfg.services.length > 1 ? 's' : ''}`)
+        throw new Error(`Failed to start service${failed.length > 1 ? 's' : ''}: ${failed.join(', ')}`)
       })
   },
   /**

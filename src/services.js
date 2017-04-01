@@ -56,13 +56,25 @@ const services = {
    * @param {array} svc Array of service command arrays
    * @returns {object} promise
    */
-  run: (svc) => Promise.all(_.map((cur) => {
-    let curName = command.getName(cur.name, { persist: cur.persist })
-    return proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
-      if (res && res.toString().length) return Promise.resolve() // Already running, resolve
-      return proc.run(cur.args, true).then(() => services.running.push(curName))
+  run: (svc) => {
+    const errors = []
+    return Promise.all(_.map((cur) => {
+      let curName = command.getName(cur.name, { persist: cur.persist })
+      return proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
+        if (res && res.toString().length) return Promise.resolve() // Already running, resolve
+        return proc.run(cur.args, true)
+          .then(() => services.running.push(curName))
+          .catch(() => errors.push(cur.name))
+      })
+    }, svc))
+    .then(() => {
+      const startError = new Error()
+      if (errors.length) {
+        startError.svcs = errors
+        throw startError
+      }
     })
-  }, svc)),
+  },
   /**
    * Kills all running, non-persisted services
    * @returns {object} promise
