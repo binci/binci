@@ -7,11 +7,22 @@ const cp = require('child_process')
 describe('utils', () => {
   describe('cleanup', () => {
     let cpExecSyncStub
+    let outputSuccsssStub
     beforeEach(() => {
       cpExecSyncStub = sinon.stub(cp, 'execSync', (command) => command.indexOf('docker ps') === 0 ? new Buffer(fixture.ids) : '')
+      outputSuccsssStub = sinon.stub(output, 'success')
+      sinon.stub(output, 'info')
     })
     afterEach(() => {
       cp.execSync.restore()
+      output.success.restore()
+      output.info.restore()
+    })
+    it('outputs All Clean if there are no containers to cleanup', () => {
+      cpExecSyncStub.restore()
+      cpExecSyncStub = sinon.stub(cp, 'execSync', () => '')
+      utils.cleanup()
+      expect(outputSuccsssStub).to.be.calledWith('All clean')
     })
     it('runs stop commands on dl_ prefixed containers', () => {
       utils.cleanup()

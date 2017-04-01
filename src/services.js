@@ -32,7 +32,7 @@ const services = {
     ])(svcs)
     // Add service to list if disabled by all running tasks
     services.disabled = _.keys(_.filter(_.equals(objs.length), counts))
-    /* istanbul ignore else: lots of work, testing doesn't prove anything... */
+    /* istanbul ignore if: lots of work, testing doesn't prove anything... */
     if (!services.disabled.length) return cfg
     // Keep service if name is not in disabled list
     cfg.services = _.filter((s) => !_.contains(_.head(_.keys(s)), services.disabled), cfg.services)

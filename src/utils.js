@@ -5,6 +5,7 @@ const proc = require('./proc')
 const output = require('./output')
 const cp = require('child_process')
 
+/* istanbul ignore next: just a helper, will fail other tests */
 const pad = (len, str) => str.length < len ? str + ' '.repeat(len - str.length) : str
 
 const utils = {
@@ -29,7 +30,6 @@ const utils = {
   cleanup: (all = false) => {
     const findCmd = all ? 'docker ps -q' : 'docker ps --filter="name=dl_" -q'
     const ids = cp.execSync(findCmd).toString()
-    /* istanbul ignore else */
     if (!ids.length) {
       output.success('All clean')
       return
@@ -38,7 +38,7 @@ const utils = {
     _.pipe([
       _.split(/\r?\n/),
       _.filter(Boolean),
-      _.tap(uniqIds => console.log(`Stopping ${uniqIds.length} containers:`)),
+      _.tap(uniqIds => output.info(`Stopping ${uniqIds.length} containers:`)),
       _.map(id => {
         cp.execSync(`docker stop ${id} >&2 > /dev/null`)
         output.success(id)
