@@ -64,18 +64,19 @@ describe('args', () => {
   describe('cleanupDL', () => {
     let utilsCleanupStub
     beforeEach(() => {
-      utilsCleanupStub = sinon.stub(utils, 'cleanup')
+      utilsCleanupStub = sinon.stub(utils, 'cleanup', () => Promise.resolve())
     })
     afterEach(() => utilsCleanupStub.restore())
     it('call utils.cleanup with no arguments', () => {
-      args.cleanupDL()
-      expect(utilsCleanupStub).to.be.calledOnce()
+      return args.cleanupDL().then(() => {
+        expect(utilsCleanupStub).to.be.calledOnce()
+      })
     })
   })
   describe('cleanupAll', () => {
     let utilsCleanupStub
     beforeEach(() => {
-      utilsCleanupStub = sinon.stub(utils, 'cleanup')
+      utilsCleanupStub = sinon.stub(utils, 'cleanup', () => Promise.resolve())
     })
     afterEach(() => utilsCleanupStub.restore())
     it('call utils.cleanup with no arguments', () => {
@@ -104,18 +105,20 @@ describe('args', () => {
   describe('parse', () => {
     it('parses args object and returns formatted config object', () => {
       args.raw = fixtures.args
-      const actual = args.parse()
-      expect(actual).to.deep.equal({
-        exec: true,
-        run: [ '/bin/bash' ]
+      return args.parse().then(actual => {
+        expect(actual).to.deep.equal({
+          exec: true,
+          run: ['/bin/bash']
+        })
       })
     })
     it('parses args and calls an action when passed', () => {
       args.raw = { v: true }
       const showVersionStub = sinon.stub(args, 'showVersion')
-      args.parse()
-      expect(showVersionStub).to.be.calledOnce()
-      showVersionStub.restore()
+      return args.parse().then(() => {
+        expect(showVersionStub).to.be.calledOnce()
+        showVersionStub.restore()
+      })
     })
   })
 })
