@@ -49,7 +49,7 @@ const services = {
     ([name, value]) => ({
       name,
       persist: value.persist || false,
-      stopTimeSecs: value.stopTimeSecs || 10,
+      stopTimeSecs: _.isType('number', value.stopTimeSecs) ? value.stopTimeSecs : 10,
       args: command.get(value, name, null)
     })]), cfg.services),
   /**
