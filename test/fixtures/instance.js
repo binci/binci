@@ -4,6 +4,7 @@ const instance = {
       {
         name: 'mongodb',
         persist: false,
+        stopTimeSecs: 10,
         args: [
           'run',
           '-d',
@@ -47,6 +48,7 @@ const instance = {
       {
         name: 'mongodb',
         persist: false,
+        stopTimeSecs: 10,
         args: [
           'run',
           '-d',
