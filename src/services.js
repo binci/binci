@@ -39,6 +39,17 @@ const services = {
     return cfg
   },
   /**
+   * Returns stopTimeSecs prop from either the (1) service config (2) global config or (3) default
+   * @param {object} cfg Instance config object
+   * @param {object} svc Service config object
+   * @returns {number}
+   */
+  getStopTimeSecs: (cfg, svc) => {
+    if (_.isType('number', svc.stopTimeSecs)) return svc.stopTimeSecs
+    if (_.isType('number', cfg.stopTimeSecs)) return cfg.stopTimeSecs
+    return 10
+  },
+  /**
    * Gets all services and returns name, persistence, and arguments
    * @param {Object} cfg Instance config object
    * @returns {array} Array of services names, persistence and run args
@@ -49,7 +60,7 @@ const services = {
     ([name, value]) => ({
       name,
       persist: value.persist || false,
-      stopTimeSecs: _.isType('number', value.stopTimeSecs) ? value.stopTimeSecs : 10,
+      stopTimeSecs: services.getStopTimeSecs(cfg, value),
       args: command.get(value, name, null)
     })]), cfg.services),
   /**
