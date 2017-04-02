@@ -2,6 +2,7 @@ from: mhart/alpine-node:6
 services:
   - mongodb:
       from: mongo:latest
+      stopTimeSecs: 3
   - redis:
       from: redis:latest
       persist: true

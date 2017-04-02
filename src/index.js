@@ -78,7 +78,6 @@ const instance = {
       .then(() => {
         output.line()
         output.success(`Command exited after ${(Date.now() - instance.startTS) / 1000}s`)
-        services.stop()
         return true
       })
       .catch((code) => {
