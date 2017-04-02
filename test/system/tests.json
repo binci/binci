@@ -1,67 +1,67 @@
 {
   "help": {
     "description": "Displays the help message",
-    "args": [ "-h" ],
+    "args": ["-h"],
     "should": "pass"
   },
   "version": {
     "description": "Shows the current version",
-    "args": [ "-v" ],
+    "args": ["-v"],
     "should": "pass"
   },
   "install": {
     "description": "Installs dependencies for future tests",
-    "args": [ "install" ],
+    "args": ["install"],
     "should": "pass"
   },
   "basic": {
     "description": "Runs the 'env' task",
-    "args": [ "env" ],
+    "args": ["env"],
     "should": "pass"
   },
   "basic multiple": {
     "description": "Runs multiple tasks",
-    "args": [ "env", "test" ],
+    "args": ["env", "test"],
     "should": "pass"
   },
   "config": {
     "description": "Specifies the devlab.yml using command arg",
-    "args": [ "env", "-c", "devlab.yml" ],
+    "args": ["env", "-c", "devlab.yml"],
     "should": "pass"
   },
   "config fail": {
     "description": "Specifies an invalid config and fails",
-    "args": [ "env", "-c", "not-a-config.yml" ],
+    "args": ["env", "-c", "not-a-config.yml"],
     "should": "fail"
   },
   "from": {
     "description": "Runs the 'env' task with custom from",
-    "args": [ "env", "-f", "mhart/alpine-node:4" ],
+    "args": ["env", "-f", "mhart/alpine-node:4"],
     "should": "pass"
   },
   "exec": {
     "description": "Runs with custom execution task and passes",
-    "args": [ "-e", "echo 'foo'" ],
+    "args": ["-e", "echo 'foo'"],
     "should": "pass"
   },
   "exec fail": {
     "description": "Runs with custom execution task and fails",
-    "args": [ "-e", "not-a-command" ],
+    "args": ["-e", "not-a-command"],
     "should": "fail"
   },
   "invalid arg": {
     "description": "Fails when invalid argument is passed",
-    "args": [ "env", "-w" ],
+    "args": ["env", "-w"],
     "should": "fail"
   },
   "disabled service": {
     "description": "Fails because required service is disabled",
-    "args": [ "redis:disable" ],
+    "args": ["redis:disable"],
     "should": "fail"
   },
   "ignore disable": {
     "description": "Passes because service is not disabled for all tasks",
-    "args": [ "env", "redis:disable" ],
+    "args": ["env", "redis:disable"],
     "should": "pass"
   }
 }

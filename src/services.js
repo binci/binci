@@ -85,7 +85,7 @@ const services = {
     return Promise.all(
       _.pipe([
         _.filter(svc => _.test(/dl_/, svc.name)),
-        _.map(svc => proc.run([ 'stop', '-t', svc.stopTimeSecs, svc.name ], true).catch(() => errors.push(svc.name)))
+        _.map(svc => proc.run(['stop', '-t', svc.stopTimeSecs, svc.name], true).catch(() => errors.push(svc.name)))
       ])(services.running))
       .then(() => {
         const stopError = new Error()

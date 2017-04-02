@@ -27,7 +27,7 @@ const command = {
    * @param {array} args Array of values
    * @returns {array}
    */
-  parseArgs: (type, args) => _.chain((item) => ([ command.args[type], command.parseHostEnvVars(item) ]), args),
+  parseArgs: (type, args) => _.chain((item) => ([command.args[type], command.parseHostEnvVars(item)]), args),
   /**
    * Parses config object and returns container name. Will have dl_ prefix and
    * InstanceID suffix if ephemeral, unaltered name for persisted containers
@@ -103,13 +103,13 @@ const command = {
   get: (cfg, name, tmpdir, primary = false) => {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
-    let args = primary ? [ 'run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-v', `${tmpdir}:${tmpdir}`, '-w', cwd, '--privileged' ] : [ 'run', '-d', '--rm', '--privileged' ]
+    let args = primary ? ['run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-v', `${tmpdir}:${tmpdir}`, '-w', cwd, '--privileged'] : ['run', '-d', '--rm', '--privileged']
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),
-      [ '--name', command.getName(name, cfg) ],
+      ['--name', command.getName(name, cfg)],
       cfg.from,
-      primary ? [ 'sh', `${tmpdir}/devlab.sh` ] : []
+      primary ? ['sh', `${tmpdir}/devlab.sh`] : []
     ]))
     return primary ? { args, cmd: command.getExec(cfg) } : args
   }
