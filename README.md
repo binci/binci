@@ -179,7 +179,7 @@ Setting `hosts` will update the hosts configuration for the container. Entries s
 
 ## Service Stop Time (`stopTimeSecs <integer>`)
 
-The standard procedure for stopping a Docker container is via the `stop` command which sends `SIGTERM` and allows a grace period (default: `10s`) for the container to exit on its own.
+The standard procedure for stopping a Docker container is the `stop` command which sends `SIGTERM` and allows a grace period (default: `10`) for the container to exit on its own.
 
 Some containers may not exit via `SIGTERM` (or may hang). In this case, the service container can utilize the `stopTimeSecs` property:
 
