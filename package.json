@@ -33,7 +33,7 @@
     "lint": "standard --fix --verbose | snazzy",
     "release:patch": "npm test && npm version patch && git push origin master && git push --tags && npm publish",
     "release:minor": "npm test && npm version minor && git push origin master && git push --tags && npm publish",
-    "release:major": "npm test && npm version major && git push origin master && git push --tags && npm publish",
+    "release:major": "npm test && npm version major && git push origin master && git push --tags && npm publish"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
