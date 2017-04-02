@@ -30,7 +30,7 @@
     "test:cover": "istanbul cover _mocha test/src/**/*.spec.js",
     "test:watch": "nodemon --exec \"npm run test:cover || exit 1\"",
     "e2e": "node test/system/run.js",
-    "lint": "standard --fix --verbose"
+    "lint": "standard --fix --verbose | snazzy"
   },
   "homepage": "https://github.com/TechnologyAdvice/DevLab",
   "repository": {
@@ -53,6 +53,7 @@
     "proxyquire": "^1.7.11",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0",
+    "snazzy": "^6.0.0",
     "standard": "^8.6.0"
   },
   "dependencies": {
