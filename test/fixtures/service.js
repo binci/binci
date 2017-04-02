@@ -1,6 +1,7 @@
 module.exports = [
   {
     name: 'mongodb',
+    stopTimeSecs: 10,
     args: [
       'run',
       '-d',

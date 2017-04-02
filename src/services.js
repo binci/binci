@@ -49,6 +49,7 @@ const services = {
     ([name, value]) => ({
       name,
       persist: value.persist || false,
+      stopTimeSecs: _.isType('number', value.stopTimeSecs) ? value.stopTimeSecs : 10,
       args: command.get(value, name, null)
     })]), cfg.services),
   /**
@@ -63,7 +64,7 @@ const services = {
       return proc.exec(`docker ps -f name=${curName} -q`).then((res) => {
         if (res && res.toString().length) return Promise.resolve() // Already running, resolve
         return proc.run(cur.args, true)
-          .then(() => services.running.push(curName))
+          .then(() => services.running.push({ name: curName, stopTimeSecs: cur.stopTimeSecs }))
           .catch(() => errors.push(cur.name))
       })
     }, svc))
@@ -83,8 +84,8 @@ const services = {
     const errors = []
     return Promise.all(
       _.pipe([
-        _.filter(_.test(/dl_/)),
-        _.map(svc => proc.run([ 'stop', svc ], true).catch(() => errors.push(svc)))
+        _.filter(svc => _.test(/dl_/, svc.name)),
+        _.map(svc => proc.run([ 'stop', '-t', svc.stopTimeSecs, svc.name ], true).catch(() => errors.push(svc.name)))
       ])(services.running))
       .then(() => {
         const stopError = new Error()
