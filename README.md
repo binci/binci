@@ -177,6 +177,22 @@ Setting `volumes` will mount volumes on the host machine to designated paths on 
 
 Setting `hosts` will update the hosts configuration for the container. Entries should use the format `<HOST_NAME>:<ADDRESS>`
 
+## Service Stop Time (`stopTimeSecs <integer>`)
+
+The standard procedure for stopping a Docker container is via the `stop` command which sends `SIGTERM` and allows a grace period (default: `10s`) for the container to exit on its own.
+
+Some containers may not exit via `SIGTERM` (or may hang). In this case, the service container can utilize the `stopTimeSecs` property:
+
+```yaml
+services:
+  - mongo:
+      from: mongo:3.0
+      stopTimeSecs: 3
+```
+
+The `stopTimeSecs` above would forcibly stop the container after 3 seconds using [Docker's `stop` command's `-t` option](https://docs.docker.com/engine/reference/commandline/stop/).
+
+
 ## Development
 
 To run tests, fork & clone the repository then run `npm install && npm test`.
