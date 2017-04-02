@@ -46,7 +46,6 @@
     "chai": "^3.3.0",
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
-    "eslint": "^2.10.2",
     "istanbul": "^0.4.3",
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
@@ -54,7 +53,7 @@
     "proxyquire": "^1.7.11",
     "sinon": "^1.17.0",
     "sinon-chai": "^2.8.0",
-    "standard": "^8.5.0"
+    "standard": "^8.6.0"
   },
   "dependencies": {
     "bluebird": "^3.4.6",
