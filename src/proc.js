@@ -12,7 +12,7 @@ const proc = {
    */
   run: (args, silent = false) => new Promise((resolve, reject) => {
     const opts = { env: process.env, cwd: process.env.HOME }
-    opts.stdio = silent ? [ null, null, null ] : [ 'inherit', process.stdout, process.stdout ]
+    opts.stdio = silent ? [null, null, null] : ['inherit', process.stdout, process.stdout]
     // Start
     const p = cp.spawn('docker', args, opts)
     // Handle close
@@ -25,7 +25,7 @@ const proc = {
    * @param {string} cmd Command to execute
    */
   runDetached: (cmd) => {
-    const p = cp.spawn('sh', [ '-c', cmd ], {
+    const p = cp.spawn('sh', ['-c', cmd], {
       detached: true,
       stdio: 'ignore'
     })

@@ -18,10 +18,10 @@ const executable = path.resolve(__dirname, '../../index.js')
 
 // Runs proc
 const spawn = (args) => new Promise((resolve, reject) => {
-  const p = require('child_process').spawn('node', [ executable, ...args ], {
+  const p = require('child_process').spawn('node', [executable, ...args], {
     env: process.env,
     cwd: testProject,
-    stdio: [ 'inherit', process.stdout, process.stdout ]
+    stdio: ['inherit', process.stdout, process.stdout]
   })
   p.on('close', (code) => {
     code === 0 || code === 130 ? resolve() : reject(code)

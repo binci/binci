@@ -58,7 +58,7 @@ const utils = {
     _.drop(1),
     _.map((row) => {
       let data = _.split(/\s\s+/g, row)
-      return [ _.last(data), data[3] ]
+      return [_.last(data), data[3]]
     }),
     _.filter((data) => _.test(/dl_/, _.head(data))),
     _.map(([name, created]) => ({ instance: name.replace(/dl_\w+_/, ''), name, created })),

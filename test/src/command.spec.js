@@ -16,7 +16,7 @@ describe('command', () => {
   })
   describe('parseArgs', () => {
     it('returns an array of a specific argument type and its values', () => {
-      expect(command.parseArgs('expose', [ '8080:8080', '9090:9090' ])).to.deep.equal([ '-p', '8080:8080', '-p', '9090:9090' ])
+      expect(command.parseArgs('expose', ['8080:8080', '9090:9090'])).to.deep.equal(['-p', '8080:8080', '-p', '9090:9090'])
     })
   })
   describe('getName', () => {
@@ -30,7 +30,7 @@ describe('command', () => {
   })
   describe('getArgs', () => {
     it('returns array of all args to run with command based off config', () => {
-      expect(command.getArgs({ expose: [ '8080:8080' ], volumes: [ '/tmp:/tmp' ] })).to.deep.equal([ '-p', '8080:8080', '-v', '/tmp:/tmp' ])
+      expect(command.getArgs({ expose: ['8080:8080'], volumes: ['/tmp:/tmp'] })).to.deep.equal(['-p', '8080:8080', '-v', '/tmp:/tmp'])
     })
     it('outputs a warning if an argument is not an array', () => {
       expect(() => command.getArgs({ env: 'foo' })).to.throw('Config error: \'env\' should be an array')
@@ -47,17 +47,17 @@ describe('command', () => {
       expect(() => command.getExec({ tasks: { foo: 'echo \'bar\'' } })).to.throw('No task has been specified')
     })
     it('throws error if invalid task is specified', () => {
-      expect(() => command.getExec({ run: [ 'foo' ], tasks: { bar: 'echo "foo"' } })).to.throw('Task \'foo\' does not exist')
+      expect(() => command.getExec({ run: ['foo'], tasks: { bar: 'echo "foo"' } })).to.throw('Task \'foo\' does not exist')
     })
     it('throws error if no cmd is specified in task object definition', () => {
-      expect(() => command.getExec({ run: [ 'foo' ], tasks: { foo: { disable: 'testService' } } })).to.throw('Task \'foo\' has no command defined.')
+      expect(() => command.getExec({ run: ['foo'], tasks: { foo: { disable: 'testService' } } })).to.throw('Task \'foo\' has no command defined.')
     })
     it('returns exec task array when all criteria are met', () => {
-      const actual = command.getExec({ run: [ 'foo' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
+      const actual = command.getExec({ run: ['foo'], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"' } })
       expect(actual).to.equal('#!/bin/sh\nset -e;\nbar\necho "foo"\necho "bar"\nbizz')
     })
     it('returns exec task array when multiple tasks are called', () => {
-      const actual = command.getExec({ run: [ 'foo', 'fizz' ], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"', fizz: { cmd: 'buzz' } } })
+      const actual = command.getExec({ run: ['foo', 'fizz'], before: 'bar', after: 'bizz', tasks: { foo: 'echo "foo"\necho "bar"', fizz: { cmd: 'buzz' } } })
       expect(actual).to.equal('#!/bin/sh\nset -e;\nbar\necho "foo"\necho "bar"\nbuzz\nbizz')
     })
   })
@@ -66,10 +66,10 @@ describe('command', () => {
       expect(command.getLinks({})).to.deep.equal([])
     })
     it('returns formatted link arguments if services are present', () => {
-      expect(command.getLinks({ services: [ { foo: {} }, { bar: {} } ] })).to.deep.equal([ '--link', 'dl_foo_test:foo', '--link', 'dl_bar_test:bar' ])
+      expect(command.getLinks({ services: [{ foo: {} }, { bar: {} }] })).to.deep.equal(['--link', 'dl_foo_test:foo', '--link', 'dl_bar_test:bar'])
     })
     it('returns formatted lin arguments if services are present and contain a persistent service', () => {
-      expect(command.getLinks({ services: [ { foo: {} }, { bar: { persist: true } } ] })).to.deep.equal([ '--link', 'dl_foo_test:foo', '--link', 'bar:bar' ])
+      expect(command.getLinks({ services: [{ foo: {} }, { bar: { persist: true } }] })).to.deep.equal(['--link', 'dl_foo_test:foo', '--link', 'bar:bar'])
     })
   })
   describe('get', () => {
@@ -85,15 +85,15 @@ describe('command', () => {
     })
     it('returns array of arguments for a service config', () => {
       process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080', '9090:9090' ] }, 'mongo') // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal([ 'run', '-d', '--rm', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'dl_mongo_test', 'mongo' ])
+      const actual = command.get({ from: 'mongo', env: ['DL_TEST_EV=${DL_TEST_EV}'], expose: ['8080:8080', '9090:9090'] }, 'mongo') // eslint-disable-line no-template-curly-in-string
+      expect(actual).to.deep.equal(['run', '-d', '--rm', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'dl_mongo_test', 'mongo'])
       delete process.env.DL_TEST_EV
     })
     it('returns object with array of arguments and command for a primary container config', () => {
       process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: [ 'DL_TEST_EV=${DL_TEST_EV}' ], expose: [ '8080:8080' ], run: [ 'foo' ], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
+      const actual = command.get({ from: 'mongo', env: ['DL_TEST_EV=${DL_TEST_EV}'], expose: ['8080:8080'], run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal({
-        args: [ 'run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '/tmp/devlab.sh' ],
+        args: ['run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '/tmp/devlab.sh'],
         cmd: '#!/bin/sh\nset -e;\necho "foo"'
       })
       delete process.env.DL_TEST_EV

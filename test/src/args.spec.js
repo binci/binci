@@ -5,7 +5,7 @@ const args = require('src/args')
 const utils = require('src/utils')
 
 const fixtures = {
-  args: { e: true, _: [ '/bin/bash' ] }
+  args: { e: true, _: ['/bin/bash'] }
 }
 const sandbox = sinon.sandbox.create()
 
@@ -120,8 +120,8 @@ describe('args', () => {
   })
   describe('getTask', () => {
     it('returns string with task', () => {
-      args.raw = { _: [ 'foo', 'bar' ] }
-      expect(args.getTask()).to.deep.equal([ 'foo', 'bar' ])
+      args.raw = { _: ['foo', 'bar'] }
+      expect(args.getTask()).to.deep.equal(['foo', 'bar'])
     })
     it('returns empty string if no task specified', () => {
       args.raw = {}
