@@ -4,59 +4,89 @@ const proc = require('src/proc')
 const output = require('src/output')
 const cp = require('child_process')
 
+const fixtureIds = fixture.ids.split('\n').filter(Boolean)
+const fixtureAllIds = fixture.allIds.split('\n').filter(Boolean)
+const sandbox = sinon.sandbox.create()
+
 describe('utils', () => {
+  beforeEach(() => {
+    sandbox.restore()
+  })
   describe('cleanup', () => {
-    let cpExecSyncStub
-    let outputSuccsssStub
     beforeEach(() => {
-      cpExecSyncStub = sinon.stub(cp, 'execSync', (command) => command.indexOf('docker ps') === 0 ? new Buffer(fixture.ids) : '')
-      outputSuccsssStub = sinon.stub(output, 'success')
-      sinon.stub(output, 'info')
+      sandbox.stub(cp, 'execSync', cmd => {
+        return Buffer.from(cmd.includes('--filter="name=dl_"') ? fixture.ids : fixture.allIds)
+      })
+      sandbox.stub(output, 'info')
+      sandbox.stub(output, 'error')
+      sandbox.stub(output, 'success')
+      sandbox.stub(proc, 'run', () => Promise.resolve(''))
     })
-    afterEach(() => {
+    it('outputs "All clean" if there are no containers to cleanup', () => {
       cp.execSync.restore()
-      output.success.restore()
-      output.info.restore()
+      sandbox.stub(cp, 'execSync', () => Buffer.from(''))
+      return utils.cleanup().then(() => {
+        expect(output.success).to.be.calledWith('All clean')
+      })
     })
-    it('outputs All Clean if there are no containers to cleanup', () => {
-      cpExecSyncStub.restore()
-      cpExecSyncStub = sinon.stub(cp, 'execSync', () => '')
-      utils.cleanup()
-      expect(outputSuccsssStub).to.be.calledWith('All clean')
+    it('outputs success with the container id on success', () => {
+      cp.execSync.restore()
+      proc.run.restore()
+      sandbox.stub(cp, 'execSync', () => '123\n')
+      sandbox.stub(proc, 'run', () => Promise.resolve())
+      return utils.cleanup().then(() => {
+        expect(output.success).to.have.been.calledOnce()
+        expect(output.success).to.have.been.calledWithExactly('123')
+      })
+    })
+    it('outputs an error on process fail', () => {
+      cp.execSync.restore()
+      proc.run.restore()
+      sandbox.stub(cp, 'execSync', () => '123\n')
+      sandbox.stub(proc, 'run', () => Promise.reject())
+      return utils.cleanup().then(() => {
+        expect(output.error).to.have.been.calledOnce()
+        expect(output.error).to.have.been.calledWithExactly('123')
+      })
     })
     it('runs stop commands on dl_ prefixed containers', () => {
-      utils.cleanup()
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 90488yex73x8 >&2 > /dev/null')
+      return utils.cleanup().then(() => {
+        expect(proc.run.callCount).to.equal(2)
+
+        fixtureIds.forEach((id, index) => {
+          expect(proc.run.getCall(index)).to.be.calledWithExactly(['stop', id], true)
+        })
+      })
     })
     it('runs stop commands on all containers', () => {
-      utils.cleanup(true)
-      expect(cpExecSyncStub).to.be.calledWith('docker stop 90488yex73x8 >&2 > /dev/null')
+      return utils.cleanup(true).then(() => {
+        expect(proc.run.callCount).to.equal(7)
+        fixtureAllIds.forEach((id, index) => {
+          expect(proc.run.getCall(index)).to.be.calledWithExactly(['stop', id], true)
+        })
+      })
     })
   })
   describe('parseOrphans', () => {
     it('returns array of orphaned containers', () => {
-      expect(utils.parseOrphans(fixture.full)).to.deep.equal([ 'dl_orphan3_JKLod93dS', 'dl_orphan4_MNJ9ie00d' ])
+      expect(utils.parseOrphans(fixture.full)).to.deep.equal(['dl_orphan3_JKLod93dS', 'dl_orphan4_MNJ9ie00d'])
     })
   })
   describe('checkOrphans', () => {
-    let outputWarnStub
     beforeEach(() => {
-      outputWarnStub = sinon.stub(output, 'warn')
-    })
-    afterEach(() => {
-      if (proc.exec.restore) proc.exec.restore()
-      output.warn.restore()
+      sandbox.stub(output, 'warn')
     })
     it('resolves without warning if no orphans are identified', () => {
-      sinon.stub(proc, 'exec', () => Promise.resolve(''))
+      sandbox.stub(proc, 'exec', () => Promise.resolve(''))
       return utils.checkOrphans().then(() => {
-        expect(outputWarnStub).to.not.be.called()
+        expect(output.warn).to.not.be.called()
       })
     })
     it('resolves after warning of identified orphans', () => {
-      sinon.stub(proc, 'exec', () => Promise.resolve(fixture.full))
+      sandbox.stub(proc, 'exec', () => Promise.resolve(fixture.full))
       return utils.checkOrphans().then(() => {
-        expect(outputWarnStub).to.be.calledWith('These containers may not have exited correctly: dl_orphan3_JKLod93dS, dl_orphan4_MNJ9ie00d')
+        expect(output.warn).to.be.calledWith(
+          'These containers may not have exited correctly: dl_orphan3_JKLod93dS, dl_orphan4_MNJ9ie00d')
       })
     })
   })

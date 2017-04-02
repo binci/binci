@@ -7,17 +7,15 @@ const utils = require('src/utils')
 const fixtures = {
   args: { e: true, _: [ '/bin/bash' ] }
 }
+const sandbox = sinon.sandbox.create()
 
 describe('args', () => {
-  let processExitStub
-  let logSpy
   beforeEach(() => {
-    logSpy = sinon.spy(console, 'log')
-    processExitStub = sinon.stub(process, 'exit')
+    sandbox.spy(console, 'log')
+    sandbox.stub(process, 'exit')
   })
   afterEach(() => {
-    process.exit.restore()
-    logSpy.restore()
+    sandbox.restore()
   })
   describe('tasks', () => {
     const confPath = `${process.cwd()}/devlab.yml`
@@ -44,48 +42,77 @@ describe('args', () => {
         '  lint     eslint .',
         '  ci       stuff test'
       ].join('\n'))
-      expect(processExitStub).to.be.calledWith(0)
+      expect(process.exit).to.be.calledWith(0)
     })
   })
   describe('showHelp', () => {
     it('shows the help message and exits', () => {
       args.showHelp()
-      expect(logSpy).to.be.calledOnce()
-      expect(processExitStub).to.be.calledWith(0)
+      expect(console.log).to.be.calledOnce()
+      expect(process.exit).to.be.calledWith(0)
     })
   })
   describe('showVersion', () => {
     it('shows the installed version and exits', () => {
       args.showVersion()
-      expect(logSpy).to.be.calledWith(pkg.version)
-      expect(processExitStub).to.be.calledWith(0)
+      expect(console.log).to.be.calledWith(pkg.version)
+      expect(process.exit).to.be.calledWith(0)
     })
   })
   describe('cleanupDL', () => {
-    let utilsCleanupStub
     beforeEach(() => {
-      utilsCleanupStub = sinon.stub(utils, 'cleanup')
+      sandbox.stub(utils, 'cleanup', () => Promise.resolve())
     })
-    afterEach(() => utilsCleanupStub.restore())
     it('call utils.cleanup with no arguments', () => {
-      args.cleanupDL()
-      expect(utilsCleanupStub).to.be.calledOnce()
+      return args.cleanupDL().then(() => {
+        expect(utils.cleanup).to.be.calledOnce()
+      })
+    })
+    it('exits code 0 on success', () => {
+      return args.cleanupDL()
+        .then(() => {
+          expect(process.exit).to.have.been.calledOnce()
+          expect(process.exit).to.have.been.calledWithExactly(0)
+        })
+    })
+    it('exits code 1 on fail', () => {
+      utils.cleanup.restore()
+      sandbox.stub(utils, 'cleanup', () => Promise.reject())
+      return args.cleanupDL()
+        .then(() => {
+          expect(process.exit).to.have.been.calledOnce()
+          expect(process.exit).to.have.been.calledWithExactly(1)
+        })
     })
   })
   describe('cleanupAll', () => {
-    let utilsCleanupStub
     beforeEach(() => {
-      utilsCleanupStub = sinon.stub(utils, 'cleanup')
+      sandbox.stub(utils, 'cleanup', () => Promise.resolve())
     })
-    afterEach(() => utilsCleanupStub.restore())
     it('call utils.cleanup with no arguments', () => {
       args.cleanupAll()
-      expect(utilsCleanupStub).to.be.calledWith(true)
+      expect(utils.cleanup).to.be.calledWith(true)
+    })
+    it('exits code 0 on success', () => {
+      return args.cleanupAll()
+        .then(() => {
+          expect(process.exit).to.have.been.calledOnce()
+          expect(process.exit).to.have.been.calledWithExactly(0)
+        })
+    })
+    it('exits code 1 on fail', () => {
+      utils.cleanup.restore()
+      sandbox.stub(utils, 'cleanup', () => Promise.reject())
+      return args.cleanupAll()
+        .then(() => {
+          expect(process.exit).to.have.been.calledOnce()
+          expect(process.exit).to.have.been.calledWithExactly(1)
+        })
     })
   })
   describe('isArg', () => {
     it('returns true if argument is valid', () => {
-      expect(args.isArg('f')).to.be.true
+      expect(args.isArg('f')).to.be.true()
     })
     it('displays an error and exits if argument is not valid', () => {
       expect(() => args.isArg('nope')).to.throw('Invalid argument \'nope\', please see documentation')
@@ -104,18 +131,19 @@ describe('args', () => {
   describe('parse', () => {
     it('parses args object and returns formatted config object', () => {
       args.raw = fixtures.args
-      const actual = args.parse()
-      expect(actual).to.deep.equal({
-        exec: true,
-        run: [ '/bin/bash' ]
+      return args.parse().then(actual => {
+        expect(actual).to.deep.equal({
+          exec: true,
+          run: ['/bin/bash']
+        })
       })
     })
     it('parses args and calls an action when passed', () => {
       args.raw = { v: true }
-      const showVersionStub = sinon.stub(args, 'showVersion')
-      args.parse()
-      expect(showVersionStub).to.be.calledOnce()
-      showVersionStub.restore()
+      sandbox.stub(args, 'showVersion')
+      return args.parse().then(() => {
+        expect(args.showVersion).to.be.calledOnce()
+      })
     })
   })
 })

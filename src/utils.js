@@ -27,24 +27,26 @@ const utils = {
    * @param {boolean} all If the run should include non-devlab containers
    * @returns {object} promise
    */
-  cleanup: (all = false) => {
+  cleanup: (all = false) => Promise.resolve().then(() => {
     const findCmd = all ? 'docker ps -q' : 'docker ps --filter="name=dl_" -q'
-    const ids = cp.execSync(findCmd).toString()
+    const ids = cp.execSync(findCmd)
+      .toString()
+      .split(/\r?\n/)
+      .filter(Boolean)
+
     if (!ids.length) {
       output.success('All clean')
       return
     }
 
-    _.pipe([
-      _.split(/\r?\n/),
-      _.filter(Boolean),
-      _.tap(uniqIds => output.info(`Stopping ${uniqIds.length} containers:`)),
-      _.map(id => {
-        cp.execSync(`docker stop ${id} >&2 > /dev/null`)
-        output.success(id)
-      })
-    ])(ids)
-  },
+    output.info(`Stopping ${ids.length} containers:`)
+
+    return Promise.all(ids.map(id => {
+      return proc.run(['stop', id], true)
+        .then(() => output.success(id))
+        .catch(() => output.error(id))
+    }))
+  }),
   /**
    * Identifies and reports any (possible) orphan containers, i.e. containers
    * which 1) have the dl_ prefix, 2) are NOT primary containers and 3) have
