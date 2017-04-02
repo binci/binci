@@ -58,15 +58,17 @@ const args = {
    * Calls the cleanup process for Devlab containers and exits
    */
   cleanupDL: () => {
-    utils.cleanup()
-    process.exit(0)
+    return utils.cleanup()
+      .then(() => process.exit(0))
+      .catch(() => process.exit(1))
   },
   /**
    * Calls the cleanup process for ALL containers and exits
    */
   cleanupAll: () => {
-    utils.cleanup(true)
-    process.exit(0)
+    return utils.cleanup(true)
+      .then(() => process.exit(0))
+      .catch(() => process.exit(1))
   },
   /**
    * Ensures argument is valid or outputs an error
@@ -86,20 +88,27 @@ const args = {
    * Parse arguments and call (action) or append to config (prop)
    * @returns {object}
    */
-  parse: () => _.pipe([
-    _.omit(['_']),
-    _.keys,
-    _.filter(args.isArg),
-    _.reduce((acc, key) => {
-      const arg = args.available[key]
-      // Accumulate property
-      if (arg.prop) acc[arg.prop] = args.raw[key]
-      // Apply action
-      if (arg.action) args[arg.action].call(null, args.raw[key])
-      return acc
-    }, {}),
-    _.merge({ run: args.getTask() })
-  ])(args.raw)
+  parse: () => {
+    const cfg = {}
+    const actions = []
+    _.pipe([
+      _.omit(['_']),
+      _.keys,
+      _.filter(args.isArg),
+      // Accumulate props and actions
+      _.forEach(key => {
+        const arg = args.available[key]
+        if (arg.prop) cfg[arg.prop] = args.raw[key]
+        if (arg.action) actions.push(args[arg.action])
+      })
+    ])(args.raw)
+
+    // run all actions, then return config
+    return Promise.all(actions.map(action => {
+      return Promise.resolve(action())
+    }))
+      .then(() => _.merge(cfg, { run: args.getTask() }))
+  }
 }
 
 module.exports = args

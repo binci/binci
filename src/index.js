@@ -26,8 +26,12 @@ const instance = {
    * @returns {object} Command instructions
    */
   getConfig: () => {
-    const cfg = services.filterEnabled(_.merge(config.load(args.parse().configPath), args.parse()))
-    return { services: services.get(cfg), primary: command.get(cfg, 'primary', tmpdir, true) }
+    return Promise.resolve()
+      .then(args.parse)
+      .then(parsedArgs => {
+        const cfg = services.filterEnabled(_.merge(config.load(parsedArgs.configPath), parsedArgs))
+        return { services: services.get(cfg), primary: command.get(cfg, 'primary', tmpdir, true) }
+      })
   },
   /**
    * Starts services and resolves or rejects
@@ -90,20 +94,21 @@ const instance = {
    * Initializes instance from config and args
    * @returns {object} promise
    */
-  start: () => Promise.resolve().then(() => {
-    // Get config (or throw)
-    const cfg = instance.getConfig()
-    // Write the primary command to tmp script
-    return fs.writeFileAsync(`${tmpdir}/devlab.sh`, cfg.primary.cmd)
-      .then(() => utils.checkOrphans())
-      .then(() => instance.startServices(cfg))
-      .then(instance.runCommand)
-      .then(instance.stopServices)
-  }).catch((e) => {
-    services.stop()
-    output.error(e.message || 'Process failed')
-    throw new Error('Process failed')
-  })
+  start: () => Promise.resolve()
+    .then(instance.getConfig)
+    .then(cfg => {
+      // Write the primary command to tmp script
+      return fs.writeFileAsync(`${tmpdir}/devlab.sh`, cfg.primary.cmd)
+        .then(() => utils.checkOrphans())
+        .then(() => instance.startServices(cfg))
+        .then(instance.runCommand)
+        .then(instance.stopServices)
+    })
+    .catch((e) => {
+      services.stop()
+      output.error(e.message || 'Process failed')
+      throw new Error('Process failed')
+    })
 }
 
 module.exports = instance
