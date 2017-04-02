@@ -8,6 +8,21 @@ describe('services', () => {
   afterEach(() => {
     services.running = []
   })
+  describe('getStopTimeSecs', () => {
+    it('uses the service config stopTimeSecs property if exists', () => {
+      const cfg = { stopTimeSecs: 3 }
+      const svc = { stopTimeSecs: 5 }
+      expect(services.getStopTimeSecs(cfg, svc)).to.equal(5)
+    })
+    it('uses the global config stopTimeSecs property if exists and no service config is set', () => {
+      const cfg = { stopTimeSecs: 3 }
+      const svc = {}
+      expect(services.getStopTimeSecs(cfg, svc)).to.equal(3)
+    })
+    it('uses the system default if neither global or service config props are set', () => {
+      expect(services.getStopTimeSecs({}, {})).to.equal(10)
+    })
+  })
   describe('get', () => {
     before(() => {
       config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')

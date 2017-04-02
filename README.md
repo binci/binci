@@ -192,6 +192,9 @@ services:
 
 The `stopTimeSecs` above would forcibly stop the container after 3 seconds using [Docker's `stop` command's `-t` option](https://docs.docker.com/engine/reference/commandline/stop/).
 
+**Global Setting:**
+
+In addition to setting the `stopTimeSecs` per service, this property can be set in the root of the `devlab.yml` configuration and will be applied to any services that don't have an explicit `stopTimeSecs` property.
 
 ## Development
 
