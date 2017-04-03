@@ -1,58 +1,61 @@
 const path = require('path')
 const fs = require('fs')
 const Promise = require('bluebird')
+
+const sandbox = require('test/sandbox')
+const mockUpdateNotifierInstance = { notify: sandbox.spy() }
+const mockUpdateNotifier = sandbox.spy(() => mockUpdateNotifierInstance)
+proxyquire('src/index', {
+  'update-notifier': mockUpdateNotifier
+})
+const pkg = require('package.json')
 const instance = require('src/index')
 const args = require('src/args')
-const fixtures = require('test/fixtures/instance')
 const output = require('src/output')
 const proc = require('src/proc')
 const services = require('src/services')
-
+const fixtures = require('test/fixtures/instance')
 Promise.promisifyAll(fs)
 
 const configPath = path.resolve(__dirname, '../fixtures/devlab.yml')
 
 describe('index', () => {
   global.instanceId = 'test'
-  let processCwdStub
-  let outputSuccessStub
-  let outputSpinnerStub
-  let outputErrorStub
-  let outputLineStub
-  let servicesStopStub
-  before(() => {
-    processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
-    outputSpinnerStub = sinon.stub(output, 'spinner', () => {
+  beforeEach(() => {
+    sandbox.stub(process, 'cwd', () => '/tmp')
+    sandbox.stub(output, 'spinner', () => {
       return { succeed: () => null, fail: () => null }
     })
-    outputLineStub = sinon.stub(output, 'line')
-    outputSuccessStub = sinon.stub(output, 'success')
-    outputErrorStub = sinon.stub(output, 'error')
+    sandbox.stub(output, 'line')
+    sandbox.stub(output, 'success')
+    sandbox.stub(output, 'error')
   })
-  after(() => {
-    processCwdStub.restore()
-    outputSpinnerStub.restore()
-    outputSuccessStub.restore()
-    outputErrorStub.restore()
-    outputLineStub.restore()
+  describe('checkForUpdates', () => {
+    it('calls updateNotifier().notify()', () => {
+      expect(mockUpdateNotifier).not.to.have.been.called()
+      expect(mockUpdateNotifierInstance.notify).not.to.have.been.called()
+
+      instance.checkForUpdates()
+
+      expect(mockUpdateNotifier).to.have.been.calledOnce()
+      expect(mockUpdateNotifier).to.have.been.calledWithExactly({ pkg })
+      expect(mockUpdateNotifierInstance.notify).to.have.been.calledOnce()
+      expect(mockUpdateNotifierInstance.notify).to.have.been.calledWithExactly()
+    })
   })
   describe('startServices', () => {
-    let servicesRunStub
-    afterEach(() => {
-      if (servicesRunStub) servicesRunStub.restore()
-    })
-    it('imediately resolves if there are no services', () => {
+    it('immediately resolves if there are no services', () => {
       const cfg = { services: [] }
       return expect(instance.startServices(cfg)).to.be.fulfilled()
     })
     it('resolves after services are successfully started', () => {
       const cfg = { services: ['foo', 'bar'] }
-      servicesRunStub = sinon.stub(services, 'run', () => Promise.resolve())
+      sandbox.stub(services, 'run', () => Promise.resolve())
       return expect(instance.startServices(cfg)).to.be.fulfilled()
     })
     it('rejects after services fail to start', () => {
       const cfg = { services: ['foo'] }
-      servicesRunStub = sinon.stub(services, 'run', () => Promise.reject())
+      sandbox.stub(services, 'run', () => Promise.reject())
       return expect(instance.startServices(cfg)).to.be.rejected()
     })
   })
@@ -61,7 +64,6 @@ describe('index', () => {
       services.running = ['foo', 'bar']
     })
     afterEach(() => {
-      if (servicesStopStub) servicesStopStub.restore()
       services.running = []
     })
     it('resolves early if no services are running', () => {
@@ -69,29 +71,25 @@ describe('index', () => {
       return expect(instance.stopServices()).to.be.fulfilled()
     })
     it('resolves after stopping all services', () => {
-      servicesStopStub = sinon.stub(services, 'stop', () => Promise.resolve())
+      sandbox.stub(services, 'stop', () => Promise.resolve())
       return expect(instance.stopServices()).to.be.fulfilled()
     })
     it('rejects with failed services and outputs error', () => {
-      servicesStopStub = sinon.stub(services, 'stop', () => Promise.reject(new Error()))
+      sandbox.stub(services, 'stop', () => Promise.reject(new Error()))
       return expect(instance.stopServices()).to.be.rejected()
     })
   })
   describe('runCommand', () => {
-    let procRunStub
-    afterEach(() => {
-      procRunStub.restore()
-    })
     it('starts command, succeeds, and resolves with stopServices', () => {
-      procRunStub = sinon.stub(proc, 'run', () => Promise.resolve())
+      sandbox.stub(proc, 'run', () => Promise.resolve())
       return instance.runCommand({ primary: ['foo'] })
         .then(() => {
-          expect(outputLineStub).to.be.called()
-          expect(outputSuccessStub).to.be.called()
+          expect(output.line).to.be.called()
+          expect(output.success).to.be.called()
         })
     })
     it('starts command, fails, and throws', () => {
-      procRunStub = sinon.stub(proc, 'run', () => Promise.reject(1))
+      sandbox.stub(proc, 'run', () => Promise.reject(1))
       return expect(instance.runCommand({ primary: ['foo'] })).to.be.rejectedWith('Command failed')
     })
   })
@@ -110,15 +108,19 @@ describe('index', () => {
     })
   })
   describe('start', () => {
-    afterEach(() => {
-      if (fs.writeFileAsync.restore) fs.writeFileAsync.restore()
-      if (instance.startServices.restore) instance.startServices.restore()
-      if (instance.runCommand.restore) instance.runCommand.restore()
-      if (instance.getConfig.restore) instance.getConfig.restore()
-      if (fs.unlinkAsync.restore) fs.unlinkAsync.restore()
+    it('calls checkForUpdates', () => {
+      sandbox.stub(instance, 'checkForUpdates')
+      sandbox.stub(instance, 'getConfig', () => Promise.resolve({ primary: {} }))
+      sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
+      sandbox.stub(instance, 'runCommand', () => Promise.resolve())
+      sandbox.stub(instance, 'startServices', () => Promise.resolve())
+      return instance.start().then(() => {
+        expect(instance.checkForUpdates).to.have.been.calledOnce()
+        expect(instance.checkForUpdates).to.have.been.calledWithExactly(undefined)
+      })
     })
     it('outputs default failure message if rejected without error message', () => {
-      sinon.stub(instance, 'getConfig', () => {
+      sandbox.stub(instance, 'getConfig', () => {
         const err = new Error()
         err.message = undefined
         throw err
@@ -129,35 +131,35 @@ describe('index', () => {
       args.raw = { 'not-a-flag': true, _: ['env'], c: configPath }
       return instance.start().then(() => new Error('Should have failed'))
         .catch(() => {
-          expect(outputErrorStub).to.be.calledWith('Invalid argument \'not-a-flag\', please see documentation')
+          expect(output.error).to.be.calledWith('Invalid argument \'not-a-flag\', please see documentation')
         })
     })
     it('throws when unable to start services', () => {
-      sinon.stub(instance, 'startServices', () => Promise.reject())
+      sandbox.stub(instance, 'startServices', () => Promise.reject())
       args.raw = { _: ['env'], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
     it('throws when unable to write exec file to tmp', () => {
-      sinon.stub(fs, 'writeFileAsync', () => Promise.reject())
-      sinon.stub(instance, 'startServices', () => Promise.resolve())
-      sinon.stub(instance, 'runCommand', () => Promise.resolve())
-      sinon.stub(fs, 'unlinkAsync', () => Promise.resolve())
+      sandbox.stub(fs, 'writeFileAsync', () => Promise.reject())
+      sandbox.stub(instance, 'startServices', () => Promise.resolve())
+      sandbox.stub(instance, 'runCommand', () => Promise.resolve())
+      sandbox.stub(fs, 'unlinkAsync', () => Promise.resolve())
       args.raw = { 'f': 'notactuallyanimage', _: ['env'], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
     it('throws when unable to start primary container', () => {
-      sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
-      sinon.stub(instance, 'startServices', () => Promise.resolve())
-      sinon.stub(instance, 'runCommand', () => Promise.reject())
-      sinon.stub(fs, 'unlinkAsync', () => Promise.resolve())
+      sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
+      sandbox.stub(instance, 'startServices', () => Promise.resolve())
+      sandbox.stub(instance, 'runCommand', () => Promise.reject())
+      sandbox.stub(fs, 'unlinkAsync', () => Promise.resolve())
       args.raw = { 'f': 'notactuallyanimage', _: ['env'], c: configPath }
       return expect(instance.start()).to.be.rejected()
     })
     it('resolves when config, services and primary container run successfully', () => {
-      sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
-      sinon.stub(instance, 'startServices', () => Promise.resolve())
-      sinon.stub(instance, 'runCommand', () => Promise.resolve())
-      sinon.stub(fs, 'unlinkAsync', () => Promise.resolve())
+      sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
+      sandbox.stub(instance, 'startServices', () => Promise.resolve())
+      sandbox.stub(instance, 'runCommand', () => Promise.resolve())
+      sandbox.stub(fs, 'unlinkAsync', () => Promise.resolve())
       args.raw = { _: ['env'], c: configPath }
       return expect(instance.start()).to.be.fulfilled()
     })
