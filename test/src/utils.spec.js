@@ -1,17 +1,14 @@
 const utils = require('src/utils')
 const fixture = require('test/fixtures/docker-ps')
+const sandbox = require('test/sandbox')
 const proc = require('src/proc')
 const output = require('src/output')
 const cp = require('child_process')
 
 const fixtureIds = fixture.ids.split('\n').filter(Boolean)
 const fixtureAllIds = fixture.allIds.split('\n').filter(Boolean)
-const sandbox = sinon.sandbox.create()
 
 describe('utils', () => {
-  beforeEach(() => {
-    sandbox.restore()
-  })
   describe('cleanup', () => {
     beforeEach(() => {
       sandbox.stub(cp, 'execSync', cmd => {
