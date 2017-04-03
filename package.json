@@ -68,7 +68,8 @@
     "minimist": "^1.2.0",
     "ora": "^0.3.0",
     "os-tmpdir": "^1.0.2",
-    "shortid": "^2.2.6"
+    "shortid": "^2.2.6",
+    "update-notifier": "^2.1.0"
   },
   "standard": {
     "ignore": [

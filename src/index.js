@@ -3,11 +3,14 @@
 const _ = require('halcyon')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
+const updateNotifier = require('update-notifier')
+
 const args = require('./args')
 const config = require('./config')
 const command = require('./command')
 const services = require('./services')
 const proc = require('./proc')
+const pkg = require('../package.json')
 const output = require('./output')
 const utils = require('./utils')
 
@@ -16,6 +19,9 @@ const tmpdir = require('./tempdir')()
 global.instanceId = require('shortid').generate()
 
 const instance = {
+  checkForUpdates: () => {
+    updateNotifier({ pkg }).notify()
+  },
   /**
    * @property {number} Timestamp of instance start
    */
@@ -94,6 +100,7 @@ const instance = {
    * @returns {object} promise
    */
   start: () => Promise.resolve()
+    .then(instance.checkForUpdates)
     .then(instance.getConfig)
     .then(cfg => {
       // Write the primary command to tmp script

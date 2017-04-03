@@ -21,6 +21,7 @@ describe('index', () => {
   let outputLineStub
   let servicesStopStub
   before(() => {
+    sinon.stub(instance, 'checkForUpdates')
     processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
     outputSpinnerStub = sinon.stub(output, 'spinner', () => {
       return { succeed: () => null, fail: () => null }
@@ -30,6 +31,7 @@ describe('index', () => {
     outputErrorStub = sinon.stub(output, 'error')
   })
   after(() => {
+    instance.checkForUpdates.restore()
     processCwdStub.restore()
     outputSpinnerStub.restore()
     outputSuccessStub.restore()
@@ -116,6 +118,16 @@ describe('index', () => {
       if (instance.runCommand.restore) instance.runCommand.restore()
       if (instance.getConfig.restore) instance.getConfig.restore()
       if (fs.unlinkAsync.restore) fs.unlinkAsync.restore()
+    })
+    it('calls checkForUpdates', () => {
+      sinon.stub(instance, 'getConfig', () => Promise.resolve({ primary: {} }))
+      sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
+      sinon.stub(instance, 'runCommand', () => Promise.resolve())
+      sinon.stub(instance, 'startServices', () => Promise.resolve())
+      return instance.start().then(() => {
+        expect(instance.checkForUpdates).to.have.been.calledOnce()
+        expect(instance.checkForUpdates).to.have.been.calledWithExactly(undefined)
+      })
     })
     it('outputs default failure message if rejected without error message', () => {
       sinon.stub(instance, 'getConfig', () => {
