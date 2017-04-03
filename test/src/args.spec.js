@@ -3,19 +3,15 @@ const fs = require('fs')
 const pkg = require('package.json')
 const args = require('src/args')
 const utils = require('src/utils')
+const sandbox = require('test/sandbox')
 
 const fixtures = {
   args: { e: true, _: ['/bin/bash'] }
 }
-const sandbox = sinon.sandbox.create()
-
 describe('args', () => {
   beforeEach(() => {
     sandbox.spy(console, 'log')
     sandbox.stub(process, 'exit')
-  })
-  afterEach(() => {
-    sandbox.restore()
   })
   describe('tasks', () => {
     const confPath = `${process.cwd()}/devlab.yml`
