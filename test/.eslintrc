@@ -1,8 +1,12 @@
 {
   "globals": {
-    "expect": true,
-    "request": true,
-    "server": true
+    "cwd": false,
+    "expect": false,
+    "instanceId": false,
+    "proxyquire": false,
+    "request": false,
+    "server": false,
+    "sinon": false
   },
   "env": {
     "mocha": true
