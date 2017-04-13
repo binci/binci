@@ -8,12 +8,6 @@ node_js:
   - "6"
   
 notifications:
-  slack:
-    rooms:
-      - technologyadvice:$SLACK_TOKEN
-    template:
-      - "%{repository}@%{branch} <%{build_url}|#%{build_number}> by %{author} %{result} after %{duration}"
-      - "%{commit_message} (<%{compare_url}|%{commit}>)"
   email:
     on_success: never
     on_failure: never
