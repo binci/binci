@@ -1,0 +1,34 @@
+sudo: required
+
+services:
+  - docker
+  
+language: node_js
+node_js:
+  - "6"
+  
+notifications:
+  slack:
+    rooms:
+      - technologyadvice:$SLACK_TOKEN
+    template:
+      - "%{repository}@%{branch} <%{build_url}|#%{build_number}> by %{author} %{result} after %{duration}"
+      - "%{commit_message} (<%{compare_url}|%{commit}>)"
+  email:
+    on_success: never
+    on_failure: never
+    
+before_install:
+  - sudo apt-get update > /dev/null
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine=17.04.0~ce-0~ubuntu-trusty > /dev/null
+
+install:
+  - npm install
+
+script:
+  - npm test
+  
+after_success:
+  - npm install -g codeclimate-test-reporter
+  - codeclimate-test-reporter < coverage/lcov.info
+  

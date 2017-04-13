@@ -1,4 +1,4 @@
-[![CircleCI branch](https://img.shields.io/circleci/project/TechnologyAdvice/DevLab/master.svg?maxAge=2592000)]()
+[![Travis branch](https://img.shields.io/travis/TechnologyAdvice/DevLab/master.svg)](https://travis-ci.org/TechnologyAdvice/DevLab)
 [![Code Climate](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/gpa.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab)
 [![codecov](https://codecov.io/gh/TechnologyAdvice/DevLab/branch/master/graph/badge.svg)](https://codecov.io/gh/TechnologyAdvice/DevLab)
 
