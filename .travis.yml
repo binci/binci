@@ -10,7 +10,7 @@ node_js:
 notifications:
   email:
     on_success: never
-    on_failure: never
+    on_failure: always
     
 before_install:
   - sudo apt-get update > /dev/null
