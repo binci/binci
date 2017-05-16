@@ -3,6 +3,7 @@ const fs = require('fs')
 const pkg = require('package.json')
 const args = require('src/args')
 const utils = require('src/utils')
+const services = require('src/services')
 const sandbox = require('test/sandbox')
 
 const fixtures = {
@@ -12,6 +13,21 @@ describe('args', () => {
   beforeEach(() => {
     sandbox.spy(console, 'log')
     sandbox.stub(process, 'exit')
+  })
+  describe('disable', () => {
+    afterEach(() => {
+      services.disabled = []
+    })
+    it('assigns unique values to services.disabled array', () => {
+      args.raw = { d: ['foo', 'bar', 'foo'] }
+      args.disable()
+      expect(services.disabled).to.deep.equal([ 'foo', 'bar' ])
+    })
+    it('pushes single value to services.disabled array', () => {
+      args.raw = { d: 'foo' }
+      args.disable()
+      expect(services.disabled).to.deep.equal([ 'foo' ])
+    })
   })
   describe('tasks', () => {
     const confPath = `${process.cwd()}/devlab.yml`
