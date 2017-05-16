@@ -63,5 +63,10 @@
     "description": "Passes because service is not disabled for all tasks",
     "args": ["env", "redis:disable"],
     "should": "pass"
+  },
+  "cli disable": {
+    "description": "Fails because required service is disabled via command line",
+    "args": ["connect", "-d", "redis"],
+    "should": "fail"
   }
 }
