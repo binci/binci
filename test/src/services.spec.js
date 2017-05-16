@@ -6,6 +6,7 @@ const fixture = require('test/fixtures/service')
 
 describe('services', () => {
   afterEach(() => {
+    if (global.rmOnShutdown) delete global.rmOnShutdown
     services.running = []
   })
   describe('getStopTimeSecs', () => {
@@ -34,6 +35,12 @@ describe('services', () => {
       const svc = services.get(config.load())
       expect(svc[0].name).to.equal('mongodb')
       expect(svc[0].args).to.deep.equal(['run', '-d', '--rm', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0'])
+    })
+    it('returns an array of services and their command arrays (with rmOnShutdown)', () => {
+      global.rmOnShutdown = true
+      const svc = services.get(config.load())
+      expect(svc[0].name).to.equal('mongodb')
+      expect(svc[0].args).to.deep.equal(['run', '-d', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0'])
     })
   })
   describe('run', () => {
@@ -90,15 +97,26 @@ describe('services', () => {
       services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
       return services.stop()
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test', ''])
-          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test', ''])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
+        })
+    })
+    it('resolves after calling proc.run with stop and rm commands', () => {
+      global.rmOnShutdown = true
+      services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
+      return services.stop()
+        .then(() => {
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
+          expect(procRunStub.getCalls()[2].args[0]).to.deep.equal(['rm', 'dl_foo_test'])
+          expect(procRunStub.getCalls()[3].args[0]).to.deep.equal(['rm', 'dl_bar_test'])
         })
     })
     it('resolves after calling proc with stop and rm only for non-persistent services', () => {
       services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'bar' }]
       return services.stop()
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test', ''])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
         })
     })
     it('rejects with error containing names of services that failed', () => {
