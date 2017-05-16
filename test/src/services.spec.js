@@ -90,15 +90,15 @@ describe('services', () => {
       services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
       return services.stop()
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
-          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test', ''])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test', ''])
         })
     })
     it('resolves after calling proc with stop and rm only for non-persistent services', () => {
       services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'bar' }]
       return services.stop()
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test', ''])
         })
     })
     it('rejects with error containing names of services that failed', () => {
