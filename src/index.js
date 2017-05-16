@@ -100,6 +100,7 @@ const instance = {
    * @returns {object} promise
    */
   start: () => Promise.resolve()
+    .then(utils.checkVersion)
     .then(instance.checkForUpdates)
     .then(instance.getConfig)
     .then(cfg => {

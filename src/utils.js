@@ -4,6 +4,7 @@ const _ = require('halcyon')
 const proc = require('./proc')
 const output = require('./output')
 const cp = require('child_process')
+const cmp = require('semver-compare')
 
 /* istanbul ignore next: just a helper, will fail other tests */
 const pad = (len, str) => str.length < len ? str + ' '.repeat(len - str.length) : str
@@ -88,7 +89,20 @@ const utils = {
       output.line()
     }
     return true
-  })
+  }),
+  /**
+   * Parses Docker version information and stores version globally, or throws error
+   * if Docker is not installed.
+   * @returns {object} promise
+   */
+  checkVersion: () => proc.exec('docker -v')
+    .then((v) => {
+      const version = v.split(' ')[2].match(/([^,])/g).join('')
+      global.rmOnShutdown = !!(cmp(version, '1.13') === -1)
+    })
+    .catch(() => {
+      throw new Error('Docker not installed')
+    })
 }
 
 module.exports = utils
