@@ -41,7 +41,8 @@ const instance = {
         '/tmp/devlab.sh'
       ],
       cmd: '#!/bin/sh\nset -e;\necho "foo"'
-    }
+    },
+    rmOnShutdown: true
   },
   task: {
     services: [
@@ -85,7 +86,8 @@ const instance = {
         '/tmp/devlab.sh'
       ],
       cmd: '#!/bin/sh\nset -e;\nenv | sort'
-    }
+    },
+    rmOnShutdown: true
   }
 }
 

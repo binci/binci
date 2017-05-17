@@ -91,13 +91,13 @@ const services = {
    * Kills all running, non-persisted services
    * @returns {object} promise
    */
-  stop: () => {
+  stop: (cfg) => {
     const errors = []
     return Promise.all(
       _.pipe([
         _.filter(svc => _.test(/dl_/, svc.name)),
         _.map(svc => proc.run(['stop', '-t', svc.stopTimeSecs, svc.name], true)
-          .then(() => global.rmOnShutdown ? proc.run(['rm', svc.name], true) : Promise.resolve())
+          .then(() => cfg.rmOnShutdown ? proc.run(['rm', svc.name], true) : Promise.resolve())
           .catch(() => errors.push(svc.name))
         )
       ])(services.running))

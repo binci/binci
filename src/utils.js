@@ -98,7 +98,7 @@ const utils = {
   checkVersion: () => proc.exec('docker -v')
     .then((v) => {
       const version = v.split(' ')[2].match(/([^,])/g).join('')
-      global.rmOnShutdown = !!(cmp(version, '1.13') === -1)
+      return !!(cmp(version, '1.13') === -1)
     })
     .catch(() => {
       throw new Error('Docker not installed')

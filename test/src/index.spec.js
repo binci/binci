@@ -95,14 +95,16 @@ describe('index', () => {
   })
   describe('getConfig', () => {
     it('loads config and args and returns exec run command objects', () => {
+      const rmOnShutdown = true
       args.raw = { f: 'node:6', e: 'echo "foo"', _: [], c: configPath }
-      return instance.getConfig().then(cfg => {
+      return instance.getConfig(rmOnShutdown).then(cfg => {
         expect(cfg).to.deep.equal(fixtures.exec)
       })
     })
     it('loads config and args and returns task run command objects', () => {
+      const rmOnShutdown = true
       args.raw = { f: 'node:6', _: ['env'], c: configPath }
-      return instance.getConfig().then(cfg => {
+      return instance.getConfig(rmOnShutdown).then(cfg => {
         expect(cfg).to.deep.equal(fixtures.task)
       })
     })

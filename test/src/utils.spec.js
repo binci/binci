@@ -93,8 +93,8 @@ describe('utils', () => {
   describe('checkVersion', () => {
     it('checks Docker version and sets global rmOnShutdown flag', () => {
       sandbox.stub(proc, 'exec', () => Promise.resolve(fixtures.v.current))
-      return utils.checkVersion().then(() => {
-        expect(global.rmOnShutdown).to.be.false()
+      return utils.checkVersion().then(res => {
+        expect(res).to.be.false()
       })
     })
     it('checks version and throws error if Docker not installed', () => {
