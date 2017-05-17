@@ -7,7 +7,6 @@ const fixture = require('test/fixtures/service')
 
 describe('services', () => {
   afterEach(() => {
-    if (global.rmOnShutdown) delete global.rmOnShutdown
     services.running = []
   })
   describe('getStopTimeSecs', () => {
