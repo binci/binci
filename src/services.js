@@ -23,11 +23,17 @@ const services = {
     const tasks = _.values(_.pick(cfg.run, cfg.tasks))
     const objs = _.filter(_.isType('object'), tasks)
     // If any running task doesn't have object config and no services specified in command line, keep all services
-    if (objs.length !== tasks.length && !services.disabled.length) return cfg
-    const svcs = _.unique([
-      ...services.disabled,
-      ..._.chain(t => t.disable === '*' ? _.map(_.keys, cfg.services) : t.disable, objs)
-    ])
+    if (objs.length !== tasks.length && !services.disabled.length && !services.disableAll) return cfg
+    const allSvcs = _.map(_.keys, cfg.services)
+    let svcs
+    if (services.disableAll) {
+      svcs = _.flatten(allSvcs)
+    } else {
+      svcs = _.unique([
+        ...services.disabled,
+        ..._.chain(t => t.disable === '*' ? allSvcs : t.disable, objs)
+      ])
+    }
     // Track which services are disabled by running tasks
     const counts = _.pipe([
       _.groupBy(_.identity),
