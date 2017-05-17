@@ -61,7 +61,7 @@ const services = {
       name,
       persist: value.persist || false,
       stopTimeSecs: services.getStopTimeSecs(cfg, value),
-      args: command.get(value, name, null)
+      args: command.get(_.merge(value, { rmOnShutdown: cfg.rmOnShutdown }), name, null)
     })]), cfg.services),
   /**
    * Runs services and resolves or rejects

@@ -36,10 +36,10 @@ const instance = {
       .then(args.parse)
       .then(parsedArgs => {
         const cfg = services.filterEnabled(_.merge(config.load(parsedArgs.configPath), parsedArgs))
-        return { services: services.get(cfg), primary: command.get(cfg, 'primary', tmpdir, true), rmOnShutdown }
+        return { services: services.get(cfg), primary: command.get(_.merge(cfg, { rmOnShutdown }), 'primary', tmpdir, true) }
       })
   },
-  /**
+  /** 
    * Starts services and resolves or rejects
    * @param {object} cfg Instance config object
    * @returns {object} promise

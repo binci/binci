@@ -103,8 +103,7 @@ const command = {
   get: (cfg, name, tmpdir, primary = false) => {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
-    /* istanbul ignore next */
-    const serviceArgs = global.rmOnShutdown ? ['run', '-d', '--privileged'] : ['run', '-d', '--rm', '--privileged']
+    const serviceArgs = cfg.rmOnShutdown ? ['run', '-d', '--privileged'] : ['run', '-d', '--rm', '--privileged']
     let args = primary ? ['run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-v', `${tmpdir}:${tmpdir}`, '-w', cwd, '--privileged'] : serviceArgs
     args = args.concat(_.flatten([
       command.getArgs(cfg),
