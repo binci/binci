@@ -13,11 +13,10 @@ describe('args', () => {
   beforeEach(() => {
     sandbox.spy(console, 'log')
     sandbox.stub(process, 'exit')
+    services.disabled = []
+    services.disableAll = false
   })
   describe('disable', () => {
-    afterEach(() => {
-      services.disabled = []
-    })
     it('assigns unique values to services.disabled array', () => {
       args.raw = { d: ['foo', 'bar', 'foo'] }
       args.disable()
@@ -27,6 +26,13 @@ describe('args', () => {
       args.raw = { d: 'foo' }
       args.disable()
       expect(services.disabled).to.deep.equal([ 'foo' ])
+    })
+  })
+  describe('disableAll', () => {
+    it('sets services.disableAll to true', () => {
+      args.raw = { 'disable-all': true }
+      args.disableAll()
+      expect(services.disableAll).to.be.true()
     })
   })
   describe('tasks', () => {
