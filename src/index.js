@@ -39,7 +39,7 @@ const instance = {
         return { services: services.get(cfg), primary: command.get(_.merge(cfg, { rmOnShutdown }), 'primary', tmpdir, true) }
       })
   },
-  /** 
+  /**
    * Starts services and resolves or rejects
    * @param {object} cfg Instance config object
    * @returns {object} promise
