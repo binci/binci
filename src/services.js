@@ -61,7 +61,7 @@ const services = {
       name,
       persist: value.persist || false,
       stopTimeSecs: services.getStopTimeSecs(cfg, value),
-      args: command.get(value, name, null)
+      args: command.get(_.merge(value, { rmOnShutdown: cfg.rmOnShutdown }), name, null)
     })]), cfg.services),
   /**
    * Runs services and resolves or rejects
@@ -91,12 +91,15 @@ const services = {
    * Kills all running, non-persisted services
    * @returns {object} promise
    */
-  stop: () => {
+  stop: (cfg) => {
     const errors = []
     return Promise.all(
       _.pipe([
         _.filter(svc => _.test(/dl_/, svc.name)),
-        _.map(svc => proc.run(['stop', '-t', svc.stopTimeSecs, svc.name], true).catch(() => errors.push(svc.name)))
+        _.map(svc => proc.run(['stop', '-t', svc.stopTimeSecs, svc.name], true)
+          .then(() => cfg.rmOnShutdown ? proc.run(['rm', svc.name], true) : Promise.resolve())
+          .catch(() => errors.push(svc.name))
+        )
       ])(services.running))
       .then(() => {
         const stopError = new Error()

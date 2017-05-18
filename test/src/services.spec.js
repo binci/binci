@@ -1,4 +1,5 @@
 const path = require('path')
+const _ = require('halcyon')
 const services = require('src/services')
 const proc = require('src/proc')
 const config = require('src/config')
@@ -31,9 +32,14 @@ describe('services', () => {
       expect(services.get({})).to.be.false()
     })
     it('returns an array of services and their command arrays', () => {
-      const svc = services.get(config.load())
+      const svc = services.get(_.merge({ rmOnShutdown: false }, config.load()))
       expect(svc[0].name).to.equal('mongodb')
       expect(svc[0].args).to.deep.equal(['run', '-d', '--rm', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0'])
+    })
+    it('returns an array of services and their command arrays (with rmOnShutdown)', () => {
+      const svc = services.get(_.merge({ rmOnShutdown: true }, config.load()))
+      expect(svc[0].name).to.equal('mongodb')
+      expect(svc[0].args).to.deep.equal(['run', '-d', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0'])
     })
   })
   describe('run', () => {
@@ -88,15 +94,28 @@ describe('services', () => {
     })
     it('resolves after calling proc.run with stop command for running services', () => {
       services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
-      return services.stop()
+      const cfg = { rmOnShutdown: false }
+      return services.stop(cfg)
         .then(() => {
           expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
           expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
         })
     })
+    it('resolves after calling proc.run with stop and rm commands', () => {
+      const cfg = { rmOnShutdown: true }
+      services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
+      return services.stop(cfg)
+        .then(() => {
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
+          expect(procRunStub.getCalls()[2].args[0]).to.deep.equal(['rm', 'dl_foo_test'])
+          expect(procRunStub.getCalls()[3].args[0]).to.deep.equal(['rm', 'dl_bar_test'])
+        })
+    })
     it('resolves after calling proc with stop and rm only for non-persistent services', () => {
+      const cfg = { rmOnShutdown: false }
       services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'bar' }]
-      return services.stop()
+      return services.stop(cfg)
         .then(() => {
           expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
         })

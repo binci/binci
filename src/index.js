@@ -31,15 +31,15 @@ const instance = {
    * instructions for primaary instance and services.
    * @returns {object} Command instructions
    */
-  getConfig: () => {
+  getConfig: (rmOnShutdown) => {
     return Promise.resolve()
       .then(args.parse)
       .then(parsedArgs => {
         const cfg = services.filterEnabled(_.merge(config.load(parsedArgs.configPath), parsedArgs))
-        return { services: services.get(cfg), primary: command.get(cfg, 'primary', tmpdir, true) }
+        return { services: services.get(cfg), primary: command.get(_.merge(cfg, { rmOnShutdown }), 'primary', tmpdir, true) }
       })
   },
-  /**
+  /** 
    * Starts services and resolves or rejects
    * @param {object} cfg Instance config object
    * @returns {object} promise
@@ -66,10 +66,10 @@ const instance = {
    * Stops services and resolves or rejects
    * @returns {object} promise
    */
-  stopServices: () => {
+  stopServices: (cfg) => {
     if (!services.running.length) return Promise.resolve()
     const servicesStopSpinner = output.spinner('Stopping services')
-    return services.stop()
+    return services.stop(cfg)
       .then(() => servicesStopSpinner.succeed())
       .catch((err) => {
         servicesStopSpinner.fail()
@@ -101,6 +101,7 @@ const instance = {
    */
   start: () => Promise.resolve()
     .then(instance.checkForUpdates)
+    .then(utils.checkVersion)
     .then(instance.getConfig)
     .then(cfg => {
       // Write the primary command to tmp script
@@ -108,7 +109,7 @@ const instance = {
         .then(() => utils.checkOrphans())
         .then(() => instance.startServices(cfg))
         .then(instance.runCommand)
-        .then(instance.stopServices)
+        .then(() => instance.stopServices(cfg))
     })
     .catch((e) => {
       services.stop()
