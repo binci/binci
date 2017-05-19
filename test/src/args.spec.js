@@ -187,5 +187,20 @@ describe('args', () => {
         expect(args.showVersion).to.be.calledOnce()
       })
     })
+    it('calls args init method if `init` is passed', () => {
+      sandbox.stub(args, 'init')
+      args.raw = { _: [ 'init' ] }
+      return args.parse().then(() => {
+        expect(args.init).to.be.calledOnce()
+      })
+    })
+    it('skips init process if `init` is called but config already exists', () => {
+      sandbox.stub(fs, 'statSync', () => true)
+      args.raw = { v: true, _: [ 'init' ] }
+      sandbox.stub(args, 'showVersion')
+      return args.parse().then(() => {
+        expect(args.showVersion).to.be.calledOnce()
+      })
+    })
   })
 })

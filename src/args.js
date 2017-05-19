@@ -121,7 +121,7 @@ const args = {
    * Parse arguments and call (action) or append to config (prop)
    * @returns {object}
    */
-  parse: () => {
+  parse: () => Promise.resolve().then(() => {
     const cfg = {}
     const actions = []
     _.pipe([
@@ -151,7 +151,7 @@ const args = {
       return Promise.resolve(action())
     }))
       .then(() => _.merge(cfg, { run: args.getTask() }))
-  }
+  })
 }
 
 module.exports = args
