@@ -3,19 +3,16 @@ const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
 const input = require('input')
 const init = require('src/init')
+const sandbox = require('test/sandbox')
 
 describe('init', () => {
   beforeEach(() => {
-    sinon.stub(input, 'text', () => Promise.resolve('foo'))
-    sinon.stub(fs, 'writeFileAsync', () => Promise.resolve())
-  })
-  afterEach(() => {
-    input.text.restore()
-    fs.writeFileAsync.restore()
+    sandbox.stub(input, 'text', () => Promise.resolve('foo'))
+    sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
   })
   it('rejects if input cannot be read', () => {
     input.text.restore()
-    sinon.stub(input, 'text', () => Promise.reject(new Error('foo')))
+    sandbox.stub(input, 'text', () => Promise.reject(new Error('foo')))
     return init()
       .catch((err) => {
         expect(err.message).to.equal('Could not read input')
@@ -23,7 +20,7 @@ describe('init', () => {
   })
   it('rejects if config file cannot be written', () => {
     fs.writeFileAsync.restore()
-    sinon.stub(fs, 'writeFileAsync', () => Promise.reject(new Error('foo')))
+    sandbox.stub(fs, 'writeFileAsync', () => Promise.reject(new Error('foo')))
     return init()
       .catch((err) => {
         expect(err.message).to.equal('Unable to write config file')
