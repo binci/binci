@@ -63,6 +63,7 @@
     "bluebird": "^3.4.6",
     "chalk": "^1.1.1",
     "halcyon": "^0.19.1",
+    "input": "^1.0.1",
     "js-yaml": "^3.4.2",
     "log-symbols": "^1.0.2",
     "minimist": "^1.2.0",
