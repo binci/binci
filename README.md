@@ -49,7 +49,7 @@ The above will load your project via Devlab & Docker, then echo the environment 
 Devlab is controlled by a `devlab.yml` file in the root of your project. A basic example is shown below:
 
 ```yaml
-from: node:0.10
+from: node:6
 services:
   - mongo:
       from: mongo:3.0
