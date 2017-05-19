@@ -198,8 +198,10 @@ describe('args', () => {
       sandbox.stub(fs, 'statSync', () => true)
       args.raw = { v: true, _: [ 'init' ] }
       sandbox.stub(args, 'showVersion')
+      sandbox.spy(args, 'init')
       return args.parse().then(() => {
         expect(args.showVersion).to.be.calledOnce()
+        expect(args.init).to.not.be.called()
       })
     })
   })
