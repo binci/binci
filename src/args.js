@@ -137,7 +137,7 @@ const args = {
     ])(args.raw)
 
     // Catch init command
-    if (args.raw._[0] === 'init') {
+    if (args.raw._ && args.raw._[0] === 'init') {
       try {
         // If config already exists, just move on...
         fs.statSync(`${process.cwd()}/devlab.yml`)
