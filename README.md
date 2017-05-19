@@ -1,5 +1,4 @@
 [![Travis branch](https://img.shields.io/travis/TechnologyAdvice/DevLab/master.svg)](https://travis-ci.org/TechnologyAdvice/DevLab)
-[![Code Climate](https://codeclimate.com/github/TechnologyAdvice/DevLab/badges/gpa.svg)](https://codeclimate.com/github/TechnologyAdvice/DevLab)
 [![codecov](https://codecov.io/gh/TechnologyAdvice/DevLab/branch/master/graph/badge.svg)](https://codecov.io/gh/TechnologyAdvice/DevLab)
 
 **Updgrading from 2.x to 3.x: Please see [Release Notes](https://github.com/TechnologyAdvice/DevLab/releases/tag/v3.0.0)**
