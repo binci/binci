@@ -26,6 +26,24 @@ npm install devlab -g
 
 **Important Note**: In order to run the tasks, Devlab creates a temp file (`devlab.sh`). The tool will do its best to determine the best location (usually `/tmp`), but this can be explicitly set by specifying the environment variable `DEVLAB_TMP`.
 
+## Quick Start
+
+After you have Devlab installed you can initialize a project by moving to the project directory and running the following:
+
+```
+devlab init
+```
+
+The above will prompt you to enter a base image; this should be a valid Docker image.
+
+Once the configuration is generated you can run tasks. The default template includes several, for example:
+
+```
+devlab env
+```
+
+The above will load your project via Devlab & Docker, then echo the environment variables available.
+
 ## Usage
 
 Devlab is controlled by a `devlab.yml` file in the root of your project. A basic example is shown below:
