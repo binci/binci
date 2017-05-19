@@ -1,7 +1,9 @@
 'use strict'
+let initStub
 const fs = require('fs')
 const pkg = require('package.json')
-const args = require('src/args')
+const args = proxyquire('src/args', { './init': (...args) => initStub(...args) })
+const output = require('src/output')
 const utils = require('src/utils')
 const services = require('src/services')
 const sandbox = require('test/sandbox')
@@ -15,6 +17,28 @@ describe('args', () => {
     sandbox.stub(process, 'exit')
     services.disabled = []
     services.disableAll = false
+  })
+  describe('init', () => {
+    beforeEach(() => {
+      sandbox.stub(output, 'success')
+      sandbox.stub(output, 'error')
+    })
+    it('calls init method, outputs success and exits with 0 on success', () => {
+      initStub = sinon.spy(() => Promise.resolve('foo'))
+      return args.init()
+        .then(() => {
+          expect(output.success).to.be.calledWith('foo')
+          expect(process.exit).to.be.calledWith(0)
+        })
+    })
+    it('calls init method, outputs error and exits with 1 on failure', () => {
+      initStub = sinon.spy(() => Promise.reject(new Error('foo')))
+      return args.init()
+        .catch(() => {
+          expect(output.error).to.be.calledWith(/foo/)
+          expect(process.exit).to.be.calledWith(1)
+        })
+    })
   })
   describe('disable', () => {
     it('assigns unique values to services.disabled array', () => {
@@ -161,6 +185,23 @@ describe('args', () => {
       sandbox.stub(args, 'showVersion')
       return args.parse().then(() => {
         expect(args.showVersion).to.be.calledOnce()
+      })
+    })
+    it('calls args init method if `init` is passed', () => {
+      sandbox.stub(args, 'init')
+      args.raw = { _: [ 'init' ] }
+      return args.parse().then(() => {
+        expect(args.init).to.be.calledOnce()
+      })
+    })
+    it('skips init process if `init` is called but config already exists', () => {
+      sandbox.stub(fs, 'statSync', () => true)
+      args.raw = { v: true, _: [ 'init' ] }
+      sandbox.stub(args, 'showVersion')
+      sandbox.spy(args, 'init')
+      return args.parse().then(() => {
+        expect(args.showVersion).to.be.calledOnce()
+        expect(args.init).to.not.be.called()
       })
     })
   })

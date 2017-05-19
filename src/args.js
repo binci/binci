@@ -5,6 +5,9 @@ const min = require('minimist')
 const pkg = require('../package.json')
 const utils = require('./utils')
 const services = require('./services')
+const init = require('./init')
+const output = require('./output')
+const fs = require('fs')
 
 /* istanbul ignore next */
 const processArgs = process.argv[0] === 'node' ? 1 : 2
@@ -27,10 +30,25 @@ const args = {
     'f': { prop: 'from', help: 'Run with specified docker image' },
     'c': { prop: 'configPath', help: 'Run with custom config file path' },
     'd': { action: 'disable', help: 'Disable specified service' },
+    'init': { action: 'init', help: 'Initialize new devlab project config' },
     'disable-all': { action: 'disableAll', help: 'Disable all configured services' },
     'tasks': { action: 'tasks', help: 'List all available tasks' },
     'cleanup': { action: 'cleanupDL', help: 'Stops and removes any non-persisted Devlab containers' },
     'cleanup-all': { action: 'cleanupAll', help: 'Stops and removes ALL docker containers' }
+  },
+  /**
+   * Runs initialization script to create template devlab.yml file
+   */
+  init: () => {
+    return init()
+      .then((msg) => {
+        output.success(msg)
+        process.exit(0)
+      })
+      .catch((err) => {
+        output.error(err.message)
+        process.exit(1)
+      })
   },
   /**
    * Adds specified service names to disabled list
@@ -103,7 +121,7 @@ const args = {
    * Parse arguments and call (action) or append to config (prop)
    * @returns {object}
    */
-  parse: () => {
+  parse: () => Promise.resolve().then(() => {
     const cfg = {}
     const actions = []
     _.pipe([
@@ -118,12 +136,22 @@ const args = {
       })
     ])(args.raw)
 
+    // Catch init command
+    if (args.raw._ && args.raw._[0] === 'init') {
+      try {
+        // If config already exists, just move on...
+        fs.statSync(`${process.cwd()}/devlab.yml`)
+      } catch (e) {
+        return args.init()
+      }
+    }
+
     // run all actions, then return config
     return Promise.all(actions.map(action => {
       return Promise.resolve(action())
     }))
       .then(() => _.merge(cfg, { run: args.getTask() }))
-  }
+  })
 }
 
 module.exports = args
