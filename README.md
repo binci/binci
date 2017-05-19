@@ -141,6 +141,18 @@ tasks:
   start: npm start
 ```
 
+For one-off cases, individual services can also be disabled via the command line:
+
+```
+lab lint -d mongo
+```
+
+or all services:
+
+```
+lab lint --disable-all
+```
+
 ## Container Management
 
 Devlab will automatically `stop` services after any run (success or fail). However, if this fails or some other fringe-case causes this process to stop responding the system can leave orphaned containers running.

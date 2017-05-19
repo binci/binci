@@ -132,6 +132,7 @@ describe('services', () => {
   describe('filterEnabled', () => {
     afterEach(() => {
       services.disabled = []
+      services.disableAll = false
     })
     it('does nothing if no task is supplied', () => {
       const cfg = { run: [] }
@@ -151,6 +152,16 @@ describe('services', () => {
         tasks: { test: { disable: '*', cmd: 'echo hello' } },
         run: ['test']
       }
+      expect(services.filterEnabled(cfg).services).to.deep.equal([])
+      expect(services.disabled).to.deep.equal(['disabledOne', 'disabledTwo'])
+    })
+    it('disables all services when disableAll is true', () => {
+      const cfg = {
+        services: [{ disabledOne: { from: 'test' } }, { disabledTwo: { from: 'disable' } }],
+        tasks: { test: 'echo hello' },
+        run: ['test']
+      }
+      services.disableAll = true
       expect(services.filterEnabled(cfg).services).to.deep.equal([])
       expect(services.disabled).to.deep.equal(['disabledOne', 'disabledTwo'])
     })

@@ -23,6 +23,7 @@ tasks:
   test: npm run test
   lint: npm run lint
   shell: /bin/sh
+  connect: node scripts/connect
   redis:disable:
     disable:
       - redis

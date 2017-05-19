@@ -4,6 +4,7 @@ const _ = require('halcyon')
 const min = require('minimist')
 const pkg = require('../package.json')
 const utils = require('./utils')
+const services = require('./services')
 
 /* istanbul ignore next */
 const processArgs = process.argv[0] === 'node' ? 1 : 2
@@ -25,9 +26,23 @@ const args = {
     'e': { prop: 'exec', help: 'Run a custom command instead of defined task' },
     'f': { prop: 'from', help: 'Run with specified docker image' },
     'c': { prop: 'configPath', help: 'Run with custom config file path' },
+    'd': { action: 'disable', help: 'Disable specified service' },
+    'disable-all': { action: 'disableAll', help: 'Disable all configured services' },
     'tasks': { action: 'tasks', help: 'List all available tasks' },
     'cleanup': { action: 'cleanupDL', help: 'Stops and removes any non-persisted Devlab containers' },
     'cleanup-all': { action: 'cleanupAll', help: 'Stops and removes ALL docker containers' }
+  },
+  /**
+   * Adds specified service names to disabled list
+   */
+  disable: () => {
+    services.disabled = Array.isArray(args.raw.d) ? _.unique(args.raw.d) : [ args.raw.d ]
+  },
+  /**
+   * Marks all services to be disabled
+   */
+  disableAll: () => {
+    services.disableAll = true
   },
   /**
    * List all available tasks

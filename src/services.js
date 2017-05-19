@@ -22,16 +22,25 @@ const services = {
     if (!cfg.run.length) return cfg
     const tasks = _.values(_.pick(cfg.run, cfg.tasks))
     const objs = _.filter(_.isType('object'), tasks)
-    // If any running task doesn't have object config, keep all services
-    if (objs.length !== tasks.length) return cfg
-    const svcs = _.chain(t => t.disable === '*' ? _.map(_.keys, cfg.services) : t.disable, objs)
+    // If any running task doesn't have object config and no services specified in command line, keep all services
+    if (objs.length !== tasks.length && !services.disabled.length && !services.disableAll) return cfg
+    const allSvcs = _.map(_.keys, cfg.services)
+    let svcs
+    if (services.disableAll) {
+      svcs = _.flatten(allSvcs)
+    } else {
+      svcs = _.unique([
+        ...services.disabled,
+        ..._.chain(t => t.disable === '*' ? allSvcs : t.disable, objs)
+      ])
+    }
     // Track which services are disabled by running tasks
     const counts = _.pipe([
       _.groupBy(_.identity),
       _.map(_.length)
     ])(svcs)
     // Add service to list if disabled by all running tasks
-    services.disabled = _.keys(_.filter(_.equals(objs.length), counts))
+    services.disabled = _.keys(_.filter(_.equals(tasks.length), counts))
     /* istanbul ignore if: lots of work, testing doesn't prove anything... */
     if (!services.disabled.length) return cfg
     // Keep service if name is not in disabled list
