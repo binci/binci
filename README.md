@@ -233,9 +233,37 @@ If running `docker run -d --rm <container>` causes this error the `--rm` flag ca
 
 ## Development
 
+### Tests
+
 To run tests, fork & clone the repository then run `npm install && npm test`.
 
+### End-to-End Tests
+
 To run end-to-end tests run `npm run e2e`. This works by fully emulating a run inside the `/test/project` directory and executing `/test/system/run.js` with the `/test/system/tests.json` definitions file.
+
+### Testing Builds
+
+To test binary builds:
+
+**1. Build Binary:**
+
+```
+npm run build:linux
+```
+
+**2. Run Docker in Docker:**
+
+```
+docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w /app docker
+```
+
+**3. Create Devlab Alias:**
+
+```
+alias devlab=$PWD/bin/linux/devlab
+```
+
+Once the above steps are completed the `devlab` executable will be avilable.
 
 ## Why Devlab Over Docker Compose?
 
