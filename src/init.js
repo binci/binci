@@ -6,15 +6,21 @@ const input = require('input')
 
 // Initial config template
 const configTemplate = (image) => `from: ${image}
-services: []
-env: []
-volumes: []
-expose: []
-hosts: []
-before:
-  - echo "before..."
-after:
-  - echo "after..."
+# services:
+#   - some-service-name:
+#       from: some-docker-image
+# env:
+#   - TMP=\${TMP}
+# volumes:
+#   - $HOME:/root
+# expose:
+#   - 8080:8080
+# hosts:
+#   - some-host.com:127.0.0.1
+# before:
+#   - echo "before..."
+# after:
+#   - echo "after..."
 tasks:
   env: env | sort
   shell: /bin/sh
