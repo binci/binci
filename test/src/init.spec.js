@@ -14,6 +14,9 @@ describe('init', () => {
     input.text.restore()
     sandbox.stub(input, 'text', () => Promise.reject(new Error('foo')))
     return init()
+      .then(() => {
+        throw new Error('should throw')
+      })
       .catch((err) => {
         expect(err.message).to.equal('Could not read input')
       })
@@ -22,6 +25,9 @@ describe('init', () => {
     fs.writeFileAsync.restore()
     sandbox.stub(fs, 'writeFileAsync', () => Promise.reject(new Error('foo')))
     return init()
+      .then(() => {
+        throw new Error('should throw')
+      })
       .catch((err) => {
         expect(err.message).to.equal('Unable to write config file')
       })
