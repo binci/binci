@@ -251,7 +251,7 @@ To test binary builds:
 npm run build:linux
 ```
 
-**2. Run Docker in Docker:**
+**2. Run (Ubuntu) Docker in Docker:**
 
 ```
 docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w /app ubuntu sh -c "apt-get update && apt-get install docker.io -y && bash"
