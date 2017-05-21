@@ -71,7 +71,7 @@ tasks:
   run: node index.js
 ```
 
-The above can then be executed via the `devlab run` (or `lab run`) command from within the same directory as your project and `devlab.yml`. Execution would do the following:
+The above can then be executed via the `devlab run` command from within the same directory as your project and `devlab.yml`. Execution would do the following:
 
 - Pull and start `mongo` with `DB_ROOT_PASSWORD` environment variable and port `27017` exposed
 - Sets the following on the container:
@@ -95,14 +95,14 @@ tasks:
   test: npm test
 ```
 
-The above would allow you to run `lab <task>` to execute any of the tasks defined.
+The above would allow you to run `devlab <task>` to execute any of the tasks defined.
 
 ### Custom Execution
 
 Devlab also allows for executing tasks not predefined in the configuration file using the `-e` flag. For example:
 
 ```
-lab -e "/bin/sh"
+devlab -e "/bin/sh"
 ```
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an `exit` command is sent by the user.
@@ -161,13 +161,13 @@ tasks:
 For one-off cases, individual services can also be disabled via the command line:
 
 ```
-lab lint -d mongo
+devlab lint -d mongo
 ```
 
 or all services:
 
 ```
-lab lint --disable-all
+devlab lint --disable-all
 ```
 
 ## Container Management
