@@ -254,7 +254,7 @@ npm run build:linux
 **2. Run Docker in Docker:**
 
 ```
-docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w /app docker
+docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w /app ubuntu sh -c "apt-get update && apt-get install docker.io -y && bash"
 ```
 
 **3. Create Devlab Alias:**
