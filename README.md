@@ -10,7 +10,7 @@ workflow using Docker. Simply put; it's like having a cleanroom for all of your
 development processes which contains services (like databases) without needing
 to setup and maintain these environments manually.
 
-![example](/demo.gif)
+![example](http://i.imgur.com/Xezn8jj.gif)
 
 **FAQ: [Why Devlab over Docker-Compose?](#why-devlab-over-docker-compose)**
 
