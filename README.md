@@ -1,8 +1,6 @@
 [![Travis branch](https://img.shields.io/travis/TechnologyAdvice/DevLab/master.svg)](https://travis-ci.org/TechnologyAdvice/DevLab)
 [![codecov](https://codecov.io/gh/TechnologyAdvice/DevLab/branch/master/graph/badge.svg)](https://codecov.io/gh/TechnologyAdvice/DevLab)
 
-**Updgrading from 2.x to 3.x: Please see [Release Notes](https://github.com/TechnologyAdvice/DevLab/releases/tag/v3.0.0)**
-
 # DevLab
 
 DevLab is a utility that allows you to easily containerize your development
