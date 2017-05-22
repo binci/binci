@@ -1,8 +1,6 @@
 [![Travis branch](https://img.shields.io/travis/TechnologyAdvice/DevLab/master.svg)](https://travis-ci.org/TechnologyAdvice/DevLab)
 [![codecov](https://codecov.io/gh/TechnologyAdvice/DevLab/branch/master/graph/badge.svg)](https://codecov.io/gh/TechnologyAdvice/DevLab)
 
-**Updgrading from 2.x to 3.x: Please see [Release Notes](https://github.com/TechnologyAdvice/DevLab/releases/tag/v3.0.0)**
-
 # DevLab
 
 DevLab is a utility that allows you to easily containerize your development
@@ -10,7 +8,7 @@ workflow using Docker. Simply put; it's like having a cleanroom for all of your
 development processes which contains services (like databases) without needing
 to setup and maintain these environments manually.
 
-![example](/demo.gif)
+![example](http://i.imgur.com/Xezn8jj.gif)
 
 **FAQ: [Why Devlab over Docker-Compose?](#why-devlab-over-docker-compose)**
 
@@ -71,7 +69,7 @@ tasks:
   run: node index.js
 ```
 
-The above can then be executed via the `devlab run` (or `lab run`) command from within the same directory as your project and `devlab.yml`. Execution would do the following:
+The above can then be executed via the `devlab run` command from within the same directory as your project and `devlab.yml`. Execution would do the following:
 
 - Pull and start `mongo` with `DB_ROOT_PASSWORD` environment variable and port `27017` exposed
 - Sets the following on the container:
@@ -95,14 +93,14 @@ tasks:
   test: npm test
 ```
 
-The above would allow you to run `lab <task>` to execute any of the tasks defined.
+The above would allow you to run `devlab <task>` to execute any of the tasks defined.
 
 ### Custom Execution
 
 Devlab also allows for executing tasks not predefined in the configuration file using the `-e` flag. For example:
 
 ```
-lab -e "/bin/sh"
+devlab -e "/bin/sh"
 ```
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an `exit` command is sent by the user.
@@ -161,13 +159,13 @@ tasks:
 For one-off cases, individual services can also be disabled via the command line:
 
 ```
-lab lint -d mongo
+devlab lint -d mongo
 ```
 
 or all services:
 
 ```
-lab lint --disable-all
+devlab lint --disable-all
 ```
 
 ## Container Management
@@ -233,9 +231,37 @@ If running `docker run -d --rm <container>` causes this error the `--rm` flag ca
 
 ## Development
 
+### Tests
+
 To run tests, fork & clone the repository then run `npm install && npm test`.
 
+### End-to-End Tests
+
 To run end-to-end tests run `npm run e2e`. This works by fully emulating a run inside the `/test/project` directory and executing `/test/system/run.js` with the `/test/system/tests.json` definitions file.
+
+### Testing Builds
+
+To test binary builds:
+
+**1. Build Binary:**
+
+```
+npm run build:linux
+```
+
+**2. Run (Ubuntu) Docker in Docker:**
+
+```
+docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w /app ubuntu sh -c "apt-get update && apt-get install docker.io -y && bash"
+```
+
+**3. Create Devlab Alias:**
+
+```
+alias devlab=$PWD/bin/linux/devlab
+```
+
+Once the above steps are completed the `devlab` executable will be avilable.
 
 ## Why Devlab Over Docker Compose?
 

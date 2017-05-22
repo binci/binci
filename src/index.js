@@ -20,7 +20,8 @@ global.instanceId = require('shortid').generate()
 
 const instance = {
   checkForUpdates: () => {
-    updateNotifier({ pkg }).notify()
+    const notifier = updateNotifier({ pkg })
+    if (notifier.update) output.warn(`Update available: ${notifier.update.latest}`)
   },
   /**
    * @property {number} Timestamp of instance start

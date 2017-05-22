@@ -26,3 +26,19 @@ after_success:
   - npm i -g codecov
   - codecov -f coverage/lcov.info
   
+
+deploy:
+  - provider: script
+    script: npm run build
+    on:
+      branch: master
+  - provider: s3
+    skip_cleanup: true
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: devlab
+    local-dir: bin
+    acl: public_read
+    on:
+      branch: master
+  

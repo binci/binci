@@ -3,7 +3,7 @@ const fs = require('fs')
 const Promise = require('bluebird')
 
 const sandbox = require('test/sandbox')
-const mockUpdateNotifierInstance = { notify: sandbox.spy() }
+const mockUpdateNotifierInstance = { update: { latest: '1.1.1' } }
 const mockUpdateNotifier = sandbox.spy(() => mockUpdateNotifierInstance)
 proxyquire('src/index', {
   'update-notifier': mockUpdateNotifier
@@ -28,19 +28,18 @@ describe('index', () => {
     })
     sandbox.stub(output, 'line')
     sandbox.stub(output, 'success')
+    sandbox.stub(output, 'warn')
     sandbox.stub(output, 'error')
   })
   describe('checkForUpdates', () => {
-    it('calls updateNotifier().notify()', () => {
+    it('warns user if an update is available', () => {
       expect(mockUpdateNotifier).not.to.have.been.called()
-      expect(mockUpdateNotifierInstance.notify).not.to.have.been.called()
 
       instance.checkForUpdates()
 
       expect(mockUpdateNotifier).to.have.been.calledOnce()
       expect(mockUpdateNotifier).to.have.been.calledWithExactly({ pkg })
-      expect(mockUpdateNotifierInstance.notify).to.have.been.calledOnce()
-      expect(mockUpdateNotifierInstance.notify).to.have.been.calledWithExactly()
+      expect(output.warn).to.be.calledWith(`Update available: ${mockUpdateNotifierInstance.update.latest}`)
     })
   })
   describe('startServices', () => {
