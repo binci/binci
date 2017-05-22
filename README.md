@@ -14,7 +14,7 @@ to setup and maintain these environments manually.
 
 ## Installation
 
-**NPM:**
+### NPM
 
 ```
 npm install devlab -g
@@ -22,7 +22,7 @@ npm install devlab -g
 
 **Note: DevLab requires Node v.6+ to run.**
 
-**Binaries:**
+### Binaries
 
 - [Linux](http://devlab.taplatform.net/linux/devlab)
 - [MacOSX](http://devlab.taplatform.net/mac/devlab)
