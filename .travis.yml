@@ -29,6 +29,10 @@ after_success:
 
 deploy:
   - provider: script
+    script: npm i pkg -g
+    on:
+      branch: master
+  - provider: script
     script: npm run build
     on:
       branch: master
