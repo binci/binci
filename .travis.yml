@@ -40,7 +40,7 @@ deploy:
     skip_cleanup: true
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: devlab
+    bucket: devlab.taplatform.net
     local-dir: bin
     acl: public_read
     on:
