@@ -20,7 +20,7 @@ const config = {
     } catch (err) {
       throw new Error([
         `No config found at ${configPath}.`,
-        'Please create a ./devlab.yml file or specify one with the `-c` flag.'
+        'Please run `devlab init` to create a devlab.yml file or specify one with the `-c` flag.'
       ].join(' '))
     }
 

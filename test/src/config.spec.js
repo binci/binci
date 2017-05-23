@@ -15,7 +15,7 @@ describe('config', () => {
     })
     it('exits the process if file cannot be found', () => {
       expect(() => config.load('/no/conf'))
-        .to.throw('Please create a ./devlab.yml file or specify one with the `-c` flag.')
+        .to.throw('Please run `devlab init` to create a devlab.yml file or specify one with the `-c` flag.')
     })
     it('exits the process if file cannot be parsed', () => {
       const error = [
