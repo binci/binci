@@ -45,7 +45,7 @@ sudo chmod +x /usr/local/bin/devlab
 
 **Windows [(download)](http://devlab.taplatform.net/windows/devlab.exe)**
 
-Download the above file and save to `\Windows\System32`
+Download the above file and run from the path where it is saved or add to a directory in your `PATH`.
 
 ---
 
