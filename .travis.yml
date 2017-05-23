@@ -29,10 +29,12 @@ after_success:
 
 deploy:
   - provider: script
+    skip_cleanup: true
     script: npm i pkg -g
     on:
       branch: master
   - provider: script
+    skip_cleanup: true
     script: npm run build
     on:
       branch: master
