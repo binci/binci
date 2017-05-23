@@ -24,9 +24,24 @@ npm install devlab -g
 
 ### Binaries
 
-- [Linux](http://devlab.taplatform.net/linux/devlab)
-- [MacOSX](http://devlab.taplatform.net/mac/devlab)
-- [Windows](http://devlab.taplatform.net/windows/devlab.exe)
+**Linux [(download)](http://devlab.taplatform.net/linux/devlab)**
+
+```
+curl -o /usr/local/bin/devlab http://devlab.taplatform.net/linux/devlab && \
+chmod +x /usr/local/bin/devlab
+```
+
+**Mac OSX [(download)](http://devlab.taplatform.net/mac/devlab)**
+
+```
+sudo mkdir -p /usr/local/bin && \
+sudo curl -o /usr/local/bin/devlab http://devlab.taplatform.net/mac/devlab && \
+sudo chmod +x /usr/local/bin/devlab
+```
+
+**Windows [(download)](http://devlab.taplatform.net/windows/devlab.exe)**
+
+Download the above file and save to `\Windows\System32`
 
 ---
 
