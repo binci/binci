@@ -85,7 +85,7 @@ const utils = {
     if (orphans.length) {
       output.line()
       output.warn(`These containers may not have exited correctly: ${orphans.join(', ')}`)
-      output.warn('You can attempt to remove these by running `lab --cleanup`')
+      output.warn('You can attempt to remove these by running `devlab --cleanup`')
       output.line()
     }
     return true
