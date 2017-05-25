@@ -3,3 +3,4 @@ node_modules/
 test/project/node_modules/
 **/*.log
 bin/
+.yarn-cache/

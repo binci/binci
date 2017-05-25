@@ -18,11 +18,9 @@ to setup and maintain these environments manually.
 
 ## Installation
 
-### NPM
+### YARN/NPM
 
-```
-npm install devlab -g
-```
+`yarn global add devlab` or `npm install devlab -g`
 
 **Note: DevLab requires Node v.6+ to run.**
 
@@ -262,11 +260,11 @@ If running `docker run -d --rm <container>` causes this error the `--rm` flag ca
 
 ### Tests
 
-To run tests, fork & clone the repository then run `npm install && npm test`.
+To run tests, fork & clone the repository then run `yarn install && yarn test`.
 
 ### End-to-End Tests
 
-To run end-to-end tests run `npm run e2e`. This works by fully emulating a run inside the `/test/project` directory and executing `/test/system/run.js` with the `/test/system/tests.json` definitions file.
+To run end-to-end tests run `yarn run e2e`. This works by fully emulating a run inside the `/test/project` directory and executing `/test/system/run.js` with the `/test/system/tests.json` definitions file.
 
 ### Testing Builds
 
@@ -275,7 +273,7 @@ To test binary builds:
 **1. Build Binary:**
 
 ```
-npm run build:linux
+yarn run build:linux
 ```
 
 **2. Run (Ubuntu) Docker in Docker:**
