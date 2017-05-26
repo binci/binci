@@ -12,6 +12,18 @@ const fixtureIds = fixtures.ps.ids.split('\n').filter(Boolean)
 const fixtureAllIds = fixtures.ps.allIds.split('\n').filter(Boolean)
 
 describe('utils', () => {
+  describe('tasks', () => {
+    beforeEach(() => {
+      sinon.stub(console, 'log')
+    })
+    afterEach(() => {
+      console.log.restore()
+    })
+    it('loads config and outputs tasks to the console', () => {
+      utils.tasks()
+      expect(console.log.firstCall.args[0]).to.include('Tasks')
+    })
+  })
   describe('cleanup', () => {
     beforeEach(() => {
       sandbox.stub(cp, 'execSync', cmd => {

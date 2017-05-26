@@ -21,6 +21,7 @@ global.instanceId = require('shortid').generate()
 const instance = {
   checkForUpdates: () => {
     const notifier = updateNotifier({ pkg })
+    /* istanbul ignore else: don't need to test that it wasn't called */
     if (notifier.update) output.warn(`Update available: ${notifier.update.latest}`)
   },
   /**

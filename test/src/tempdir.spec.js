@@ -22,11 +22,12 @@ describe('tempdir', () => {
     delete process.env.DEVLAB_TMP
   })
   it('uses /tmp if DEVLAB_TMP is not available', () => {
-    process.env.DEVLAB_TMP = '/var'
+    process.env.DEVLAB_TMP = '/nope'
     expect(tempdir()).to.equal('/tmp')
     delete process.env.DEVLAB_TMP
   })
   it('uses /tmp if DEVLAB_TMP not set', () => {
+    delete process.env.DEVLAB_TMP
     expect(tempdir()).to.equal('/tmp')
   })
   it('uses os-tmpdir if DEVLAB_TMP and /tmp not available', () => {

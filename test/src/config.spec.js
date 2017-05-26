@@ -1,14 +1,22 @@
 const config = require('src/config')
 const Promise = require('bluebird')
 const fs = Promise.promisifyAll(require('fs'))
+const path = require('path')
+const rimraf = require('rimraf')
 
 describe('config', () => {
+  const confPath = path.resolve(__dirname, '/tmp/devlab.yml')
+  beforeEach(() => {
+    sinon.stub(process, 'cwd', () => path.resolve(__dirname, '/tmp'))
+    return fs.writeFileAsync(confPath, 'from: node:4')
+  })
+  afterEach((done) => {
+    process.cwd.restore()
+    rimraf(`${__dirname}/tmp`, done)
+  })
   describe('load', () => {
-    const confPath = `${process.cwd()}/devlab.yml`
-    beforeEach(() => fs.writeFileAsync(confPath, 'from: node:4'))
-    afterEach(() => fs.unlinkAsync(confPath))
     it('loads the $CWD/devlab.yml default config location', () => {
-      expect(config.load()).to.deep.equal({ from: 'node:4' })
+      expect(config.load()).to.be.an('object')
     })
     it('loads the devlab.yml from a custom path when specified', () => {
       expect(config.load(confPath)).to.deep.equal({ from: 'node:4' })

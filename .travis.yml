@@ -15,14 +15,16 @@ notifications:
 before_install:
   - sudo apt-get update > /dev/null
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine=17.04.0~ce-0~ubuntu-trusty > /dev/null
+  - yarn add global devlab
 
 install:
-  - yarn install
+  - devlab install
 
 script:
-  - yarn test
+  - devlab test
   
 after_success:
+  - sudo chmod -R 777 node_modules/ && sudo chmod -R 777 ~/.npm
   - yarn global add codecov
   - codecov -f coverage/lcov.info
   

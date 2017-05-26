@@ -60,30 +60,15 @@ describe('args', () => {
     })
   })
   describe('tasks', () => {
-    const confPath = `${process.cwd()}/devlab.yml`
-
-    before(() => {
-      fs.writeFileAsync(confPath, [
-        'tasks:',
-        '  stuff: echo "stuff" > /dev/null',
-        '  lint: eslint .',
-        '  ci: stuff test'
-      ].join('\n'))
+    beforeEach(() => {
+      sinon.stub(utils, 'tasks')
     })
-
-    after(() => {
-      fs.unlinkAsync(confPath)
+    afterEach(() => {
+      utils.tasks.restore()
     })
-
-    it('pretty prints all tasks in the config', () => {
+    it('calls utils tasks method to list available tasks', () => {
       args.tasks()
-      expect(console.log).to.have.been.calledWithExactly([
-        '',
-        'Tasks:',
-        '  stuff    echo "stuff" > /dev/null',
-        '  lint     eslint .',
-        '  ci       stuff test'
-      ].join('\n'))
+      expect(utils.tasks).to.be.calledOnce()
       expect(process.exit).to.be.calledWith(0)
     })
   })
@@ -188,10 +173,12 @@ describe('args', () => {
       })
     })
     it('calls args init method if `init` is passed', () => {
+      sinon.stub(process, 'cwd', () => __dirname)
       sandbox.stub(args, 'init')
       args.raw = { _: [ 'init' ] }
       return args.parse().then(() => {
         expect(args.init).to.be.calledOnce()
+        process.cwd.restore()
       })
     })
     it('skips init process if `init` is called but config already exists', () => {
