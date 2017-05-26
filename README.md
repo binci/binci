@@ -260,7 +260,11 @@ If running `docker run -d --rm <container>` causes this error the `--rm` flag ca
 
 ### Tests
 
-To run tests, fork & clone the repository then run `yarn install && yarn test`.
+Devlab can be run via `yarn`/`npm` scripts, but is also setup to run development tasks using Devlab.
+
+Ensure you have the latest version installed then run:
+
+`devlab install test` or `yarn install && yarn test`.
 
 ### End-to-End Tests
 

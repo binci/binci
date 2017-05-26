@@ -107,7 +107,10 @@ const services = {
         _.filter(svc => _.test(/dl_/, svc.name)),
         _.map(svc => proc.run(['stop', '-t', svc.stopTimeSecs, svc.name], true)
           .then(() => cfg.rmOnShutdown ? proc.run(['rm', svc.name], true) : Promise.resolve())
-          .catch(() => errors.push(svc.name))
+          .catch(() => {
+            /* istanbul ignore next: difficult to make a container shutdown fail reliably */
+            errors.push(svc.name)
+          })
         )
       ])(services.running))
       .then(() => {

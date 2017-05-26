@@ -10,6 +10,9 @@ const cmp = require('semver-compare')
 const pad = (len, str) => str.length < len ? str + ' '.repeat(len - str.length) : str
 
 const utils = {
+  /**
+   * Outputs all available tasks in devlab config
+   */
   tasks: () => {
     const cfg = require('./config').load()
     const tasks = _.keys(cfg.tasks)

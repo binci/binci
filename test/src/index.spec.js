@@ -34,9 +34,7 @@ describe('index', () => {
   describe('checkForUpdates', () => {
     it('warns user if an update is available', () => {
       expect(mockUpdateNotifier).not.to.have.been.called()
-
       instance.checkForUpdates()
-
       expect(mockUpdateNotifier).to.have.been.calledOnce()
       expect(mockUpdateNotifier).to.have.been.calledWithExactly({ pkg })
       expect(output.warn).to.be.calledWith(`Update available: ${mockUpdateNotifierInstance.update.latest}`)
