@@ -29,14 +29,14 @@ const command = {
    */
   parseArgs: (type, args) => _.chain((item) => ([command.args[type], command.parseHostEnvVars(item)]), args),
   /**
-   * Parses config object and returns container name. Will have dl_ prefix and
+   * Parses config object and returns container name. Will have bc_ prefix and
    * InstanceID suffix if ephemeral, unaltered name for persisted containers
    * @param {object} cfg Config object
    * @returns {string}
    */
   getName: (name, cfg) => {
     if (cfg.persist) return name
-    return `dl_${name}_${global.instanceId}`
+    return `bc_${name}_${global.instanceId}`
   },
   /**
    * Parses config object and returns array of command arguments
@@ -110,7 +110,7 @@ const command = {
       command.getLinks(cfg),
       ['--name', command.getName(name, cfg)],
       cfg.from,
-      primary ? ['sh', `${tmpdir}/devlab.sh`] : []
+      primary ? ['sh', `${tmpdir}/binci.sh`] : []
     ]))
     return primary ? { args, cmd: command.getExec(cfg) } : args
   }

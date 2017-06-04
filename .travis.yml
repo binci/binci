@@ -15,13 +15,13 @@ notifications:
 before_install:
   - sudo apt-get update > /dev/null
   - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine=17.04.0~ce-0~ubuntu-trusty > /dev/null
-  - yarn add global devlab
+  - yarn add global binci
 
 install:
-  - devlab install
+  - binci install
 
 script:
-  - devlab test
+  - binci test
   
 after_success:
   - sudo chmod -R 777 node_modules/ && sudo chmod -R 777 ~/.npm
@@ -44,7 +44,7 @@ deploy:
     skip_cleanup: true
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: devlab.taplatform.net
+    bucket: binci.taplatform.net
     local-dir: bin
     acl: public_read
     on:

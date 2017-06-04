@@ -26,7 +26,7 @@ describe('services', () => {
   })
   describe('get', () => {
     before(() => {
-      config.defaultPath = path.resolve(__dirname, '../fixtures/devlab.yml')
+      config.defaultPath = path.resolve(__dirname, '../fixtures/binci.yml')
     })
     it('returns false if no services are specified', () => {
       expect(services.get({})).to.be.false()
@@ -34,12 +34,12 @@ describe('services', () => {
     it('returns an array of services and their command arrays', () => {
       const svc = services.get(_.merge({ rmOnShutdown: false }, config.load()))
       expect(svc[0].name).to.equal('mongodb')
-      expect(svc[0].args).to.deep.equal(['run', '-d', '--rm', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0'])
+      expect(svc[0].args).to.deep.equal(['run', '-d', '--rm', '--privileged', '-p', '27017:27017', '--name', 'bc_mongodb_test', 'mongo:3.0'])
     })
     it('returns an array of services and their command arrays (with rmOnShutdown)', () => {
       const svc = services.get(_.merge({ rmOnShutdown: true }, config.load()))
       expect(svc[0].name).to.equal('mongodb')
-      expect(svc[0].args).to.deep.equal(['run', '-d', '--privileged', '-p', '27017:27017', '--name', 'dl_mongodb_test', 'mongo:3.0'])
+      expect(svc[0].args).to.deep.equal(['run', '-d', '--privileged', '-p', '27017:27017', '--name', 'bc_mongodb_test', 'mongo:3.0'])
     })
   })
   describe('run', () => {
@@ -51,12 +51,12 @@ describe('services', () => {
     it('starts all non-running services', () => {
       global.instanceId = 'test'
       sinon.stub(proc, 'exec', (cmd) => { /* eslint no-undef: 0 */
-        if (cmd === 'docker ps -f name=dl_redis_test -q') return Promise.resolve('123456')
+        if (cmd === 'docker ps -f name=bc_redis_test -q') return Promise.resolve('123456')
         return Promise.resolve(undefined)
       })
       procRunStub = sinon.stub(proc, 'run', () => Promise.resolve())
       return services.run(fixture).then(() => {
-        expect(services.running).to.deep.equal([{ name: 'dl_mongodb_test', stopTimeSecs: 10 }])
+        expect(services.running).to.deep.equal([{ name: 'bc_mongodb_test', stopTimeSecs: 10 }])
       })
     })
     it('rejects when a service fails to start', () => {
@@ -74,9 +74,9 @@ describe('services', () => {
     let procRunStub
     beforeEach(() => {
       procRunStub = sinon.stub(proc, 'run', (svc) => Promise.resolve().then(() => {
-        if (svc === 'dl_fail_test') {
+        if (svc === 'bc_fail_test') {
           const testError = new Error()
-          testError.svcs = ['dl_fail_test']
+          testError.svcs = ['bc_fail_test']
           throw testError
         }
         return
@@ -93,39 +93,39 @@ describe('services', () => {
         })
     })
     it('resolves after calling proc.run with stop command for running services', () => {
-      services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
+      services.running = [{ name: 'bc_foo_test', stopTimeSecs: 10 }, { name: 'bc_bar_test', stopTimeSecs: 10 }]
       const cfg = { rmOnShutdown: false }
       return services.stop(cfg)
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
-          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'bc_foo_test'])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'bc_bar_test'])
         })
     })
     it('resolves after calling proc.run with stop and rm commands', () => {
       const cfg = { rmOnShutdown: true }
-      services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'dl_bar_test', stopTimeSecs: 10 }]
+      services.running = [{ name: 'bc_foo_test', stopTimeSecs: 10 }, { name: 'bc_bar_test', stopTimeSecs: 10 }]
       return services.stop(cfg)
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
-          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_bar_test'])
-          expect(procRunStub.getCalls()[2].args[0]).to.deep.equal(['rm', 'dl_foo_test'])
-          expect(procRunStub.getCalls()[3].args[0]).to.deep.equal(['rm', 'dl_bar_test'])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'bc_foo_test'])
+          expect(procRunStub.getCalls()[1].args[0]).to.deep.equal(['stop', '-t', 10, 'bc_bar_test'])
+          expect(procRunStub.getCalls()[2].args[0]).to.deep.equal(['rm', 'bc_foo_test'])
+          expect(procRunStub.getCalls()[3].args[0]).to.deep.equal(['rm', 'bc_bar_test'])
         })
     })
     it('resolves after calling proc with stop and rm only for non-persistent services', () => {
       const cfg = { rmOnShutdown: false }
-      services.running = [{ name: 'dl_foo_test', stopTimeSecs: 10 }, { name: 'bar' }]
+      services.running = [{ name: 'bc_foo_test', stopTimeSecs: 10 }, { name: 'bar' }]
       return services.stop(cfg)
         .then(() => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'dl_foo_test'])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', '-t', 10, 'bc_foo_test'])
         })
     })
     it('rejects with error containing names of services that failed', () => {
-      services.running = ['dl_foo_test', 'dl_fail_test']
+      services.running = ['bc_foo_test', 'bc_fail_test']
       return services.stop()
         .catch((err) => {
-          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', 'dl_foo_test'])
-          expect(err.svcs).to.deep.equal(['dl_fail_test'])
+          expect(procRunStub.getCalls()[0].args[0]).to.deep.equal(['stop', 'bc_foo_test'])
+          expect(err.svcs).to.deep.equal(['bc_fail_test'])
         })
     })
   })

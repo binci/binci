@@ -86,17 +86,17 @@ describe('args', () => {
       expect(process.exit).to.be.calledWith(0)
     })
   })
-  describe('cleanupDL', () => {
+  describe('cleanupBN', () => {
     beforeEach(() => {
       sandbox.stub(utils, 'cleanup', () => Promise.resolve())
     })
     it('call utils.cleanup with no arguments', () => {
-      return args.cleanupDL().then(() => {
+      return args.cleanupBN().then(() => {
         expect(utils.cleanup).to.be.calledOnce()
       })
     })
     it('exits code 0 on success', () => {
-      return args.cleanupDL()
+      return args.cleanupBN()
         .then(() => {
           expect(process.exit).to.have.been.calledOnce()
           expect(process.exit).to.have.been.calledWithExactly(0)
@@ -105,7 +105,7 @@ describe('args', () => {
     it('exits code 1 on fail', () => {
       utils.cleanup.restore()
       sandbox.stub(utils, 'cleanup', () => Promise.reject())
-      return args.cleanupDL()
+      return args.cleanupBN()
         .then(() => {
           expect(process.exit).to.have.been.calledOnce()
           expect(process.exit).to.have.been.calledWithExactly(1)

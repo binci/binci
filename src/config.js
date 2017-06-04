@@ -6,9 +6,9 @@ const path = require('path')
 
 const config = {
   /**
-   * @property {string} Default location of devlab.yml config file
+   * @property {string} Default location of binci.yml config file
    */
-  defaultPath: `${process.cwd()}/devlab.yml`,
+  defaultPath: `${process.cwd()}/binci.yml`,
   /**
    * Loads config from yaml, attempts to parse to object
    * @param {string} (configPath) Path to config file or use defaultPath
@@ -20,7 +20,7 @@ const config = {
     } catch (err) {
       throw new Error([
         `No config found at ${configPath}.`,
-        'Please run `devlab init` to create a devlab.yml file or specify one with the `-c` flag.'
+        'Please run `binci init` to create a binci.yml file or specify one with the `-c` flag.'
       ].join(' '))
     }
 

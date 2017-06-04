@@ -3,7 +3,7 @@ const ostmpdir = require('os-tmpdir')
 const fs = require('fs')
 
 /**
- * Method to determine where to save devlab.sh tmp file
+ * Method to determine where to save binci.sh tmp file
  * @returns {String} path of writeable temp dir
  */
 module.exports = () => {
@@ -22,9 +22,9 @@ module.exports = () => {
   }
 
   // Check our options...
-  if (process.env.DEVLAB_TMP && isWriteable(process.env.DEVLAB_TMP)) {
-    // Use user-specified DEVLAB_TMP
-    return process.env.DEVLAB_TMP
+  if (process.env.BINCI_TMP && isWriteable(process.env.BINCI_TMP)) {
+    // Use user-specified BINCI_TMP
+    return process.env.BINCI_TMP
   } else if (isWriteable('/tmp')) {
     // Use (most common) /tmp
     return '/tmp'
@@ -33,7 +33,7 @@ module.exports = () => {
     return ostmpdir()
   } else {
     // No go, inform user they need to specify manually
-    output.error('Could not locate temp dir for writing, please specify DEVLAB_TMP environment variable')
+    output.error('Could not locate temp dir for writing, please specify BINCI_TMP environment variable')
     process.exit(1)
   }
 }

@@ -25,8 +25,8 @@
     "should": "pass"
   },
   "config": {
-    "description": "Specifies the devlab.yml using command arg",
-    "args": ["env", "-c", "devlab.yml"],
+    "description": "Specifies the binci.yml using command arg",
+    "args": ["env", "-c", "binci.yml"],
     "should": "pass"
   },
   "config fail": {

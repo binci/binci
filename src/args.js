@@ -30,14 +30,14 @@ const args = {
     'f': { prop: 'from', help: 'Run with specified docker image' },
     'c': { prop: 'configPath', help: 'Run with custom config file path' },
     'd': { action: 'disable', help: 'Disable specified service' },
-    'init': { action: 'init', help: 'Initialize new devlab project config' },
+    'init': { action: 'init', help: 'Initialize new Binci project config' },
     'disable-all': { action: 'disableAll', help: 'Disable all configured services' },
     'tasks': { action: 'tasks', help: 'List all available tasks' },
-    'cleanup': { action: 'cleanupDL', help: 'Stops and removes any non-persisted Devlab containers' },
+    'cleanup': { action: 'cleanupBN', help: 'Stops and removes any non-persisted Binci containers' },
     'cleanup-all': { action: 'cleanupAll', help: 'Stops and removes ALL docker containers' }
   },
   /**
-   * Runs initialization script to create template devlab.yml file
+   * Runs initialization script to create template binci.yml file
    */
   init: () => {
     return init()
@@ -88,9 +88,9 @@ const args = {
     process.exit(0)
   },
   /**
-   * Calls the cleanup process for Devlab containers and exits
+   * Calls the cleanup process for Binci containers and exits
    */
-  cleanupDL: () => {
+  cleanupBN: () => {
     return utils.cleanup()
       .then(() => process.exit(0))
       .catch(() => process.exit(1))
@@ -140,7 +140,7 @@ const args = {
     if (args.raw._ && args.raw._[0] === 'init') {
       try {
         // If config already exists, just move on...
-        fs.statSync(`${process.cwd()}/devlab.yml`)
+        fs.statSync(`${process.cwd()}/binci.yml`)
       } catch (e) {
         return args.init()
       }

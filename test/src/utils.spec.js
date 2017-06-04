@@ -27,7 +27,7 @@ describe('utils', () => {
   describe('cleanup', () => {
     beforeEach(() => {
       sandbox.stub(cp, 'execSync', cmd => {
-        return Buffer.from(cmd.includes('--filter="name=dl_"') ? fixtures.ps.ids : fixtures.ps.allIds)
+        return Buffer.from(cmd.includes('--filter="name=bc_"') ? fixtures.ps.ids : fixtures.ps.allIds)
       })
       sandbox.stub(output, 'info')
       sandbox.stub(output, 'error')
@@ -61,7 +61,7 @@ describe('utils', () => {
         expect(output.error).to.have.been.calledWithExactly('123')
       })
     })
-    it('runs stop commands on dl_ prefixed containers', () => {
+    it('runs stop commands on bc_ prefixed containers', () => {
       return utils.cleanup().then(() => {
         expect(proc.run.callCount).to.equal(2)
 
@@ -81,7 +81,7 @@ describe('utils', () => {
   })
   describe('parseOrphans', () => {
     it('returns array of orphaned containers', () => {
-      expect(utils.parseOrphans(fixtures.ps.full)).to.deep.equal(['dl_orphan3_JKLod93dS', 'dl_orphan4_MNJ9ie00d'])
+      expect(utils.parseOrphans(fixtures.ps.full)).to.deep.equal(['bc_orphan3_JKLod93dS', 'bc_orphan4_MNJ9ie00d'])
     })
   })
   describe('checkOrphans', () => {
@@ -98,7 +98,7 @@ describe('utils', () => {
       sandbox.stub(proc, 'exec', () => Promise.resolve(fixtures.ps.full))
       return utils.checkOrphans().then(() => {
         expect(output.warn).to.be.calledWith(
-          'These containers may not have exited correctly: dl_orphan3_JKLod93dS, dl_orphan4_MNJ9ie00d')
+          'These containers may not have exited correctly: bc_orphan3_JKLod93dS, bc_orphan4_MNJ9ie00d')
       })
     })
   })
