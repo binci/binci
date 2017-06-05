@@ -9,7 +9,7 @@ module.exports = [
       '-p',
       '27017:27017',
       '--name',
-      'dl_mongodb_test',
+      'bc_mongodb_test',
       'mongo:3.0'
     ]
   }, {
@@ -19,7 +19,7 @@ module.exports = [
       '-d',
       '--privileged',
       '--name',
-      'dl_redis_test',
+      'bc_redis_test',
       'redis'
     ]
   }

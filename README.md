@@ -242,7 +242,7 @@ In addition to setting the `stopTimeSecs` per service, this property can be set 
 
 ## Service Removal
 
-In earlier versions of Docker, the `-d` (detached) and `--rm` (remove) flags conflict, however, Binci uses these together which may cause issue on older systems.
+In earlier versions of Docker, the `-d` (detached) and `--rm` (remove) flags conflict, however, Binci uses these together which may cause an issue on older systems.
 
 If running `docker run -d --rm <container>` causes this error the `--rm` flag can be circumvented by setting the `BINCI_NO_RM` environment variable to `true`.
 
@@ -304,4 +304,4 @@ Binci is licensed under the MIT license. Please see [`LICENSE.txt`](/LICENSE.txt
 
 ## Credits
 
-Binci was created and is maintained by  [TechnologyAdvice](http://www.technologyadvice.com).
+Binci was created and is maintained by [TechnologyAdvice](http://www.technologyadvice.com).
