@@ -130,7 +130,7 @@ For testing different images easily, the `-f <alternate-image>` argument can be 
 
 ## Services
 
-Services add links into the primary container, exposing the services for utilitzation. For the most part, services utilize the same format for definition as the primary container.
+Services add links into the primary container, exposing the services for utilization. For the most part, services utilize the same format for definition as the primary container.
 
 ### Container Naming
 
