@@ -6,8 +6,8 @@
 # Binci
 
 Binci is a utility that allows you to easily containerize your development
-workflow using Docker. Simply put; it's like having a cleanroom for all of your
-development processes which contains services (like databases) without needing
+workflow using Docker. Simply put, it's like having a cleanroom for all of your
+development processes which contain services (like databases) without needing
 to setup and maintain these environments manually.
 
 ---
@@ -93,10 +93,14 @@ hosts:
 before: npm install
 after: echo "done"
 tasks:
+  env: env | sort
+  start: node index.js
+  lint: npm run lint
+  test: npm test
   run: node index.js
 ```
 
-The above can then be executed via the `binci run` command from within the same directory as your project and `binci.yml`. Execution would do the following:
+The above can then be executed via the `binci <task>` command from within the same directory as your project and `binci.yml`. For example, `binci run` would perform the following:
 
 - Pull and start `mongo` with `DB_ROOT_PASSWORD` environment variable and port `27017` exposed
 - Sets the following on the container:
@@ -107,20 +111,6 @@ The above can then be executed via the `binci run` command from within the same 
 - Run `npm install` inside the container before running the task
 - Run `node index.js` task inside the container
 - Echo `done` after the task has completed
-
-### Multiple Tasks
-
-The example shows a single-command execution configuration, however, Binci supports named tasks as well. Replace the `task` entry with configuration object `tasks`:
-
-```yaml
-tasks:
-  env: env | sort
-  start: node index.js
-  lint: npm run lint
-  test: npm test
-```
-
-The above would allow you to run `binci <task>` to execute any of the tasks defined.
 
 ### Custom Execution
 
@@ -292,7 +282,7 @@ docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w
 alias binci=$PWD/bin/linux/binci
 ```
 
-Once the above steps are completed the `binci` executable will be avilable.
+Once the above steps are completed the `binci` executable will be available.
 
 ## Why Binci Over Docker Compose?
 
