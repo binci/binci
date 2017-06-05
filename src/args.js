@@ -33,7 +33,7 @@ const args = {
     'init': { action: 'init', help: 'Initialize new Binci project config' },
     'disable-all': { action: 'disableAll', help: 'Disable all configured services' },
     'tasks': { action: 'tasks', help: 'List all available tasks' },
-    'cleanup': { action: 'cleanupBN', help: 'Stops and removes any non-persisted Binci containers' },
+    'cleanup': { action: 'cleanupBC', help: 'Stops and removes any non-persisted Binci containers' },
     'cleanup-all': { action: 'cleanupAll', help: 'Stops and removes ALL docker containers' }
   },
   /**
@@ -90,7 +90,7 @@ const args = {
   /**
    * Calls the cleanup process for Binci containers and exits
    */
-  cleanupBN: () => {
+  cleanupBC: () => {
     return utils.cleanup()
       .then(() => process.exit(0))
       .catch(() => process.exit(1))
