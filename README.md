@@ -1,47 +1,47 @@
-[![Travis branch](https://img.shields.io/travis/TechnologyAdvice/DevLab/master.svg)](https://travis-ci.org/TechnologyAdvice/DevLab)
-[![codecov](https://codecov.io/gh/TechnologyAdvice/DevLab/branch/master/graph/badge.svg)](https://codecov.io/gh/TechnologyAdvice/DevLab)
+[![Travis branch](https://img.shields.io/travis/Binci/binci/master.svg)](https://travis-ci.org/Binci/binci)
+[![codecov](https://codecov.io/gh/Binci/binci/branch/master/graph/badge.svg)](https://codecov.io/gh/Binci/binci)
 
-<img src="./devlab.png" align="right">
+<img src="./binci.png" align="right">
 
-# DevLab
+# Binci
 
-DevLab is a utility that allows you to easily containerize your development
-workflow using Docker. Simply put; it's like having a cleanroom for all of your
-development processes which contains services (like databases) without needing
+Binci is a utility that allows you to easily containerize your development
+workflow using Docker. Simply put, it's like having a cleanroom for all of your
+development processes which contain services (like databases) without needing
 to setup and maintain these environments manually.
 
 ---
 
 <img width="100%" src="http://i.imgur.com/Xezn8jj.gif">
 
-**FAQ: [Why Devlab over Docker-Compose?](#why-devlab-over-docker-compose)**
+**FAQ: [Why Binci over Docker-Compose?](#why-binci-over-docker-compose)**
 
 ## Installation
 
 ### YARN/NPM
 
-`yarn global add devlab` or `npm install devlab -g`
+`yarn global add binci` or `npm install binci -g`
 
-**Note: DevLab requires Node v.6+ to run.**
+**Note: Binci requires Node v.6+ to run.**
 
 ### Binaries
 
-**Linux [(download)](http://devlab.taplatform.net/linux/devlab)**
+**Linux [(download)](http://binci.technologyadvice.com/linux/binci)**
 
 ```
-curl -o /usr/local/bin/devlab http://devlab.taplatform.net/linux/devlab && \
-chmod +x /usr/local/bin/devlab
+curl -o /usr/local/bin/binci http://binci.technologyadvice.com/linux/binci && \
+chmod +x /usr/local/bin/binci
 ```
 
-**Mac OSX [(download)](http://devlab.taplatform.net/mac/devlab)**
+**Mac OSX [(download)](http://binci.technologyadvice.com/mac/binci)**
 
 ```
 sudo mkdir -p /usr/local/bin && \
-sudo curl -o /usr/local/bin/devlab http://devlab.taplatform.net/mac/devlab && \
-sudo chmod +x /usr/local/bin/devlab
+sudo curl -o /usr/local/bin/binci http://binci.technologyadvice.com/mac/binci && \
+sudo chmod +x /usr/local/bin/binci
 ```
 
-**Windows [(download)](http://devlab.taplatform.net/windows/devlab.exe)**
+**Windows [(download)](http://binci.technologyadvice.com/windows/binci.exe)**
 
 Download the above file and run from the path where it is saved or add to a directory in your `PATH`.
 
@@ -49,14 +49,14 @@ Download the above file and run from the path where it is saved or add to a dire
 
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
 
-**Important Note**: In order to run the tasks, Devlab creates a temp file (`devlab.sh`). The tool will do its best to determine the best location (usually `/tmp`), but this can be explicitly set by specifying the environment variable `DEVLAB_TMP`.
+**Important Note**: In order to run the tasks, Binci creates a temp file (`binci.sh`). The tool will do its best to determine the best location (usually `/tmp`), but this can be explicitly set by specifying the environment variable `BINCI_TMP`.
 
 ## Quick Start
 
-After you have Devlab installed you can initialize a project by moving to the project directory and running the following:
+After you have Binci installed you can initialize a project by moving to the project directory and running the following:
 
 ```
-devlab init
+binci init
 ```
 
 The above will prompt you to enter a base image; this should be a valid Docker image.
@@ -64,14 +64,14 @@ The above will prompt you to enter a base image; this should be a valid Docker i
 Once the configuration is generated you can run tasks. The default template includes several, for example:
 
 ```
-devlab env
+binci env
 ```
 
-The above will load your project via Devlab & Docker, then echo the environment variables available.
+The above will load your project via Binci & Docker, then echo the environment variables available.
 
 ## Usage
 
-Devlab is controlled by a `devlab.yml` file in the root of your project. A basic example is shown below:
+Binci is controlled by a `binci.yml` file in the root of your project. A basic example is shown below:
 
 ```yaml
 from: node:6
@@ -93,10 +93,14 @@ hosts:
 before: npm install
 after: echo "done"
 tasks:
+  env: env | sort
+  start: node index.js
+  lint: npm run lint
+  test: npm test
   run: node index.js
 ```
 
-The above can then be executed via the `devlab run` command from within the same directory as your project and `devlab.yml`. Execution would do the following:
+The above can then be executed via the `binci <task>` command from within the same directory as your project and `binci.yml`. For example, `binci run` would perform the following:
 
 - Pull and start `mongo` with `DB_ROOT_PASSWORD` environment variable and port `27017` exposed
 - Sets the following on the container:
@@ -108,26 +112,12 @@ The above can then be executed via the `devlab run` command from within the same
 - Run `node index.js` task inside the container
 - Echo `done` after the task has completed
 
-### Multiple Tasks
-
-The example shows a single-command execution configuration, however, Devlab supports named tasks as well. Replace the `task` entry with configuration object `tasks`:
-
-```yaml
-tasks:
-  env: env | sort
-  start: node index.js
-  lint: npm run lint
-  test: npm test
-```
-
-The above would allow you to run `devlab <task>` to execute any of the tasks defined.
-
 ### Custom Execution
 
-Devlab also allows for executing tasks not predefined in the configuration file using the `-e` flag. For example:
+Binci also allows for executing tasks not predefined in the configuration file using the `-e` flag. For example:
 
 ```
-devlab -e "/bin/sh"
+binci -e "/bin/sh"
 ```
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an `exit` command is sent by the user.
@@ -140,20 +130,20 @@ For testing different images easily, the `-f <alternate-image>` argument can be 
 
 ## Services
 
-Services add links into the primary container, exposing the services for utilitzation. For the most part, services utilize the same format for definition as the primary container.
+Services add links into the primary container, exposing the services for utilization. For the most part, services utilize the same format for definition as the primary container.
 
 ### Container Naming
 
 During execution, service containers are named in 2 ways:
 
-1. Ephemeral (non-persisted): `dl_<NAME>_<INSTANCE-ID>`
+1. Ephemeral (non-persisted): `bc_<NAME>_<INSTANCE-ID>`
 2. Persisted: `<NAME>`
 
-The above naming convention allows for persisted services to be shared with other Devlab instances, or manually run docker containers, via the `--link` argument.
+The above naming convention allows for persisted services to be shared with other Binci instances, or manually run docker containers, via the `--link` argument.
 
-At startup Devlab will ensure any persisted or already running containers are not started again.
+At startup Binci will ensure any persisted or already running containers are not started again.
 
-After completion, Devlab will run a detached process which will execute `docker stop` and `docker rm` on any non-persisted, ephemeral services.
+After completion, Binci will run a detached process which will execute `docker stop` and `docker rm` on any non-persisted, ephemeral services.
 
 ### Persisting Services
 
@@ -186,33 +176,33 @@ tasks:
 For one-off cases, individual services can also be disabled via the command line:
 
 ```
-devlab lint -d mongo
+binci lint -d mongo
 ```
 
 or all services:
 
 ```
-devlab lint --disable-all
+binci lint --disable-all
 ```
 
 ## Container Management
 
-Devlab will automatically `stop` services after any run (success or fail). However, if this fails or some other fringe-case causes this process to stop responding the system can leave orphaned containers running.
+Binci will automatically `stop` services after any run (success or fail). However, if this fails or some other fringe-case causes this process to stop responding the system can leave orphaned containers running.
 
-In order to mitigate this issue Devlab will run a check for any `dl_` prefixed containers on each run. If orphaned services are identified a warning message will appear at the beginning of the process to indicate the orphaned service(s) and commands to remedy/exit these containers.
+In order to mitigate this issue Binci will run a check for any `bc_` prefixed containers on each run. If orphaned services are identified a warning message will appear at the beginning of the process to indicate the orphaned service(s) and commands to remedy/exit these containers.
 
 The following commands can be run to cleanup any running containers:
 
-**Stop and Remove Devlab Containers:**
+**Stop and Remove Binci Containers:**
 
 ```
-devlab --cleanup
+binci --cleanup
 ```
 
 **Stop and Remove ALL Containers:**
 
 ```
-devlab --cleanup-all
+binci --cleanup-all
 ```
 
 ## Environment Variables (`env <array>`)
@@ -248,23 +238,23 @@ The `stopTimeSecs` above would forcibly stop the container after 3 seconds using
 
 **Global Setting:**
 
-In addition to setting the `stopTimeSecs` per service, this property can be set in the root of the `devlab.yml` configuration and will be applied to any services that don't have an explicit `stopTimeSecs` property.
+In addition to setting the `stopTimeSecs` per service, this property can be set in the root of the `binci.yml` configuration and will be applied to any services that don't have an explicit `stopTimeSecs` property.
 
 ## Service Removal
 
-In earlier versions of Docker, the `-d` (detached) and `--rm` (remove) flags conflict, however, Devlab uses these together which may cause issue on older systems.
+In earlier versions of Docker, the `-d` (detached) and `--rm` (remove) flags conflict, however, Binci uses these together which may cause an issue on older systems.
 
-If running `docker run -d --rm <container>` causes this error the `--rm` flag can be circumvented by setting the `DEVLAB_NO_RM` environment variable to `true`.
+If running `docker run -d --rm <container>` causes this error the `--rm` flag can be circumvented by setting the `BINCI_NO_RM` environment variable to `true`.
 
 ## Development
 
 ### Tests
 
-Devlab can be run via `yarn`/`npm` scripts, but is also setup to run development tasks using Devlab.
+Binci can be run via `yarn`/`npm` scripts, but is also setup to run development tasks using Binci.
 
 Ensure you have the latest version installed then run:
 
-`devlab install test` or `yarn install && yarn test`.
+`binci install test` or `yarn install && yarn test`.
 
 ### End-to-End Tests
 
@@ -286,32 +276,32 @@ yarn run build:linux
 docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $PWD:/app -w /app ubuntu sh -c "apt-get update && apt-get install docker.io -y && bash"
 ```
 
-**3. Create Devlab Alias:**
+**3. Create Binci Alias:**
 
 ```
-alias devlab=$PWD/bin/linux/devlab
+alias binci=$PWD/bin/linux/binci
 ```
 
-Once the above steps are completed the `devlab` executable will be avilable.
+Once the above steps are completed the `binci` executable will be available.
 
-## Why Devlab Over Docker Compose?
+## Why Binci Over Docker Compose?
 
-First off, we like [Docker Compose](https://docs.docker.com/compose/), and definitely think it's a powerful tool. However, Devlab was built because Compose is more about long-running, containerized environment and what we set out to build was a way to run ephemeral, limited-lifespan tasks without having to manage cleanup between each run.
+First off, we like [Docker Compose](https://docs.docker.com/compose/), and definitely think it's a powerful tool. However, Binci was built because Compose is more about long-running, containerized environment and what we set out to build was a way to run ephemeral, limited-lifespan tasks without having to manage cleanup between each run.
 
-Compose takes the approach of spinning up containers that run, almost like a virtual machine, while you need them. Devlab looks at things from a point of view of abstracting `docker run` command chains to create a single-run instance only for that task, then shutting down and doing cleanup so each run is clean and running off a consistent base.
+Compose takes the approach of spinning up containers that run, almost like a virtual machine, while you need them. Binci looks at things from a point of view of abstracting `docker run` command chains to create a single-run instance only for that task, then shutting down and doing cleanup so each run is clean and running off a consistent base.
 
 Some more comparisons:
 
-* With Devlab you don't need a Dockerfile for local development, thus you can use it whether or not your project will be deployed in Docker or to bare metal.
-* Devlab doesn't build docker images, ever. It uses the images you specify for both the primary container and any services.
+* With Binci you don't need a Dockerfile for local development, thus you can use it whether or not your project will be deployed in Docker or to bare metal.
+* Binci doesn't build docker images, ever. It uses the images you specify for both the primary container and any services.
 * When you install local dependencies in your project folder, run a build, execute your coverage tool, or write any local files, that just happens on your hard disk, not locked away in some container. They'll be available to every other task you run.
-* With Devlab you don't need to run tasks in a containerized shell, you simply define the tasks and run them. You can kick tasks off with any local script, build tool, or IDE run configuration without building a container first.
-* Tasks don't need to be defined at runtime via arguments or flags, you just tell Devlab which predefined task to run.
+* With Binci you don't need to run tasks in a containerized shell, you simply define the tasks and run them. You can kick tasks off with any local script, build tool, or IDE run configuration without building a container first.
+* Tasks don't need to be defined at runtime via arguments or flags, you just tell Binci which predefined task to run.
 
 ## License
 
-DevLab is licensed under the MIT license. Please see [`LICENSE.txt`](/LICENSE.txt) for full details.
+Binci is licensed under the MIT license. Please see [`LICENSE.txt`](/LICENSE.txt) for full details.
 
 ## Credits
 
-DevLab was created and is maintained by  [TechnologyAdvice](http://www.technologyadvice.com).
+Binci was created and is maintained by [TechnologyAdvice](http://www.technologyadvice.com).

@@ -1,7 +1,7 @@
 {
-  "name": "devlab",
+  "name": "binci",
   "version": "3.12.3",
-  "description": "Node utility for running containerized tasks",
+  "description": "Utility for running containerized development workflows",
   "keywords": [
     "docker",
     "container",
@@ -21,8 +21,7 @@
     "index.js"
   ],
   "bin": {
-    "lab": "index.js",
-    "devlab": "index.js"
+    "binci": "index.js"
   },
   "preferGlobal": true,
   "scripts": {
@@ -39,15 +38,15 @@
     "release:minor": "npm test && npm version minor && git push origin master && git push --tags && npm publish",
     "release:major": "npm test && npm version major && git push origin master && git push --tags && npm publish"
   },
-  "homepage": "https://github.com/TechnologyAdvice/DevLab",
+  "homepage": "https://github.com/Binci/binci",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TechnologyAdvice/DevLab"
+    "url": "https://github.com/Binci/binci"
   },
   "bugs": {
-    "url": "https://github.com/TechnologyAdvice/DevLab/issues"
+    "url": "https://github.com/Binci/binci/issues"
   },
-  "author": "Kent Safranski <devteam+devlab@technologyadvice.com>",
+  "author": "Kent Safranski <devteam+binci@technologyadvice.com>",
   "license": "MIT",
   "devDependencies": {
     "chai": "^3.3.0",

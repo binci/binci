@@ -107,7 +107,7 @@ const instance = {
     .then(instance.getConfig)
     .then(cfg => {
       // Write the primary command to tmp script
-      return fs.writeFileAsync(`${tmpdir}/devlab.sh`, cfg.primary.cmd)
+      return fs.writeFileAsync(`${tmpdir}/binci.sh`, cfg.primary.cmd)
         .then(() => utils.checkOrphans())
         .then(() => instance.startServices(cfg))
         .then(instance.runCommand)

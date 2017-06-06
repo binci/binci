@@ -13,7 +13,7 @@ const instance = {
           '-p',
           '27017:27017',
           '--name',
-          'dl_mongodb_test',
+          'bc_mongodb_test',
           'mongo:3.0'
         ]
       }
@@ -33,12 +33,12 @@ const instance = {
         '-p',
         '8080:8080',
         '--link',
-        'dl_mongodb_test:mongodb',
+        'bc_mongodb_test:mongodb',
         '--name',
-        'dl_primary_test',
+        'bc_primary_test',
         'node:6',
         'sh',
-        '/tmp/devlab.sh'
+        '/tmp/binci.sh'
       ],
       cmd: '#!/bin/sh\nset -e;\necho "foo"'
     }
@@ -57,7 +57,7 @@ const instance = {
           '-p',
           '27017:27017',
           '--name',
-          'dl_mongodb_test',
+          'bc_mongodb_test',
           'mongo:3.0'
         ]
       }
@@ -77,12 +77,12 @@ const instance = {
         '-p',
         '8080:8080',
         '--link',
-        'dl_mongodb_test:mongodb',
+        'bc_mongodb_test:mongodb',
         '--name',
-        'dl_primary_test',
+        'bc_primary_test',
         'node:6',
         'sh',
-        '/tmp/devlab.sh'
+        '/tmp/binci.sh'
       ],
       cmd: '#!/bin/sh\nset -e;\nenv | sort'
     }

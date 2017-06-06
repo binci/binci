@@ -16,21 +16,21 @@ describe('tempdir', () => {
     output.error.restore()
     process.exit.restore()
   })
-  it('uses DEVLAB_TMP if set and writeable', () => {
-    process.env.DEVLAB_TMP = __dirname
+  it('uses BINCI_TMP if set and writeable', () => {
+    process.env.BINCI_TMP = __dirname
     expect(tempdir()).to.equal(__dirname)
-    delete process.env.DEVLAB_TMP
+    delete process.env.BINCI_TMP
   })
-  it('uses /tmp if DEVLAB_TMP is not available', () => {
-    process.env.DEVLAB_TMP = '/nope'
+  it('uses /tmp if BINCI_TMP is not available', () => {
+    process.env.BINCI_TMP = '/nope'
     expect(tempdir()).to.equal('/tmp')
-    delete process.env.DEVLAB_TMP
+    delete process.env.BINCI_TMP
   })
-  it('uses /tmp if DEVLAB_TMP not set', () => {
-    delete process.env.DEVLAB_TMP
+  it('uses /tmp if BINCI_TMP not set', () => {
+    delete process.env.BINCI_TMP
     expect(tempdir()).to.equal('/tmp')
   })
-  it('uses os-tmpdir if DEVLAB_TMP and /tmp not available', () => {
+  it('uses os-tmpdir if BINCI_TMP and /tmp not available', () => {
     sinon.stub(fs, 'accessSync', (path) => {
       if (path === '/tmp') {
         throw new Error('no dice')
@@ -44,7 +44,7 @@ describe('tempdir', () => {
       throw new Error('no dice')
     })
     tempdir()
-    expect(outputErrorStub).to.be.calledWith('Could not locate temp dir for writing, please specify DEVLAB_TMP environment variable')
+    expect(outputErrorStub).to.be.calledWith('Could not locate temp dir for writing, please specify BINCI_TMP environment variable')
     expect(processExitStub).to.be.calledWith(1)
     fs.accessSync.restore()
   })

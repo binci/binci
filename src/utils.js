@@ -11,7 +11,7 @@ const pad = (len, str) => str.length < len ? str + ' '.repeat(len - str.length) 
 
 const utils = {
   /**
-   * Outputs all available tasks in devlab config
+   * Outputs all available tasks in binci config
    */
   tasks: () => {
     const cfg = require('./config').load()
@@ -28,11 +28,11 @@ const utils = {
   },
   /**
    * Runs docker stop && docker rm on containers currently running
-   * @param {boolean} all If the run should include non-devlab containers
+   * @param {boolean} all If the run should include non-binci containers
    * @returns {object} promise
    */
   cleanup: (all = false) => Promise.resolve().then(() => {
-    const findCmd = all ? 'docker ps -q' : 'docker ps --filter="name=dl_" -q'
+    const findCmd = all ? 'docker ps -q' : 'docker ps --filter="name=bc_" -q'
     const ids = cp.execSync(findCmd)
       .toString()
       .split(/\r?\n/)
@@ -53,7 +53,7 @@ const utils = {
   }),
   /**
    * Identifies and reports any (possible) orphan containers, i.e. containers
-   * which 1) have the dl_ prefix, 2) are NOT primary containers and 3) have
+   * which 1) have the bc_ prefix, 2) are NOT primary containers and 3) have
    * no primary container running - deteremined by InstanceId suffix
    * @returns {array} Names of orphaned containers
    */
@@ -64,9 +64,9 @@ const utils = {
       let data = _.split(/\s\s+/g, row)
       return [_.last(data), data[3]]
     }),
-    _.filter((data) => _.test(/dl_/, _.head(data))),
-    _.map(([name, created]) => ({ instance: name.replace(/dl_\w+_/, ''), name, created })),
-    _.partition(container => _.test(/dl_primary/, container.name)),
+    _.filter((data) => _.test(/bc_/, _.head(data))),
+    _.map(([name, created]) => ({ instance: name.replace(/bc_\w+_/, ''), name, created })),
+    _.partition(container => _.test(/bc_primary/, container.name)),
     ([primaries, others]) => {
       const primaryInstances = _.map(c => c.instance, primaries)
       return _.reject(c => _.contains(c.instance, primaryInstances), others)
@@ -88,7 +88,7 @@ const utils = {
     if (orphans.length) {
       output.line()
       output.warn(`These containers may not have exited correctly: ${orphans.join(', ')}`)
-      output.warn('You can attempt to remove these by running `devlab --cleanup`')
+      output.warn('You can attempt to remove these by running `binci --cleanup`')
       output.line()
     }
     return true

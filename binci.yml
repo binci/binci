@@ -1,4 +1,4 @@
-from: technologyadvice/devlab
+from: binci/dind-node:latest
 env: 
   - TMP=/tmp
 volumes:

@@ -17,7 +17,7 @@ global.cwd = process.cwd()
 
 global.instanceId = 'test'
 
-process.env.DL_TEST_RUN = true
+process.env.BC_TEST_RUN = true
 process.env.NO_UPDATE_NOTIFIER = true
 
 process.env.NODE_PATH = path.join(__dirname, '..') + path.delimiter + (process.env.NODE_PATH || '')

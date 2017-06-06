@@ -17,7 +17,7 @@ const services = require('src/services')
 const fixtures = require('test/fixtures/instance')
 Promise.promisifyAll(fs)
 
-const configPath = path.resolve(__dirname, '../fixtures/devlab.yml')
+const configPath = path.resolve(__dirname, '../fixtures/binci.yml')
 
 describe('index', () => {
   global.instanceId = 'test'

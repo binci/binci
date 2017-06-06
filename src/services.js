@@ -104,7 +104,7 @@ const services = {
     const errors = []
     return Promise.all(
       _.pipe([
-        _.filter(svc => _.test(/dl_/, svc.name)),
+        _.filter(svc => _.test(/bc_/, svc.name)),
         _.map(svc => proc.run(['stop', '-t', svc.stopTimeSecs, svc.name], true)
           .then(() => cfg.rmOnShutdown ? proc.run(['rm', svc.name], true) : Promise.resolve())
           .catch(() => {

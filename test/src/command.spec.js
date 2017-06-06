@@ -4,14 +4,14 @@ const command = require('src/command')
 describe('command', () => {
   describe('parseHostEnvVars', () => {
     before(() => {
-      process.env.DL_TEST_EV = 'foo'
+      process.env.BC_TEST_EV = 'foo'
     })
-    after(() => delete process.env.DL_TEST_EV)
+    after(() => delete process.env.BC_TEST_EV)
     it('parses a string and returns with replaced host environment variables', () => {
-      expect(command.parseHostEnvVars('test-${DL_TEST_EV}')).to.equal('test-foo') // eslint-disable-line no-template-curly-in-string
+      expect(command.parseHostEnvVars('test-${BC_TEST_EV}')).to.equal('test-foo') // eslint-disable-line no-template-curly-in-string
     })
     it('parses a string and returns with null replace if no host environment variables found', () => {
-      expect(command.parseHostEnvVars('test-${DL_TEST_EV_DNE}')).to.equal('test-null') // eslint-disable-line no-template-curly-in-string
+      expect(command.parseHostEnvVars('test-${BC_TEST_EV_DNE}')).to.equal('test-null') // eslint-disable-line no-template-curly-in-string
     })
   })
   describe('parseArgs', () => {
@@ -25,7 +25,7 @@ describe('command', () => {
     })
     it('returns formatted name if container is not persisted', () => {
       global.instanceId = 'test'
-      expect(command.getName('foo', { persist: false })).to.equal('dl_foo_test')
+      expect(command.getName('foo', { persist: false })).to.equal('bc_foo_test')
     })
   })
   describe('getArgs', () => {
@@ -66,10 +66,10 @@ describe('command', () => {
       expect(command.getLinks({})).to.deep.equal([])
     })
     it('returns formatted link arguments if services are present', () => {
-      expect(command.getLinks({ services: [{ foo: {} }, { bar: {} }] })).to.deep.equal(['--link', 'dl_foo_test:foo', '--link', 'dl_bar_test:bar'])
+      expect(command.getLinks({ services: [{ foo: {} }, { bar: {} }] })).to.deep.equal(['--link', 'bc_foo_test:foo', '--link', 'bc_bar_test:bar'])
     })
     it('returns formatted lin arguments if services are present and contain a persistent service', () => {
-      expect(command.getLinks({ services: [{ foo: {} }, { bar: { persist: true } }] })).to.deep.equal(['--link', 'dl_foo_test:foo', '--link', 'bar:bar'])
+      expect(command.getLinks({ services: [{ foo: {} }, { bar: { persist: true } }] })).to.deep.equal(['--link', 'bc_foo_test:foo', '--link', 'bar:bar'])
     })
   })
   describe('get', () => {
@@ -84,19 +84,19 @@ describe('command', () => {
       expect(() => command.get({})).to.throw('Missing \'from\' property in config or argument')
     })
     it('returns array of arguments for a service config', () => {
-      process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: ['DL_TEST_EV=${DL_TEST_EV}'], expose: ['8080:8080', '9090:9090'] }, 'mongo') // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal(['run', '-d', '--rm', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'dl_mongo_test', 'mongo'])
-      delete process.env.DL_TEST_EV
+      process.env.BN_TEST_EV = 'foo'
+      const actual = command.get({ from: 'mongo', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080', '9090:9090'] }, 'mongo') // eslint-disable-line no-template-curly-in-string
+      expect(actual).to.deep.equal(['run', '-d', '--rm', '--privileged', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'bc_mongo_test', 'mongo'])
+      delete process.env.BN_TEST_EV
     })
     it('returns object with array of arguments and command for a primary container config', () => {
-      process.env.DL_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: ['DL_TEST_EV=${DL_TEST_EV}'], expose: ['8080:8080'], run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
+      process.env.BN_TEST_EV = 'foo'
+      const actual = command.get({ from: 'mongo', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080'], run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal({
-        args: ['run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'DL_TEST_EV=foo', '-p', '8080:8080', '--name', 'dl_primary_test', 'mongo', 'sh', '/tmp/devlab.sh'],
+        args: ['run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '--name', 'bc_primary_test', 'mongo', 'sh', '/tmp/binci.sh'],
         cmd: '#!/bin/sh\nset -e;\necho "foo"'
       })
-      delete process.env.DL_TEST_EV
+      delete process.env.BN_TEST_EV
     })
   })
 })

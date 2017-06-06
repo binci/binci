@@ -13,7 +13,7 @@ const path = require('path')
 const Promise = require('bluebird')
 // Test project
 const testProject = path.resolve(__dirname, '../project')
-// Devlab executable file
+// Binci executable file
 const executable = path.resolve(__dirname, '../../index.js')
 
 // Runs proc
@@ -45,7 +45,7 @@ const runner = (() => {
     const testObj = tests[name]
     console.log('\n\n#----------------------------------------------')
     console.log(`# ${name}: ${testObj.description}`)
-    console.log(`# devlab ${testObj.args.join(' ')}`)
+    console.log(`# binci ${testObj.args.join(' ')}`)
     console.log('#----------------------------------------------\n\n')
     return spawn(testObj.args).catch((c) => {
       if (testObj.should === 'pass') testFails.push(name)
