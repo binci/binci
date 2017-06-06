@@ -12,7 +12,7 @@ to setup and maintain these environments manually.
 
 ---
 
-<img width="100%" src="http://i.imgur.com/Xezn8jj.gif">
+<img width="100%" src="http://i.imgur.com/4NOBeYU.gif">
 
 **FAQ: [Why Binci over Docker-Compose?](#why-binci-over-docker-compose)**
 
