@@ -44,7 +44,7 @@ deploy:
     skip_cleanup: true
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: binci.technologyadvice.con
+    bucket: binci.technologyadvice.com
     local-dir: bin
     acl: public_read
     on:
