@@ -240,12 +240,6 @@ The `stopTimeSecs` above would forcibly stop the container after 3 seconds using
 
 In addition to setting the `stopTimeSecs` per service, this property can be set in the root of the `binci.yml` configuration and will be applied to any services that don't have an explicit `stopTimeSecs` property.
 
-## Service Removal
-
-In earlier versions of Docker, the `-d` (detached) and `--rm` (remove) flags conflict, however, Binci uses these together which may cause an issue on older systems.
-
-If running `docker run -d --rm <container>` causes this error the `--rm` flag can be circumvented by setting the `BINCI_NO_RM` environment variable to `true`.
-
 ## Development
 
 ### Tests
