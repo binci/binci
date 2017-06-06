@@ -1,5 +1,5 @@
-[![Travis branch](https://img.shields.io/travis/Binci/binci/master.svg)](https://travis-ci.org/Binci/binci)
-[![codecov](https://codecov.io/gh/Binci/binci/branch/master/graph/badge.svg)](https://codecov.io/gh/Binci/binci)
+[![Travis branch](https://img.shields.io/travis/binci/binci/master.svg)](https://travis-ci.org/Binci/binci)
+[![codecov](https://codecov.io/gh/binci/binci/branch/master/graph/badge.svg)](https://codecov.io/gh/Binci/binci)
 
 <img src="./binci.png" align="right">
 
