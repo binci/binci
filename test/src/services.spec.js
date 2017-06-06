@@ -180,8 +180,20 @@ describe('services', () => {
         tasks: { test: { disable: '*', cmd: 'echo hello' }, lint: { disable: ['shared'], cmd: 'lint' } },
         run: ['test', 'lint']
       }
+      // testing -d arg for config-disabled service
+      services.disabled = [ 'shared' ]
       expect(services.filterEnabled(cfg).services).to.deep.equal([{ onlyTest: { from: 'onlyTest' } }])
       expect(services.disabled[0]).to.equal('shared')
+    })
+    it('disables services via command line and task config', () => {
+      const cfg = {
+        services: [{ keep: { from: 'test' } }, { configSvc: { from: 'configSvc' } }, { cliSvc: { from: 'cliSvc' } }],
+        tasks: { test: { disable: ['configSvc'], cmd: 'echo hello' } },
+        run: ['test']
+      }
+      services.disabled = [ 'cliSvc' ]
+      expect(services.filterEnabled(cfg).services).to.deep.equal([{ keep: { from: 'test' } }])
+      expect(services.disabled).to.deep.equal([ 'configSvc', 'cliSvc' ])
     })
   })
 })
