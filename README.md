@@ -182,6 +182,7 @@ binci lint -d mongo
 or all services:
 
 ```
+binci lint -d '*'
 binci lint --disable-all
 ```
 

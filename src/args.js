@@ -55,6 +55,7 @@ const args = {
    */
   disable: () => {
     services.disabled = Array.isArray(args.raw.d) ? _.unique(args.raw.d) : [ args.raw.d ]
+    if (_.contains('*', services.disabled)) args.disableAll()
   },
   /**
    * Marks all services to be disabled

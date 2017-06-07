@@ -51,6 +51,13 @@ describe('args', () => {
       args.disable()
       expect(services.disabled).to.deep.equal([ 'foo' ])
     })
+    it('calls disableAll if * is passed as arg', () => {
+      sandbox.spy(args, 'disableAll')
+      args.raw = { d: '*' }
+      args.disable()
+      expect(args.disableAll).to.be.calledOnce()
+      expect(services.disableAll).to.be.true()
+    })
   })
   describe('disableAll', () => {
     it('sets services.disableAll to true', () => {
