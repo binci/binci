@@ -1,5 +1,6 @@
-[![Travis branch](https://img.shields.io/travis/binci/binci/master.svg)](https://travis-ci.org/Binci/binci)
-[![codecov](https://codecov.io/gh/binci/binci/branch/master/graph/badge.svg)](https://codecov.io/gh/Binci/binci)
+[![Travis](https://img.shields.io/travis/binci/binci/master.svg)](https://travis-ci.org/Binci/binci)
+[![Codecov](https://codecov.io/gh/binci/binci/branch/master/graph/badge.svg)](https://codecov.io/gh/Binci/binci)
+[![NSP Status](https://nodesecurity.io/orgs/binci/projects/cbac1faf-7c38-41f1-b648-1b4c8dfd8f02/badge)](https://nodesecurity.io/orgs/binci/projects/cbac1faf-7c38-41f1-b648-1b4c8dfd8f02)
 
 <img src="./binci.png" align="right">
 
