@@ -41,13 +41,11 @@ const config = {
    * @param {object}
    * @returns {object} 
    */
-  validate: (cfg) => {
-    return _.pipe([
-      _.toPairs,
-      _.reject(([key, val]) => _.isEmpty(val) || _.isNil(val)),
-      _.fromPairs
-    ])(cfg)
-  }
+  validate: (cfg) => _.pipe([
+    _.toPairs,
+    _.reject(([key, val]) => key !== 'tasks' && key !== 'from' && _.isEmpty(val) || _.isNil(val)),
+    _.fromPairs
+  ])(cfg)
 }
 
 module.exports = config
