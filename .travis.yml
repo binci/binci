@@ -13,8 +13,6 @@ notifications:
     on_failure: always
     
 before_install:
-  - sudo apt-get update > /dev/null
-  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-engine=17.04.0~ce-0~ubuntu-trusty > /dev/null
   - yarn add global binci
 
 install:
