@@ -98,7 +98,7 @@ describe('utils', () => {
       sandbox.stub(proc, 'exec', () => Promise.resolve(fixtures.ps.full))
       return utils.checkOrphans().then(() => {
         expect(output.warn).to.be.calledWith(
-          'These containers may not have exited correctly: bc_orphan3_JKLod93dS, bc_orphan4_MNJ9ie00d')
+          'These containers may not have exited correctly: \n- bc_orphan3_JKLod93dS\n- bc_orphan4_MNJ9ie00d')
       })
     })
   })
