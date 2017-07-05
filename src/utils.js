@@ -32,7 +32,7 @@ const utils = {
    * @returns {object} promise
    */
   cleanup: (all = false) => Promise.resolve().then(() => {
-    const findCmd = all ? 'docker ps -q' : 'docker ps --filter="name=bc_" -q'
+    const findCmd = all ? 'docker ps --format "{{.Names}}"' : 'docker ps --filter="name=bc_" --format "{{.Names}}"'
     const ids = cp.execSync(findCmd)
       .toString()
       .split(/\r?\n/)
