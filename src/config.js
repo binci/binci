@@ -3,6 +3,7 @@
 const yaml = require('js-yaml')
 const fs = require('fs')
 const path = require('path')
+const _ = require('halcyon')
 
 const config = {
   /**
@@ -24,14 +25,28 @@ const config = {
       ].join(' '))
     }
 
+    let cfg
     try {
-      return yaml.safeLoad(fs.readFileSync(configPath, 'utf8'))
+      cfg = yaml.safeLoad(fs.readFileSync(configPath, 'utf8'))
     } catch (e) {
       const relPath = path.relative(process.cwd(), configPath)
       const error = new Error(`Please fix the errors in ${relPath}`)
       error.message = error.message + `:\n\n${e.message}`
       throw error
     }
+    return config.validate(cfg)
+  },
+  /**
+   * Filters out empty config properties
+   * @param {object}
+   * @returns {object} 
+   */
+  validate: (cfg) => {
+    return _.pipe([
+      _.toPairs,
+      _.reject(([key, val]) => _.isEmpty(val) || _.isNil(val)),
+      _.fromPairs
+    ])(cfg)
   }
 }
 

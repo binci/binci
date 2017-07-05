@@ -8,7 +8,7 @@ describe('config', () => {
   const confPath = path.resolve(__dirname, '/tmp/binci.yml')
   beforeEach(() => {
     sinon.stub(process, 'cwd', () => path.resolve(__dirname, '/tmp'))
-    return fs.writeFileAsync(confPath, 'from: node:4')
+    return fs.writeFileAsync(confPath, 'from: node:4\nenv:')
   })
   afterEach((done) => {
     process.cwd.restore()
