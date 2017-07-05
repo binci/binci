@@ -87,7 +87,7 @@ const utils = {
     const orphans = utils.parseOrphans(ps)
     if (orphans.length) {
       output.line()
-      output.warn(`These containers may not have exited correctly: ${orphans.join(', ')}`)
+      output.warn(`These containers may not have exited correctly: \n- ${orphans.join('\n- ')}`)
       output.warn('You can attempt to remove these by running `binci --cleanup`')
       output.line()
     }
