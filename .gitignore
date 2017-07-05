@@ -4,3 +4,4 @@ test/project/node_modules/
 **/*.log
 bin/
 .yarn-cache/
+_.config.yml

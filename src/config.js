@@ -39,7 +39,7 @@ const config = {
   /**
    * Filters out empty config properties
    * @param {object}
-   * @returns {object} 
+   * @returns {object}
    */
   validate: (cfg) => _.pipe([
     _.toPairs,
