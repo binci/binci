@@ -85,6 +85,7 @@ services:
         - 27017:27017
 env:
   - TMP=${TMP}
+  - HOST=${HOST:-localhost}
 expose:
   - 8080:8080
 volumes:
@@ -209,7 +210,9 @@ binci --cleanup-all
 
 ## Environment Variables (`env <array>`)
 
-Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>=<VALUE>`
+Setting `env` array items will expose environment variables in the primary instance or services. These entries can be raw strings or use `${VAR}` notation, where `VAR` is an environment variable on the host machine to use. Entries should use the format `<ENV_VAR>=<VALUE>`.
+
+You can provide default values for environment variables by using the standard bash syntax. For example, `VAR=${FOO:-foobar}` will first look for the `FOO` environment variable, and if it is not defined `VAR` will be set to the string `foobar` (i.e. `VAR=foobar`).
 
 ## Expose (`expose <array>`)
 

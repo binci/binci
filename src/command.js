@@ -19,7 +19,8 @@ const command = {
    * @returns {String}
    */
   parseHostEnvVars: (str) => str.toString().replace(/\$\{([^}]+)\}/g, (i, match) => {
-    return process.env.hasOwnProperty(match) ? process.env[match] : null
+    const [envVar, defaultValue = null] = match.split(':-')
+    return process.env.hasOwnProperty(envVar) ? process.env[envVar] : defaultValue
   }),
   /**
    * Reduces args array into flagged arguments list
