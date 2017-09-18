@@ -19,7 +19,7 @@ const command = {
    * @returns {String}
    */
   parseHostEnvVars: (str) => str.toString().replace(/\$\{([^}]+)\}/g, (i, match) => {
-    const [envVar, defaultValue = null] = match.split(':-')
+    const [envVar, defaultValue = ''] = match.split(':-')
     return process.env.hasOwnProperty(envVar) ? process.env[envVar] : defaultValue
   }),
   /**

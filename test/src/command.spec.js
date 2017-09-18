@@ -13,8 +13,8 @@ describe('command', () => {
     it('supports bash-style default values for environment variables', () => {
       expect(command.parseHostEnvVars('test-${NOT_DEFINED:-myValue}')).to.equal('test-myValue') // eslint-disable-line no-template-curly-in-string
     })
-    it('parses a string and returns with null replace if no host environment variables found', () => {
-      expect(command.parseHostEnvVars('test-${BC_TEST_EV_DNE}')).to.equal('test-null') // eslint-disable-line no-template-curly-in-string
+    it('parses a string and returns with an empty string replace for unset host environment variables', () => {
+      expect(command.parseHostEnvVars('test-${BC_TEST_EV_DNE}')).to.equal('test-') // eslint-disable-line no-template-curly-in-string
     })
   })
   describe('parseArgs', () => {
