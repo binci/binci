@@ -10,8 +10,7 @@ const crypto = require('crypto')
 const images = {
   /**
    * Builds a docker image, naming it according to the parent folder and tagging it
-   * with "bc_" followed by the first 8 characters of the sha1 hash of the Dockerfile
-   * used to build it.
+   * with "bc_" followed by a hash of the Dockerfile used to build it.
    * @param dockerfile
    * @param imageName
    * @returns {Promise.<T>}
