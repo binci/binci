@@ -13,6 +13,7 @@ const proc = require('./proc')
 const pkg = require('../package.json')
 const output = require('./output')
 const utils = require('./utils')
+const images = require('./images')
 
 const tmpdir = require('./tempdir')()
 
@@ -29,18 +30,29 @@ const instance = {
    */
   startTS: Date.now(),
   /**
-   * Gets config by merging parsed arguments with config object and returns command
-   * instructions for primaary instance and services.
-   * @returns {object} Command instructions
+   * Gets the project config by loading the config file and merging it with applicable command line
+   * arguments.
+   * @returns {Promise.<Object>} an object representing the Binci config for this project
    */
-  getConfig: (rmOnShutdown) => {
+  getProjectConfig: () => {
     return Promise.resolve()
       .then(args.parse)
       .then(parsedArgs => {
-        const cfg = services.filterEnabled(_.merge(config.load(parsedArgs.configPath), parsedArgs))
-        return { services: services.get(cfg), primary: command.get(_.merge(cfg, { rmOnShutdown }), 'primary', tmpdir, true) }
+        const initConfig = config.load(parsedArgs.configPath)
+        return services.filterEnabled(_.merge(initConfig, parsedArgs))
       })
   },
+  /**
+   * Gets the runtime configuration by adapting the project config into an object that describes
+   * only the things applicable to the current binci execution.
+   * @param {Object} projConfig A project config object
+   * @param {boolean} [rmOnShutdown=false] true to delete the main container automatically when stopped
+   * @returns {object} Command instructions
+   */
+  getRunConfig: (projConfig, rmOnShutdown) => ({
+    services: services.get(projConfig),
+    primary: command.get(_.merge(projConfig, { rmOnShutdown }), 'primary', tmpdir, true)
+  }),
   /**
    * Starts services and resolves or rejects
    * @param {object} cfg Instance config object
@@ -80,7 +92,7 @@ const instance = {
   },
   /**
    * Runs primary command
-   * @param {object} config The instance config object
+   * @param {object} cfg The instance config object
    * @returns {object} promise
    */
   runCommand: (cfg) => {
@@ -98,13 +110,32 @@ const instance = {
       })
   },
   /**
+   * Checks to see if the provided config has a `from` field. If not, the docker
+   * image will be built (if it hasn't already) and the resulting image ID will be
+   * saved back to the config object as `from`.
+   * @param {Object} cfg The instance config object
+   * @returns {Promise.<Object>} The modified config object
+   */
+  attachFrom: (cfg) => {
+    if (!cfg.from) {
+      return images.getImage(cfg.dockerfile)
+        .then(imageId => {
+          cfg.from = imageId
+          return cfg
+        })
+    }
+    return Promise.resolve(cfg)
+  },
+  /**
    * Initializes instance from config and args
    * @returns {object} promise
    */
   start: () => Promise.resolve()
     .then(instance.checkForUpdates)
     .then(utils.checkVersion)
-    .then(instance.getConfig)
+    .then(instance.getProjectConfig)
+    .then(cfg => instance.attachFrom(cfg))
+    .then(cfg => instance.getRunConfig(cfg))
     .then(cfg => {
       // Write the primary command to tmp script
       return fs.writeFileAsync(`${tmpdir}/binci.sh`, cfg.primary.cmd)

@@ -38,12 +38,12 @@ const config = {
   },
   /**
    * Filters out empty config properties
-   * @param {object}
+   * @param {object} cfg
    * @returns {object}
    */
   validate: (cfg) => _.pipe([
     _.toPairs,
-    _.reject(([key, val]) => !_.contains(key, ['from', 'tasks']) && _.isEmpty(val) || _.isNil(val)),
+    _.reject(([key, val]) => !_.contains(key, ['tasks']) && _.isEmpty(val) || _.isNil(val)),
     _.fromPairs
   ])(cfg)
 }

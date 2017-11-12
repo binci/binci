@@ -1,0 +1,5 @@
+This file has a known SHA-1 hash that's built into tests.
+
+Please don't change it unless you want to break tests.
+
+And if you do want to break tests ... you're a meanie.
