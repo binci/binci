@@ -86,7 +86,7 @@ const images = {
     stream.on('close', () => resolve(shasum.digest('hex').substr(0, 12)))
   }),
   /**
-   * Gets a valid image name:tag that can be used to run a new docker container. This
+   * Gets a valid image name:tag that can be used to run a new docker container.
    * If an image has already been built for this dockerfile, the existing image will
    * be returned. If no build has happened yet or the dockerfile has been changed
    * since the last build, a new build will be run, and the previous image will be
