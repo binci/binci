@@ -38,4 +38,15 @@ describe('init', () => {
         expect(res).to.equal('Config file created')
       })
   })
+  it('accepts blank input and writes "dockerfile" to config', () => {
+    input.text.restore()
+    fs.writeFileAsync.restore()
+    sandbox.stub(input, 'text', () => Promise.resolve(''))
+    const spy = sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
+    return init()
+      .then(() => {
+        expect(spy).to.be.calledOnce()
+        expect(spy.args[0][1]).to.match(/^dockerfile: \.\/Dockerfile/)
+      })
+  })
 })
