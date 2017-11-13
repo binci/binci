@@ -86,15 +86,14 @@ const images = {
     stream.on('close', () => resolve(shasum.digest('hex').substr(0, 12)))
   }),
   /**
-   * Gets a valid image ID that can be used to run a new docker container. This may
-   * be either a hexadecimal image ID, or a name:tag string. If an image has already
-   * been built for this dockerfile, the ID of the existing image will be returned.
-   * If no build has happened yet or the dockerfile has been changed since the last
-   * build, a new build will be run, and the previous image will be deleted (if one
-   * exists).
+   * Gets a valid image name:tag that can be used to run a new docker container. This
+   * If an image has already been built for this dockerfile, the existing image will
+   * be returned. If no build has happened yet or the dockerfile has been changed
+   * since the last build, a new build will be run, and the previous image will be
+   * deleted (if one exists).
    * @param {String} [dockerfile="./Dockerfile"] The path to the dockerfile to be
    * used for building the new image or retrieving the existing one
-   * @returns {Promise.<string>} the ID of the image to be used
+   * @returns {Promise.<string>} the name:tag of the image to be used
    */
   getImage: (dockerfile = './Dockerfile') => {
     return Promise.all([
