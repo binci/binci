@@ -29,6 +29,7 @@ const args = {
     'e': { prop: 'exec', help: 'Run a custom command instead of defined task' },
     'f': { prop: 'from', help: 'Run with specified docker image' },
     'c': { prop: 'configPath', help: 'Run with custom config file path' },
+    'b': { prop: 'dockerfile', help: 'Build a base image with the specified dockerfile' },
     'd': { action: 'disable', help: 'Disable specified service' },
     'init': { action: 'init', help: 'Initialize new Binci project config' },
     'disable-all': { action: 'disableAll', help: 'Disable all configured services' },

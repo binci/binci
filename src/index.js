@@ -38,8 +38,11 @@ const instance = {
     return Promise.resolve()
       .then(args.parse)
       .then(parsedArgs => {
+        if (parsedArgs.dockerfile && parsedArgs.from) throw new Error('Cannot specify both -f and -b!')
         const initConfig = config.load(parsedArgs.configPath)
-        return services.filterEnabled(_.merge(initConfig, parsedArgs))
+        const merged = services.filterEnabled(_.merge(initConfig, parsedArgs))
+        if (parsedArgs.dockerfile) delete merged.from
+        return merged
       })
   },
   /**

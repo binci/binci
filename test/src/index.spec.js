@@ -102,6 +102,17 @@ describe('index', () => {
         expect(cfg).to.have.property('expose').deep.equal([ '8080:8080' ])
       })
     })
+    it('removes the "from" param when -b is passed to the cli', () => {
+      args.raw = { b: './Dockerfile', _: [], c: configPath }
+      return instance.getProjectConfig().then(cfg => {
+        expect(cfg).to.not.have.property('from')
+        expect(cfg).to.have.property('dockerfile').equal('./Dockerfile')
+      })
+    })
+    it('rejects when both -f and -b are passed to the cli', () => {
+      args.raw = { f: 'node:6', b: './Dockerfile', _: [], c: configPath }
+      return expect(instance.getProjectConfig()).to.be.rejectedWith(/both/)
+    })
   })
   describe('getRunConfig', () => {
     it('loads config and args and returns exec run command objects', () => {

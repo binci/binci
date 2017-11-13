@@ -124,15 +124,13 @@ binci -e "/bin/sh"
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an `exit` command is sent by the user.
 
-## Container Image (`from <string>`)
+## Container Image (`dockerfile <string>` or `from <string>`)
 
-The `from` configuration property causes Binci to use the specified image to run tasks, rather than building a new image from the local Dockerfile.
+The `dockerfile` configuration property can be specified to point to this project's Dockerfile, which will be auto-built for task execution. This image will be rebuilt any time the Dockerfile is edited. Defaults to `./Dockerfile`.
 
-For testing different images easily, the `-f <alternate-image>` argument can be called during execution.
+The `from` configuration property causes Binci to use the specified image to run tasks, rather than building a new image from a local Dockerfile.
 
-Omitting this property will cause Binci to build a container from your project's Dockerfile. This container will be
-rebuilt any time the Dockerfile is edited. A different file than the default `./Dockerfile` can be specified by setting
-the `dockerfile` property. All paths are relative to the project root.
+For testing different images easily, the either the `-b <build-dockerfile>` or `-f <from-alternate-image>` arguments can be passed on execution.
 
 ## Services
 
