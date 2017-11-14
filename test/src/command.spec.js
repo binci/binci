@@ -101,5 +101,19 @@ describe('command', () => {
       })
       delete process.env.BN_TEST_EV
     })
+    it('mounts the CWD to the same path in the container by default', () => {
+      process.env.BN_TEST_EV = 'foo'
+      const actual = command.get({ from: 'mongo', run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true)
+      expect(actual.args).to.contain('/tmp:/tmp')
+      expect(actual.args).to.contain('/tmp')
+      delete process.env.BN_TEST_EV
+    })
+    it('mounts the CWD to the path specified by workDir', () => {
+      process.env.BN_TEST_EV = 'foo'
+      const actual = command.get({ from: 'mongo', workDir: '/app', run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true)
+      expect(actual.args).to.contain('/tmp:/app')
+      expect(actual.args).to.contain('/app')
+      delete process.env.BN_TEST_EV
+    })
   })
 })

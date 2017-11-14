@@ -105,7 +105,8 @@ const command = {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
     const serviceArgs = cfg.rmOnShutdown ? ['run', '-d', '--privileged'] : ['run', '-d', '--rm', '--privileged']
-    let args = primary ? ['run', '--rm', '-it', '-v', `${cwd}:${cwd}`, '-v', `${tmpdir}:${tmpdir}`, '-w', cwd, '--privileged'] : serviceArgs
+    const workDir = cfg.workDir || cwd
+    let args = primary ? ['run', '--rm', '-it', '-v', `${cwd}:${workDir}`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged'] : serviceArgs
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),

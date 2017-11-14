@@ -224,6 +224,8 @@ Setting `expose` array items will expose ports to the host machine from the prim
 
 Setting `volumes` will mount volumes on the host machine to designated paths on the primary or service containers. Entries should use the format `<HOST_PATH>:<CONTAINER_PATH>`
 
+The current working directory will automatically mount to the same path on the container instance by default. To change its mount point and the working directory, specify the `workDir` parameter at the top level.
+
 ## Hosts (`hosts <array>`)
 
 Setting `hosts` will update the hosts configuration for the container. Entries should use the format `<HOST_NAME>:<ADDRESS>`
