@@ -8,8 +8,8 @@ tasks:
   test: yarn test
   test:cover: yarn run test:cover
   test:watch: yarn run test:watch
-  e2e: yarn run e2e
   lint: yarn run lint
+  e2e: echo 'IMPORTANT! Run `yarn e2e` to execute system tests!'
   build: yarn run build
   build:mac: yarn run build:mac
   build:linux: yarn run build:linux

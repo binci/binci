@@ -124,11 +124,13 @@ binci -e "/bin/sh"
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an `exit` command is sent by the user.
 
-## Container Image (`from <string>`)
+## Container Image (`from <string>` or `dockerfile <string>`)
 
-The `from` configuration property instructs the image to be used on the primary instance and services.
+The `dockerfile` configuration property can be specified to point to this project's Dockerfile, which will be auto-built for task execution. This image will be rebuilt any time the Dockerfile is edited. Defaults to `./Dockerfile`.
 
-For testing different images easily, the `-f <alternate-image>` argument can be called during execution.
+The `from` configuration property causes Binci to use the specified image to run tasks, rather than building a new image from a local Dockerfile.
+
+For testing different images easily, the either the `-b <build-dockerfile>` or `-f <from-alternate-image>` arguments can be passed on execution.
 
 ## Services
 
@@ -222,6 +224,8 @@ Setting `expose` array items will expose ports to the host machine from the prim
 
 Setting `volumes` will mount volumes on the host machine to designated paths on the primary or service containers. Entries should use the format `<HOST_PATH>:<CONTAINER_PATH>`
 
+The current working directory will automatically mount to the same path on the container instance by default. To change its mount point and the working directory, specify the `workDir` parameter at the top level.
+
 ## Hosts (`hosts <array>`)
 
 Setting `hosts` will update the hosts configuration for the container. Entries should use the format `<HOST_NAME>:<ADDRESS>`
@@ -292,7 +296,7 @@ Compose takes the approach of spinning up containers that run, almost like a vir
 Some more comparisons:
 
 * With Binci you don't need a Dockerfile for local development, thus you can use it whether or not your project will be deployed in Docker or to bare metal.
-* Binci doesn't build docker images, ever. It uses the images you specify for both the primary container and any services.
+* Binci only builds Docker images if you want it to. Specifying an image in the config will run all tasks off of that image without ever building a local one first.
 * When you install local dependencies in your project folder, run a build, execute your coverage tool, or write any local files, that just happens on your hard disk, not locked away in some container. They'll be available to every other task you run.
 * With Binci you don't need to run tasks in a containerized shell, you simply define the tasks and run them. You can kick tasks off with any local script, build tool, or IDE run configuration without building a container first.
 * Tasks don't need to be defined at runtime via arguments or flags, you just tell Binci which predefined task to run.
@@ -303,4 +307,4 @@ Binci is licensed under the MIT license. Please see [`LICENSE.txt`](/LICENSE.txt
 
 ## Credits
 
-Binci was created and is maintained by [TechnologyAdvice](http://www.technologyadvice.com).
+Binci was originally created at [TechnologyAdvice](http://www.technologyadvice.com) in Nashville, TN.

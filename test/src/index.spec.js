@@ -1,6 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const Promise = require('bluebird')
+const yaml = require('js-yaml')
 
 const sandbox = require('test/sandbox')
 const mockUpdateNotifierInstance = { update: { latest: '1.1.1' } }
@@ -14,10 +15,12 @@ const args = require('src/args')
 const output = require('src/output')
 const proc = require('src/proc')
 const services = require('src/services')
+const images = require('src/images')
 const fixtures = require('test/fixtures/instance')
 Promise.promisifyAll(fs)
 
 const configPath = path.resolve(__dirname, '../fixtures/binci.yml')
+const getConfig = () => yaml.safeLoad(fs.readFileSync(configPath, 'utf8'))
 
 describe('index', () => {
   global.instanceId = 'test'
@@ -90,26 +93,70 @@ describe('index', () => {
       return expect(instance.runCommand({ primary: ['foo'] })).to.be.rejectedWith('Command failed')
     })
   })
-  describe('getConfig', () => {
+  describe('getProjectConfig', () => {
+    it('loads config and args and merges them', () => {
+      args.raw = { f: 'node:6', e: 'echo "foo"', _: [], c: configPath }
+      return instance.getProjectConfig().then(cfg => {
+        expect(cfg).to.have.property('from').equal('node:6')
+        expect(cfg).to.have.property('exec').equal('echo "foo"')
+        expect(cfg).to.have.property('expose').deep.equal([ '8080:8080' ])
+      })
+    })
+    it('removes the "from" param when -b is passed to the cli', () => {
+      args.raw = { b: './Dockerfile', _: [], c: configPath }
+      return instance.getProjectConfig().then(cfg => {
+        expect(cfg).to.not.have.property('from')
+        expect(cfg).to.have.property('dockerfile').equal('./Dockerfile')
+      })
+    })
+    it('rejects when both -f and -b are passed to the cli', () => {
+      args.raw = { f: 'node:6', b: './Dockerfile', _: [], c: configPath }
+      return expect(instance.getProjectConfig()).to.be.rejectedWith(/both/)
+    })
+  })
+  describe('getRunConfig', () => {
     it('loads config and args and returns exec run command objects', () => {
       const rmOnShutdown = false
       args.raw = { f: 'node:6', e: 'echo "foo"', _: [], c: configPath }
-      return instance.getConfig(rmOnShutdown).then(cfg => {
-        expect(cfg).to.deep.equal(fixtures.exec)
-      })
+      return instance.getProjectConfig()
+        .then(cfg => instance.getRunConfig(cfg, rmOnShutdown))
+        .then(cfg => {
+          expect(cfg).to.deep.equal(fixtures.exec)
+        })
     })
     it('loads config and args and returns task run command objects', () => {
       const rmOnShutdown = false
       args.raw = { f: 'node:6', _: ['env'], c: configPath }
-      return instance.getConfig(rmOnShutdown).then(cfg => {
-        expect(cfg).to.deep.equal(fixtures.task)
+      return instance.getProjectConfig()
+        .then(cfg => instance.getRunConfig(cfg, rmOnShutdown))
+        .then(cfg => {
+          expect(cfg).to.deep.equal(fixtures.task)
+        })
+    })
+  })
+  describe('attachFrom', () => {
+    it('changes nothing if a "from" field exists', () => {
+      const conf1 = getConfig()
+      const conf2 = getConfig()
+      return instance.attachFrom(conf2).then(cfg => {
+        expect(cfg).to.deep.equal(conf1)
+      })
+    })
+    it('sets the "from" to the built image if not specified', () => {
+      const conf = getConfig()
+      delete conf.from
+      sandbox.stub(images, 'getImage', () => Promise.resolve('deadbeef'))
+      return instance.attachFrom(conf).then(cfg => {
+        expect(cfg).to.have.property('from').equal('deadbeef')
       })
     })
   })
   describe('start', () => {
     it('calls checkForUpdates', () => {
       sandbox.stub(instance, 'checkForUpdates')
-      sandbox.stub(instance, 'getConfig', () => Promise.resolve({ primary: {} }))
+      sandbox.stub(instance, 'getProjectConfig', () => Promise.resolve({}))
+      sandbox.stub(instance, 'getRunConfig', () => Promise.resolve({ primary: {} }))
+      sandbox.stub(instance, 'attachFrom', cfg => cfg)
       sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
       sandbox.stub(instance, 'runCommand', () => Promise.resolve())
       sandbox.stub(instance, 'startServices', () => Promise.resolve())
@@ -119,7 +166,7 @@ describe('index', () => {
       })
     })
     it('outputs default failure message if rejected without error message', () => {
-      sandbox.stub(instance, 'getConfig', () => {
+      sandbox.stub(instance, 'getProjectConfig', () => {
         const err = new Error()
         err.message = undefined
         throw err
@@ -155,6 +202,7 @@ describe('index', () => {
       return expect(instance.start()).to.be.rejected()
     })
     it('resolves when config, services and primary container run successfully', () => {
+      sandbox.stub(instance, 'attachFrom', cfg => cfg)
       sandbox.stub(fs, 'writeFileAsync', () => Promise.resolve())
       sandbox.stub(instance, 'startServices', () => Promise.resolve())
       sandbox.stub(instance, 'runCommand', () => Promise.resolve())
