@@ -124,7 +124,7 @@ binci -e "/bin/sh"
 
 The above would start the container using the configuration, call the `before` task, then start the `sh` shell. The container will then remain in the shell until an `exit` command is sent by the user.
 
-## Container Image (`dockerfile <string>` or `from <string>`)
+## Container Image (`from <string>` or `dockerfile <string>`)
 
 The `dockerfile` configuration property can be specified to point to this project's Dockerfile, which will be auto-built for task execution. This image will be rebuilt any time the Dockerfile is edited. Defaults to `./Dockerfile`.
 
