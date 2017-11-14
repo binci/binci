@@ -9,6 +9,7 @@ tasks:
   test:cover: yarn run test:cover
   test:watch: yarn run test:watch
   lint: yarn run lint
+  e2e: echo 'IMPORTANT! Run `yarn e2e` to execute system tests!'
   build: yarn run build
   build:mac: yarn run build:mac
   build:linux: yarn run build:linux
