@@ -8,7 +8,6 @@ tasks:
   test: yarn test
   test:cover: yarn run test:cover
   test:watch: yarn run test:watch
-  e2e: yarn run e2e
   lint: yarn run lint
   build: yarn run build
   build:mac: yarn run build:mac
