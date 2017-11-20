@@ -21,6 +21,8 @@ to setup and maintain these environments manually.
 
 ### YARN/NPM
 
+The best way to install Binci and keep it updated is through NPM, included with [Node.js](https://nodejs.org) or Yarn.
+
 `yarn global add binci` or `npm install binci -g`
 
 ---
