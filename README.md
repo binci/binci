@@ -23,29 +23,6 @@ to setup and maintain these environments manually.
 
 `yarn global add binci` or `npm install binci -g`
 
-**Note: Binci requires Node v.6+ to run.**
-
-### Binaries
-
-**Linux [(download)](http://binci.technologyadvice.com/linux/binci)**
-
-```
-curl -o /usr/local/bin/binci http://binci.technologyadvice.com/linux/binci && \
-chmod +x /usr/local/bin/binci
-```
-
-**Mac OSX [(download)](http://binci.technologyadvice.com/mac/binci)**
-
-```
-sudo mkdir -p /usr/local/bin && \
-sudo curl -o /usr/local/bin/binci http://binci.technologyadvice.com/mac/binci && \
-sudo chmod +x /usr/local/bin/binci
-```
-
-**Windows [(download)](http://binci.technologyadvice.com/windows/binci.exe)**
-
-Download the above file and run from the path where it is saved or add to a directory in your `PATH`.
-
 ---
 
 *Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
