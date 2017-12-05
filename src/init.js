@@ -17,10 +17,10 @@ const configTemplate = (containerLine) => `${containerLine}
 #   - 8080:8080
 # hosts:
 #   - some-host.com:127.0.0.1
-# before:
-#   - echo "before..."
-# after:
-#   - echo "after..."
+# before: |
+#   echo "before..."
+# after: |
+#   echo "after..."
 tasks:
   env: env | sort
   shell: /bin/sh
