@@ -34,7 +34,7 @@ describe('services', () => {
     it('returns an array of services and their command arrays', () => {
       const svc = services.get(_.merge({ rmOnShutdown: false }, config.load()))
       expect(svc[0].name).to.equal('mongodb')
-      expect(svc[0].args).to.deep.equal(['run', '-d', '--rm', '--privileged', '-p', '27017:27017', '--name', 'bc_mongodb_test', 'mongo:3.0'])
+      expect(svc[0].args).to.deep.equal(['run', '-d', '--privileged', '--rm', '-p', '27017:27017', '--name', 'bc_mongodb_test', 'mongo:3.0'])
     })
     it('returns an array of services and their command arrays (with rmOnShutdown)', () => {
       const svc = services.get(_.merge({ rmOnShutdown: true }, config.load()))

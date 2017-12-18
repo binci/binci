@@ -8,8 +8,8 @@ const instance = {
         args: [
           'run',
           '-d',
-          '--rm',
           '--privileged',
+          '--rm',
           '-p',
           '27017:27017',
           '--name',
@@ -22,7 +22,6 @@ const instance = {
       args: [
         'run',
         '--rm',
-        '-it',
         '-v',
         '/tmp:/tmp',
         '-v',
@@ -30,6 +29,7 @@ const instance = {
         '-w',
         '/tmp',
         '--privileged',
+        '-it',
         '-p',
         '8080:8080',
         '--link',
@@ -52,8 +52,8 @@ const instance = {
         args: [
           'run',
           '-d',
-          '--rm',
           '--privileged',
+          '--rm',
           '-p',
           '27017:27017',
           '--name',
@@ -66,7 +66,6 @@ const instance = {
       args: [
         'run',
         '--rm',
-        '-it',
         '-v',
         '/tmp:/tmp',
         '-v',
@@ -74,6 +73,7 @@ const instance = {
         '-w',
         '/tmp',
         '--privileged',
+        '-it',
         '-p',
         '8080:8080',
         '--link',
