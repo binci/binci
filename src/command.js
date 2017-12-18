@@ -106,7 +106,11 @@ const command = {
     const cwd = process.cwd()
     const serviceArgs = cfg.rmOnShutdown ? ['run', '-d', '--privileged'] : ['run', '-d', '--rm', '--privileged']
     const workDir = cfg.workDir || cwd
-    let args = primary ? ['run', '--rm', '-it', '-v', `${cwd}:${workDir}`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged'] : serviceArgs
+    /* istanbul ignore next */
+    const itFlags = process.stdout.isTTY ? '-it' : ''
+    let args = primary
+      ? ['run', '--rm', itFlags, '-v', `${cwd}:${workDir}`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged']
+      : serviceArgs
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),
