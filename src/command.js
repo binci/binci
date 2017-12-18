@@ -104,13 +104,18 @@ const command = {
   get: (cfg, name, tmpdir, primary = false) => {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
     const cwd = process.cwd()
-    const serviceArgs = cfg.rmOnShutdown ? ['run', '-d', '--privileged'] : ['run', '-d', '--rm', '--privileged']
     const workDir = cfg.workDir || cwd
-    /* istanbul ignore next */
-    const itFlags = process.stdout.isTTY ? '-it' : ''
-    let args = primary
-      ? ['run', '--rm', itFlags, '-v', `${cwd}:${workDir}`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged']
-      : serviceArgs
+    let args
+    if (primary) {
+      // Running the main project container
+      args = ['run', '--rm', '-v', `${cwd}:${workDir}`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged']
+      /* istanbul ignore else */
+      if (process.stdout.isTTY) args.push('-it')
+    } else {
+      // Running a service
+      args = ['run', '-d', '--privileged']
+      if (!cfg.rmOnShutdown) args.push('--rm')
+    }
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),

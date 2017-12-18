@@ -89,14 +89,14 @@ describe('command', () => {
     it('returns array of arguments for a service config', () => {
       process.env.BN_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080', '9090:9090'] }, 'mongo') // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal(['run', '-d', '--rm', '--privileged', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'bc_mongo_test', 'mongo'])
+      expect(actual).to.deep.equal(['run', '-d', '--privileged', '--rm', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'bc_mongo_test', 'mongo'])
       delete process.env.BN_TEST_EV
     })
     it('returns object with array of arguments and command for a primary container config', () => {
       process.env.BN_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080'], run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal({
-        args: ['run', '--rm', '-it', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '--name', 'bc_primary_test', 'mongo', 'sh', '/tmp/binci.sh'],
+        args: ['run', '--rm', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-it', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '--name', 'bc_primary_test', 'mongo', 'sh', '/tmp/binci.sh'],
         cmd: '#!/bin/sh\nset -e;\necho "foo"'
       })
       delete process.env.BN_TEST_EV
