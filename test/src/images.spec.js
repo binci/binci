@@ -82,14 +82,25 @@ describe('images', () => {
         args = a
         return Promise.resolve()
       })
-      return images.buildImage('./Foo', 'bar').then(() => {
+      return images.buildImage('./Foo', ['bar']).then(() => {
         expect(args[2]).to.equal('/tmp/Foo')
         expect(args[4]).to.equal('bar')
       })
     })
+    it('runs a build with multiple tags', () => {
+      let args
+      sandbox.stub(proc, 'run', (a) => {
+        args = a
+        return Promise.resolve()
+      })
+      return images.buildImage('./Foo', ['bar', 'baz', 'tek']).then(() => {
+        expect(args).to.deep.equal([ 'build', '-f', '/tmp/Foo',
+          '-t', 'bar', '-t', 'baz', '-t', 'tek', '/tmp' ])
+      })
+    })
     it('rejects when the command fails', () => {
       sandbox.stub(proc, 'run', () => Promise.reject(new Error('test rejection')))
-      return expect(images.buildImage('./Foo', 'bar')).to.be.rejected()
+      return expect(images.buildImage('./Foo', ['bar'])).to.be.rejected()
     })
   })
   describe('getImage', () => {
@@ -115,7 +126,7 @@ describe('images', () => {
       const spy = sandbox.stub(images, 'buildImage', (df, name) => Promise.resolve(name))
       return images.getImage('df').then(() => {
         expect(spy).to.be.calledOnce()
-        expect(spy).to.be.calledWith('df', 'tmp:bc_deadbeefbeef')
+        expect(spy).to.be.calledWith('df', ['tmp:bc_deadbeefbeef'])
       })
     })
     it('deletes an old image after a successful build', () => {
