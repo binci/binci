@@ -115,6 +115,14 @@ describe('index', () => {
     })
   })
   describe('getRunConfig', () => {
+    let oldIsTTY
+    before(() => {
+      oldIsTTY = process.stdout.isTTY
+      process.stdout.isTTY = true
+    })
+    after(() => {
+      process.stdout.isTTY = oldIsTTY
+    })
     it('loads config and args and returns exec run command objects', () => {
       const rmOnShutdown = false
       args.raw = { f: 'node:6', e: 'echo "foo"', _: [], c: configPath }

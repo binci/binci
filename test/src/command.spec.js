@@ -77,11 +77,15 @@ describe('command', () => {
   })
   describe('get', () => {
     let processCwdStub
+    let oldIsTTY
     beforeEach(() => {
       processCwdStub = sinon.stub(process, 'cwd', () => '/tmp')
+      oldIsTTY = process.stdout.isTTY
+      process.stdout.isTTY = true
     })
     afterEach(() => {
       processCwdStub.restore()
+      process.stdout.isTTY = oldIsTTY
     })
     it('throws error if missing \'from\' property', () => {
       expect(() => command.get({})).to.throw('Missing \'from\' property in config or argument')
