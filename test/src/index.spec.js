@@ -150,6 +150,15 @@ describe('index', () => {
         expect(cfg).to.have.property('from').equal('deadbeef')
       })
     })
+    it('passes extra tags to the image build process', () => {
+      const conf = getConfig()
+      delete conf.from
+      conf.tags = ['foo', 'bar']
+      const stub = sandbox.stub(images, 'getImage', () => Promise.resolve('foo'))
+      return instance.attachFrom(conf).then(() => {
+        expect(stub).to.be.calledWith(undefined, ['foo', 'bar'])
+      })
+    })
   })
   describe('start', () => {
     it('calls checkForUpdates', () => {
