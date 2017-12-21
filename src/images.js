@@ -11,22 +11,23 @@ const images = {
   /**
    * Builds a docker image, naming it according to the parent folder and tagging it
    * with "bc_" followed by a hash of the Dockerfile used to build it.
-   * @param dockerfile
-   * @param imageName
-   * @returns {Promise.<T>}
+   * @param {string} dockerfile The path (absolute or relative from the current working dir) to
+   * the Dockerfile to be built
+   * @param {Array<string>} [tags=[]] An array of tags with which to tag the new image
+   * @returns {Promise.<string>} A tag that can be used to launch a container of this new image
    */
-  buildImage: (dockerfile, imageName) => {
+  buildImage: (dockerfile, tags = []) => {
     output.info(`Building image from ${dockerfile}`)
     output.line()
+    const tagArgs = tags.reduce((acc, cur) => acc.concat(['-t', cur]), [])
     return proc.run([
       'build',
-      '-f', path.resolve(process.cwd(), dockerfile),
-      '-t', imageName,
-      process.cwd()
-    ]).then(() => {
+      '-f', path.resolve(process.cwd(), dockerfile)
+    ].concat(tagArgs).concat([process.cwd()])
+    ).then(() => {
       output.line()
       output.success('Image built successfully!')
-      return imageName
+      return tags[tags.length - 1]
     }).catch(e => {
       output.line()
       output.error('Build failed')
@@ -93,9 +94,11 @@ const images = {
    * deleted (if one exists).
    * @param {String} [dockerfile="./Dockerfile"] The path to the dockerfile to be
    * used for building the new image or retrieving the existing one
+   * @param {Array<string>} [tags=[]] An optional array of tags with which to tag a new
+   * image, if one needs to be built
    * @returns {Promise.<string>} the name:tag of the image to be used
    */
-  getImage: (dockerfile = './Dockerfile') => {
+  getImage: (dockerfile = './Dockerfile', tags = []) => {
     return Promise.all([
       images.getHash(dockerfile),
       images.getBuiltImages()
@@ -110,8 +113,8 @@ const images = {
         if (acc.createdAt > elem.createdAt) return acc
         return elem
       }, {hash: null, createdAt: 0})
-      const imageName = images.getImageNameFromHash(hash)
-      return images.buildImage(dockerfile, imageName)
+      tags.push(images.getImageNameFromHash(hash))
+      return images.buildImage(dockerfile, tags)
         .then(imageName => {
           if (mostRecent.hash) {
             return images.deleteImage(images.getImageNameFromHash(mostRecent.hash))

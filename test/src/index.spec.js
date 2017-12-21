@@ -115,6 +115,14 @@ describe('index', () => {
     })
   })
   describe('getRunConfig', () => {
+    let oldIsTTY
+    before(() => {
+      oldIsTTY = process.stdout.isTTY
+      process.stdout.isTTY = true
+    })
+    after(() => {
+      process.stdout.isTTY = oldIsTTY
+    })
     it('loads config and args and returns exec run command objects', () => {
       const rmOnShutdown = false
       args.raw = { f: 'node:6', e: 'echo "foo"', _: [], c: configPath }
@@ -148,6 +156,15 @@ describe('index', () => {
       sandbox.stub(images, 'getImage', () => Promise.resolve('deadbeef'))
       return instance.attachFrom(conf).then(cfg => {
         expect(cfg).to.have.property('from').equal('deadbeef')
+      })
+    })
+    it('passes extra tags to the image build process', () => {
+      const conf = getConfig()
+      delete conf.from
+      conf.tags = ['foo', 'bar']
+      const stub = sandbox.stub(images, 'getImage', () => Promise.resolve('foo'))
+      return instance.attachFrom(conf).then(() => {
+        expect(stub).to.be.calledWith(undefined, ['foo', 'bar'])
       })
     })
   })
