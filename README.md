@@ -111,6 +111,10 @@ The `from` configuration property causes Binci to use the specified image to run
 
 For testing different images easily, the either the `-b <build-dockerfile>` or `-f <from-alternate-image>` arguments can be passed on execution.
 
+## Tags (`tags <Array<string>>`)
+
+If a `dockerfile` is being used rather than the `from` property, `tags` can be specified to define one or more tags to apply to any newly built container in addition to the default Binci tag. They can be specified in any format accepted by the `docker build` command's `-t` flag, such as `repo/imageName:version`. 
+
 ## Services
 
 Services add links into the primary container, exposing the services for utilization. For the most part, services utilize the same format for definition as the primary container.
