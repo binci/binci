@@ -6,6 +6,7 @@ const cp = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
+const Promise = require('bluebird')
 
 const images = {
   /**
@@ -72,19 +73,29 @@ const images = {
     }))
   }),
   /**
-   * Gets the SHA-1 checksum, truncated to 12 hexadecimal digits, of the contents of the file at path.
-   * @param {string} path The path of the file for the checksum
-   * @returns {Promise.<string|null>} The sha1 as a hex string, or null if the file does not exist.
+   * Gets the SHA-1 checksum, truncated to 12 hexadecimal digits, of the combined contents of the
+   * files at the paths provided.
+   * @param {Array<string>} paths An array of paths for the files to include in the checksum
+   * @returns {Promise.<string>} The sha1 as a hex string.
    */
-  getHash: (path) => new Promise((resolve, reject) => {
-    const shasum = crypto.createHash('sha1')
+  getHash: (paths) => {
+    return Promise.reduce(paths, images.updateHash, crypto.createHash('sha1'))
+      .then(hash => hash ? hash.digest('hex').substr(0, 12) : null)
+  },
+  /**
+   * Updates an existing hash object with the contents of a file at a given path.
+   * @param {Hash} hash A crypto hash object to be updated
+   * @param {string} path The path to a file which will be calculated into the hash
+   * @returns {Promise<Hash>} resolves with the updated Hash object
+   */
+  updateHash: (hash, path) => new Promise((resolve, reject) => {
     const stream = fs.createReadStream(path)
     stream.on('error', err => {
       if (err.code && err.code === 'ENOENT') resolve(null)
       else reject(err)
     })
-    stream.on('data', data => shasum.update(data))
-    stream.on('close', () => resolve(shasum.digest('hex').substr(0, 12)))
+    stream.on('data', data => hash.update(data))
+    stream.on('close', () => resolve(hash))
   }),
   /**
    * Gets a valid image name:tag that can be used to run a new docker container.
@@ -94,13 +105,16 @@ const images = {
    * deleted (if one exists).
    * @param {String} [dockerfile="./Dockerfile"] The path to the dockerfile to be
    * used for building the new image or retrieving the existing one
+   * @param {Array<string>} [monitorPaths=[]] An optional array of file paths to monitor
+   * for changes, causing a rebuild of the docker container if any of them are updated
    * @param {Array<string>} [tags=[]] An optional array of tags with which to tag a new
    * image, if one needs to be built
    * @returns {Promise.<string>} the name:tag of the image to be used
    */
-  getImage: (dockerfile = './Dockerfile', tags = []) => {
+  getImage: (dockerfile = './Dockerfile', monitorPaths = [], tags = []) => {
+    monitorPaths.push(dockerfile)
     return Promise.all([
-      images.getHash(dockerfile),
+      images.getHash(monitorPaths),
       images.getBuiltImages()
     ]).then(([ hash, imgs ]) => {
       if (!hash) {

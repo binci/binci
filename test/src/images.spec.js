@@ -29,12 +29,17 @@ describe('images', () => {
   })
   describe('getHash', () => {
     it('determines the SHA-1 hash of an existing file', () => {
-      return images.getHash(knownShaPath).then(hash => {
+      return images.getHash([knownShaPath]).then(hash => {
         expect(hash).to.equal(knownSha.substr(0, 12))
       })
     })
+    it('determines the SHA-1 hash of multiple files', () => {
+      return images.getHash([knownShaPath, knownShaPath]).then(hash => {
+        expect(hash).to.equal('cdb39cef22e6')
+      })
+    })
     it('returns null if the file does not exist', () => {
-      return images.getHash(knownShaPath + 'notfound').then(hash => {
+      return images.getHash([knownShaPath + 'notfound']).then(hash => {
         expect(hash).to.be.null()
       })
     })

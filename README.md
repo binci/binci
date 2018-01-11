@@ -126,6 +126,20 @@ The above binci.yml will, in the event that Binci needs to build a new container
 addition to the two listed tags. When Binci is done running, the command `docker push myorg/myrepo:latest` would work
 as expected.
 
+## Rebuilding
+
+When a `dockerfile` is used, Binci will automatically rebuild it if the `dockerfile` changes. However, it may be necessary to trigger a rebuild when other files change that may impact the build. To list these files, specify `rebuildOnChange`:
+
+```yaml
+dockerfile: ./Dockerfile
+rebuildOnChange:
+  - ./Gemfile
+  - ./Gemfile.lock
+  - ./Rakefile
+```
+
+When any of those files are changed, created, or deleted, the next Binci run will rebuild the image from the dockerfile before executing the task. 
+
 ## Services
 
 Services add links into the primary container, exposing the services for utilization. For the most part, services utilize the same format for definition as the primary container.
