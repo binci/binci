@@ -138,7 +138,7 @@ rebuildOnChange:
   - ./Rakefile
 ```
 
-When any of those files are changed, created, or deleted, the next Binci run will rebuild the image from the dockerfile before executing the task. 
+When any of those files are changed, the next Binci run will rebuild the image from the dockerfile before executing the task. 
 
 ## Services
 
