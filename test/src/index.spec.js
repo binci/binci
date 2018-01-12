@@ -164,7 +164,7 @@ describe('index', () => {
       conf.tags = ['foo', 'bar']
       const stub = sandbox.stub(images, 'getImage', () => Promise.resolve('foo'))
       return instance.attachFrom(conf).then(() => {
-        expect(stub).to.be.calledWith(undefined, ['foo', 'bar'])
+        expect(stub).to.be.calledWith(undefined, undefined, ['foo', 'bar'])
       })
     })
   })
