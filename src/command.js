@@ -108,7 +108,7 @@ const command = {
     let args
     if (primary) {
       // Running the main project container
-      args = ['run', '--rm', '-v', `${cwd}:${workDir}`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged']
+      args = ['run', '--rm', '-v', `${cwd}:${workDir}:cached`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged']
       /* istanbul ignore else */
       if (process.stdout.isTTY) args.push('-it')
     } else {

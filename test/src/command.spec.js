@@ -100,7 +100,7 @@ describe('command', () => {
       process.env.BN_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080'], run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true) // eslint-disable-line no-template-curly-in-string
       expect(actual).to.deep.equal({
-        args: ['run', '--rm', '-v', '/tmp:/tmp', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-it', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '--name', 'bc_primary_test', 'mongo', 'sh', '/tmp/binci.sh'],
+        args: ['run', '--rm', '-v', '/tmp:/tmp:cached', '-v', '/tmp:/tmp', '-w', '/tmp', '--privileged', '-it', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '--name', 'bc_primary_test', 'mongo', 'sh', '/tmp/binci.sh'],
         cmd: '#!/bin/sh\nset -e;\necho "foo"'
       })
       delete process.env.BN_TEST_EV
@@ -115,7 +115,7 @@ describe('command', () => {
     it('mounts the CWD to the path specified by workDir', () => {
       process.env.BN_TEST_EV = 'foo'
       const actual = command.get({ from: 'mongo', workDir: '/app', run: ['foo'], tasks: { foo: 'echo "foo"' } }, 'primary', '/tmp', true)
-      expect(actual.args).to.contain('/tmp:/app')
+      expect(actual.args).to.contain('/tmp:/app:cached')
       expect(actual.args).to.contain('/app')
       delete process.env.BN_TEST_EV
     })
