@@ -1,6 +1,7 @@
 'use strict'
 
 const _ = require('halcyon')
+const path = require('path')
 
 const command = {
   /**
@@ -23,12 +24,21 @@ const command = {
     return process.env.hasOwnProperty(envVar) ? process.env[envVar] : defaultValue
   }),
   /**
+   * Parses volumes to allow relative pathing from host mounts
+   * @param {Array} vols The volume array to parse
+   * @returns {Array}
+   */
+  parseVolumes: (vols) => vols.map((v) => v.startsWith('.') ? path.resolve(process.cwd(), v) : v),
+  /**
    * Reduces args array into flagged arguments list
    * @param {string} type Name of the argument
    * @param {array} args Array of values
    * @returns {array}
    */
-  parseArgs: (type, args) => _.chain((item) => ([command.args[type], command.parseHostEnvVars(item)]), args),
+  parseArgs: (type, args) => {
+    args = type === 'volumes' ? command.parseVolumes(args) : args
+    return _.chain((item) => ([command.args[type], command.parseHostEnvVars(item)]), args)
+  },
   /**
    * Parses config object and returns container name. Will have bc_ prefix and
    * InstanceID suffix if ephemeral, unaltered name for persisted containers
