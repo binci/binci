@@ -17,9 +17,15 @@ describe('command', () => {
       expect(command.parseHostEnvVars('test-${BC_TEST_EV_DNE}')).to.equal('test-') // eslint-disable-line no-template-curly-in-string
     })
   })
+  describe('parseVolumes', () => {
+    it('returns volumes with correct pathing', () => {
+      expect(command.parseVolumes([ './foo:/bar', '/foo:/bar' ])).to.deep.equal([ `${process.cwd()}/foo:/bar`, '/foo:/bar' ])
+    })
+  })
   describe('parseArgs', () => {
     it('returns an array of a specific argument type and its values', () => {
       expect(command.parseArgs('expose', ['8080:8080', '9090:9090'])).to.deep.equal(['-p', '8080:8080', '-p', '9090:9090'])
+      expect(command.parseArgs('volumes', [ './foo:/bar' ])).to.deep.equal(['-v', `${process.cwd()}/foo:/bar`])
     })
   })
   describe('getName', () => {
