@@ -126,6 +126,9 @@ const command = {
       args = ['run', '-d', '--privileged']
       if (!cfg.rmOnShutdown) args.push('--rm')
     }
+    // Has user config
+    if (cfg.user) args.push(`--user=${command.parseHostEnvVars(cfg.user)}`)
+    // All other config
     args = args.concat(_.flatten([
       command.getArgs(cfg),
       command.getLinks(cfg),
