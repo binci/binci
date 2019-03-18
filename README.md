@@ -69,6 +69,7 @@ expose:
   - 8080:8080
 volumes:
   - ${HOME}/.ssh:/root/.ssh
+user: nobody
 hosts:
   - google.com:127.0.0.1
 before: npm install
@@ -233,6 +234,10 @@ Setting `expose` array items will expose ports to the host machine from the prim
 Setting `volumes` will mount volumes on the host machine to designated paths on the primary or service containers. Entries should use the format `<HOST_PATH>:<CONTAINER_PATH>`
 
 The current working directory will automatically mount to the same path on the container instance by default. To change its mount point and the working directory, specify the `workDir` parameter at the top level.
+
+## Users (`user <string>`)
+
+Setting `user` will instruct the container to run under the username or UID specified.
 
 ## Hosts (`hosts <array>`)
 

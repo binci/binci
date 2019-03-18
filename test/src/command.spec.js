@@ -98,8 +98,8 @@ describe('command', () => {
     })
     it('returns array of arguments for a service config', () => {
       process.env.BN_TEST_EV = 'foo'
-      const actual = command.get({ from: 'mongo', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080', '9090:9090'] }, 'mongo') // eslint-disable-line no-template-curly-in-string
-      expect(actual).to.deep.equal(['run', '-d', '--privileged', '--rm', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'bc_mongo_test', 'mongo'])
+      const actual = command.get({ from: 'mongo', user: 'nobody', env: ['BN_TEST_EV=${BN_TEST_EV}'], expose: ['8080:8080', '9090:9090'] }, 'mongo') // eslint-disable-line no-template-curly-in-string
+      expect(actual).to.deep.equal(['run', '-d', '--privileged', '--rm', '--user=nobody', '-e', 'BN_TEST_EV=foo', '-p', '8080:8080', '-p', '9090:9090', '--name', 'bc_mongo_test', 'mongo'])
       delete process.env.BN_TEST_EV
     })
     it('returns object with array of arguments and command for a primary container config', () => {
