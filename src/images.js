@@ -11,7 +11,8 @@ const Promise = require('bluebird')
 const images = {
   /**
    * Builds a docker image, naming it according to the parent folder and tagging it
-   * with "bc_" followed by a hash of the Dockerfile used to build it.
+   * with "bc_" followed by a hash of the Dockerfile used to build it. Note that all docker images
+   * will be built from the context of the directory containing the dockerfile.
    * @param {string} dockerfile The path (absolute or relative from the current working dir) to
    * the Dockerfile to be built
    * @param {Array<string>} [tags=[]] An array of tags with which to tag the new image
@@ -21,19 +22,18 @@ const images = {
     output.info(`Building image from ${dockerfile}`)
     output.line()
     const tagArgs = tags.reduce((acc, cur) => acc.concat(['-t', cur]), [])
-    return proc.run([
-      'build',
-      '-f', path.resolve(process.cwd(), dockerfile)
-    ].concat(tagArgs).concat([process.cwd()])
-    ).then(() => {
-      output.line()
-      output.success('Image built successfully!')
-      return tags[tags.length - 1]
-    }).catch(e => {
-      output.line()
-      output.error('Build failed')
-      throw e
-    })
+    const absPath = path.resolve(process.cwd(), dockerfile)
+    const basePath = path.dirname(absPath)
+    return proc.run(['build', '-f', absPath].concat(tagArgs).concat([basePath]))
+      .then(() => {
+        output.line()
+        output.success('Image built successfully!')
+        return tags[tags.length - 1]
+      }).catch(e => {
+        output.line()
+        output.error('Build failed')
+        throw e
+      })
   },
   /**
    * Deletes a docker image
