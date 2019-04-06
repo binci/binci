@@ -133,7 +133,7 @@ const command = {
       command.getArgs(cfg),
       command.getLinks(cfg),
       ['--name', command.getName(name, cfg)],
-      cfg.from,
+      cfg.from.toLowerCase(),
       primary ? ['sh', `${tmpdir}/binci.sh`] : []
     ]))
     return primary ? { args, cmd: command.getExec(cfg) } : args
