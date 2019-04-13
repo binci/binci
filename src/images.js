@@ -20,7 +20,7 @@ const images = {
   buildImage: (dockerfile, tags = []) => {
     output.info(`Building image from ${dockerfile}`)
     output.line()
-    const tagArgs = tags.reduce((acc, cur) => acc.concat(['-t', cur]), [])
+    const tagArgs = tags.reduce((acc, cur) => acc.concat(['-t', cur.toLowerCase()]), [])
     return proc.run([
       'build',
       '-f', path.resolve(process.cwd(), dockerfile)
