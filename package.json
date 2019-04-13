@@ -1,6 +1,6 @@
 {
   "name": "binci",
-  "version": "5.6.0",
+  "version": "5.6.1",
   "description": "Utility for running containerized development workflows",
   "keywords": [
     "docker",
