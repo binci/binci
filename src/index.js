@@ -64,20 +64,22 @@ const instance = {
   startServices: (cfg) => {
     // No services, resolve
     if (!cfg.services.length) return Promise.resolve(cfg)
-    // Start services
-    const svcNames = _.map(_.prop('name'), cfg.services).join(', ')
-    const servicesStartSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
-    return services.run(cfg.services)
-      .then(() => {
-        servicesStartSpinner.succeed()
-        return cfg
-      })
-      .catch((e) => {
-        servicesStartSpinner.fail()
-        const failed = e.svcs
-        /* istanbul ignore next */
-        throw new Error(`Failed to start service${failed.length > 1 ? 's' : ''}: ${failed.join(', ')}`)
-      })
+    return images.logMissingServiceImages(cfg.services).then(() => {
+      // Start services
+      const svcNames = _.map(_.prop('name'), cfg.services).join(', ')
+      const servicesStartSpinner = output.spinner(`Starting service${cfg.services.length > 1 ? 's' : ''} ${svcNames}`)
+      return services.run(cfg.services)
+        .then(() => {
+          servicesStartSpinner.succeed()
+          return cfg
+        })
+        .catch((e) => {
+          servicesStartSpinner.fail()
+          const failed = e.svcs
+          /* istanbul ignore next */
+          throw new Error(`Failed to start service${failed.length > 1 ? 's' : ''}: ${failed.join(', ')}`)
+        })
+    })
   },
   /**
    * Stops services and resolves or rejects

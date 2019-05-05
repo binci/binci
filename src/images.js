@@ -73,6 +73,29 @@ const images = {
     }))
   }),
   /**
+   * Searches for local images matching the names and tags defined in the service config
+   * and prints a courtesy message for whichever are not found saying they will pulled
+   * as part of service start-up.
+   * @param {Array<Object>} [svc=[]] The array of services defined in the instance config.
+   */
+  logMissingServiceImages: (svc = []) => Promise.resolve().then(() => {
+    if (!svc.length) return
+    const missingImages = svc.reduce((arr, i) => {
+      const cmd = [
+        'docker images',
+        '"--filter=reference=' + i.args[i.args.length - 1] + '"'
+      ].join(' ')
+      const out = cp.execSync(cmd).toString().split('\n')
+      if (!out[1]) {
+        arr.push(i.name)
+      }
+      return arr
+    }, [])
+    if (missingImages.length) {
+      output.info(`Unable to find local image${missingImages.length > 1 ? 's' : ''} for ${missingImages.join(', ')}. Pulling during start step.`)
+    }
+  }),
+  /**
    * Gets the SHA-1 checksum, truncated to 12 hexadecimal digits, of the combined contents of the
    * files at the paths provided.
    * @param {Array<string>} paths An array of paths for the files to include in the checksum
