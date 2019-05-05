@@ -67,6 +67,36 @@ describe('images', () => {
       })
     })
   })
+  describe('logMissingServiceImages', () => {
+    beforeEach(() => {
+      sandbox.stub(output, 'info')
+    })
+    it('logs message with missing service images', () => {
+      sandbox.stub(cp, 'execSync', () => ({ toString: () => (
+        'REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE'
+      )}))
+      const cfg = [{
+        name: 'node',
+        args: ['fake_node:latest']
+      }]
+      return images.logMissingServiceImages(cfg).then(() => {
+        expect(output.info).to.be.calledWith('Unable to find local image for node. Pulling during start step.')
+      })
+    })
+    it('logs nothing if local service images are found', () => {
+      sandbox.stub(cp, 'execSync', () => ({ toString: () => (
+        'REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE\n' +
+        'node                latest              f697cb5f31f8        12 months ago       675MB'
+      )}))
+      const cfg = [{
+        name: 'node',
+        args: ['node:latest']
+      }]
+      return images.logMissingServiceImages(cfg).then(() => {
+        expect(output.info).to.not.be.called()
+      })
+    })
+  })
   describe('deleteImage', () => {
     it('executes the delete command successfully', () => {
       let cmd

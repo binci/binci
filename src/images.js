@@ -76,10 +76,9 @@ const images = {
    * Searches for local images matching the names and tags defined in the service config
    * and prints a courtesy message for whichever are not found saying they will pulled
    * as part of service start-up.
-   * @param {Array<Object>} [svc=[]] The array of services defined in the instance config.
+   * @param {Array<Object>} svc The array of services defined in the instance config.
    */
-  logMissingServiceImages: (svc = []) => Promise.resolve().then(() => {
-    if (!svc.length) return
+  logMissingServiceImages: (svc) => Promise.resolve().then(() => {
     const missingImages = svc.reduce((arr, i) => {
       const cmd = [
         'docker images',
