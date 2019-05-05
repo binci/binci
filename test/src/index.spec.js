@@ -33,6 +33,7 @@ describe('index', () => {
     sandbox.stub(output, 'success')
     sandbox.stub(output, 'warn')
     sandbox.stub(output, 'error')
+    sandbox.stub(images, 'logMissingServiceImages', () => Promise.resolve())
   })
   describe('checkForUpdates', () => {
     it('warns user if an update is available', () => {
