@@ -17,6 +17,8 @@ const images = require('./images')
 
 const tmpdir = require('./tempdir')()
 
+const dewindowize = require('./dewindowize')
+
 global.instanceId = require('shortid').generate()
 
 const instance = {
@@ -54,7 +56,7 @@ const instance = {
    */
   getRunConfig: (projConfig, rmOnShutdown) => ({
     services: services.get(projConfig),
-    primary: command.get(_.merge(projConfig, { rmOnShutdown }), 'primary', tmpdir, true)
+    primary: command.get(_.merge(projConfig, { rmOnShutdown }), 'primary', dewindowize(tmpdir), true)
   }),
   /**
    * Starts services and resolves or rejects

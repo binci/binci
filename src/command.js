@@ -3,6 +3,8 @@
 const _ = require('halcyon')
 const path = require('path')
 
+const dewindowize = require('./dewindowize')
+
 const command = {
   /**
    * @property {object} available args parsing instructions, matches config name
@@ -113,7 +115,7 @@ const command = {
    */
   get: (cfg, name, tmpdir, primary = false) => {
     if (!cfg.from) throw new Error('Missing \'from\' property in config or argument')
-    const cwd = process.cwd()
+    const cwd = dewindowize(process.cwd())
     const workDir = cfg.workDir || cwd
     let args
     if (primary) {
