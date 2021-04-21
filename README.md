@@ -27,7 +27,7 @@ The best way to install Binci and keep it updated is through NPM, included with 
 
 ---
 
-*Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well.*
+_Obvious Note: You need to have [Docker](https://www.docker.com/) installed as well._
 
 **Important Note**: In order to run the tasks, Binci creates a temp file (`binci.sh`). The tool will do its best to determine the best location (usually `/tmp`), but this can be explicitly set by specifying the environment variable `BINCI_TMP`.
 
@@ -114,7 +114,7 @@ For testing different images easily, the either the `-b <build-dockerfile>` or `
 
 ## Tags (`tags <Array<string>>`)
 
-If a `dockerfile` is being used rather than the `from` property, `tags` can be specified to define one or more tags to apply to any newly built container in addition to the default Binci tag. They can be specified in any format accepted by the `docker build` command's `-t` flag, such as `repo/imageName:version`. 
+If a `dockerfile` is being used rather than the `from` property, `tags` can be specified to define one or more tags to apply to any newly built container in addition to the default Binci tag. They can be specified in any format accepted by the `docker build` command's `-t` flag, such as `repo/imageName:version`.
 
 ```yaml
 dockerfile: ./Dockerfile
@@ -139,7 +139,7 @@ rebuildOnChange:
   - ./Rakefile
 ```
 
-When any of those files are changed, the next Binci run will rebuild the image from the dockerfile before executing the task. 
+When any of those files are changed, the next Binci run will rebuild the image from the dockerfile before executing the task.
 
 ## Services
 
@@ -176,12 +176,13 @@ tasks:
     cmd: npm run lint
   start: npm start
 ```
+
 Alternatively, you can disable all services for a task with `'*'`:
 
 ```yaml
 tasks:
   lint:
-    disable: '*'
+    disable: "*"
     cmd: npm run lint
   start: npm start
 ```
@@ -242,6 +243,10 @@ Setting `user` will instruct the container to run under the username or UID spec
 ## Hosts (`hosts <array>`)
 
 Setting `hosts` will update the hosts configuration for the container. Entries should use the format `<HOST_NAME>:<ADDRESS>`
+
+## Privileged (`privileged <boolean>`)
+
+By default binci uses Docker's `--privileged` flag to run, you can disable by setting this in the config or passing `--privileged=false` in the `binci` command.
 
 ## Service Stop Time (`stopTimeSecs <integer>`)
 
@@ -308,11 +313,11 @@ Compose takes the approach of spinning up containers that run, almost like a vir
 
 Some more comparisons:
 
-* With Binci you don't need a Dockerfile for local development, thus you can use it whether or not your project will be deployed in Docker or to bare metal.
-* Binci only builds Docker images if you want it to. Specifying an image in the config will run all tasks off of that image without ever building a local one first.
-* When you install local dependencies in your project folder, run a build, execute your coverage tool, or write any local files, that just happens on your hard disk, not locked away in some container. They'll be available to every other task you run.
-* With Binci you don't need to run tasks in a containerized shell, you simply define the tasks and run them. You can kick tasks off with any local script, build tool, or IDE run configuration without building a container first.
-* Tasks don't need to be defined at runtime via arguments or flags, you just tell Binci which predefined task to run.
+- With Binci you don't need a Dockerfile for local development, thus you can use it whether or not your project will be deployed in Docker or to bare metal.
+- Binci only builds Docker images if you want it to. Specifying an image in the config will run all tasks off of that image without ever building a local one first.
+- When you install local dependencies in your project folder, run a build, execute your coverage tool, or write any local files, that just happens on your hard disk, not locked away in some container. They'll be available to every other task you run.
+- With Binci you don't need to run tasks in a containerized shell, you simply define the tasks and run them. You can kick tasks off with any local script, build tool, or IDE run configuration without building a container first.
+- Tasks don't need to be defined at runtime via arguments or flags, you just tell Binci which predefined task to run.
 
 ## License
 
