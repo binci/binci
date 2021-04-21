@@ -120,12 +120,14 @@ const command = {
     let args
     if (primary) {
       // Running the main project container
-      args = ['run', '--rm', '-v', `${cwd}:${workDir}:cached`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir, '--privileged']
+      args = ['run', '--rm', '-v', `${cwd}:${workDir}:cached`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir]
+      if (cfg.privileged !== false) args.push('--privileged')
       /* istanbul ignore else */
       if (process.stdout.isTTY) args.push('-it')
     } else {
       // Running a service
-      args = ['run', '-d', '--privileged']
+      args = ['run', '-d']
+      if (cfg.privileged !== false) args.push('--privileged')
       if (!cfg.rmOnShutdown) args.push('--rm')
     }
     // Has user config
