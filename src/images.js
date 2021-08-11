@@ -17,14 +17,15 @@ const images = {
    * @param {Array<string>} [tags=[]] An array of tags with which to tag the new image
    * @returns {Promise.<string>} A tag that can be used to launch a container of this new image
    */
-  buildImage: (dockerfile, tags = []) => {
+  buildImage: (dockerfile, tags = [], buildArgs = []) => {
     output.info(`Building image from ${dockerfile}`)
     output.line()
     const tagArgs = tags.reduce((acc, cur) => acc.concat(['-t', cur.toLowerCase()]), [])
+    const buildArgs = buildArgs.reduce((acc, cur) => acc.concat(['--build-arg', cur]), [])
     return proc.run([
       'build',
       '-f', path.resolve(process.cwd(), dockerfile)
-    ].concat(tagArgs).concat([process.cwd()])
+    ].concat(tagArgs).concat(buildArgs).concat([process.cwd()])
     ).then(() => {
       output.line()
       output.success('Image built successfully!')
@@ -133,7 +134,7 @@ const images = {
    * image, if one needs to be built
    * @returns {Promise.<string>} the name:tag of the image to be used
    */
-  getImage: (dockerfile = './Dockerfile', monitorPaths = [], tags = []) => {
+  getImage: (dockerfile = './Dockerfile', monitorPaths = [], tags = [], buildArgs = []) => {
     monitorPaths.push(dockerfile)
     return Promise.all([
       images.getHash(monitorPaths),
@@ -150,7 +151,7 @@ const images = {
         return elem
       }, {hash: null, createdAt: 0})
       tags.push(images.getImageNameFromHash(hash))
-      return images.buildImage(dockerfile, tags)
+      return images.buildImage(dockerfile, tags, buildArgs)
         .then(imageName => {
           if (mostRecent.hash) {
             return images.deleteImage(images.getImageNameFromHash(mostRecent.hash))

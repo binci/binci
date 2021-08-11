@@ -125,7 +125,7 @@ const instance = {
    */
   attachFrom: (cfg) => {
     if (!cfg.from) {
-      return images.getImage(cfg.dockerfile, cfg.rebuildOnChange, cfg.tags)
+      return images.getImage(cfg.dockerfile, cfg.rebuildOnChange, cfg.tags, cfg.buildArgs)
         .then(imageId => {
           cfg.from = imageId
           return cfg
