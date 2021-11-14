@@ -14,7 +14,8 @@ const instance = {
           '27017:27017',
           '--name',
           'bc_mongodb_test',
-          'mongo:3.0'
+          'mongo:3.0',
+          'mongodb --arg'
         ]
       }
     ],
@@ -58,7 +59,8 @@ const instance = {
           '27017:27017',
           '--name',
           'bc_mongodb_test',
-          'mongo:3.0'
+          'mongo:3.0',
+          'mongodb --arg'
         ]
       }
     ],
