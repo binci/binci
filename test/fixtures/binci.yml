@@ -1,10 +1,11 @@
 from: mhart/alpine-node:6
-services: 
-  - mongodb: 
+services:
+  - mongodb:
       from: mongo:3.0
       expose:
         - 27017:27017
       persist: false
+      command: mongodb --arg
 expose:
   - 8080:8080
 tasks:

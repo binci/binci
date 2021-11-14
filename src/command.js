@@ -118,17 +118,20 @@ const command = {
     const cwd = dewindowize(process.cwd())
     const workDir = cfg.workDir || cwd
     let args
+    let cmd
     if (primary) {
       // Running the main project container
       args = ['run', '--rm', '-v', `${cwd}:${workDir}:cached`, '-v', `${tmpdir}:${tmpdir}`, '-w', workDir]
       if (cfg.privileged !== false) args.push('--privileged')
       /* istanbul ignore else */
       if (process.stdout.isTTY) args.push('-it')
+      cmd = ['sh', `${tmpdir}/binci.sh`]
     } else {
       // Running a service
       args = ['run', '-d']
       if (cfg.privileged !== false) args.push('--privileged')
       if (!cfg.rmOnShutdown) args.push('--rm')
+      cmd = cfg.command
     }
     // Has user config
     if (cfg.user) args.push(`--user=${command.parseHostEnvVars(cfg.user)}`)
@@ -138,7 +141,7 @@ const command = {
       command.getLinks(cfg),
       ['--name', command.getName(name, cfg)],
       cfg.from.toLowerCase(),
-      primary ? ['sh', `${tmpdir}/binci.sh`] : []
+      cmd || []
     ]))
     return primary ? { args, cmd: command.getExec(cfg) } : args
   }

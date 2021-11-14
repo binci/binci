@@ -267,6 +267,10 @@ The `stopTimeSecs` above would forcibly stop the container after 3 seconds using
 
 In addition to setting the `stopTimeSecs` per service, this property can be set in the root of the `binci.yml` configuration and will be applied to any services that don't have an explicit `stopTimeSecs` property.
 
+## Service Command (`command <string|Array>`)
+
+In the event that a service's default command needs to be overridden, the `command` property can do that. Specify the command with a string or array of strings.
+
 ## Development
 
 ### Tests
